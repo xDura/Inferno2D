@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\External">
+      <UniqueIdentifier>{ef2b2bff-c458-4fd2-9a87-cdcb370358f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\External\Imgui">
+      <UniqueIdentifier>{8120acbe-27f7-47b9-b72a-92f6af222ff9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\platform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\textparser.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\tinyxml2.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\imgui\imgui.cpp">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\imgui\imgui_demo.cpp">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\imgui\imgui_draw.cpp">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\imgui\imgui_impl_sdl.cpp">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\External\imgui\imgui_impl_opengl2.cpp">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\imguiLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\skinned_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mesh_loaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\math.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mathTests.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\opengl_defines.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\stb_image.h">
+      <Filter>Source Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\texture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\platform.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mesh.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\camera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\textparser.h">
+      <Filter>Source Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\tinyxml2.h">
+      <Filter>Source Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\stb_easy_font.h">
+      <Filter>Source Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\animation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imconfig.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imgui.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imgui_internal.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imstb_rectpack.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imstb_textedit.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imstb_truetype.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imgui_impl_opengl2.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\imgui\imgui_impl_sdl.h">
+      <Filter>Source Files\External\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\imguiLayer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\skinned_mesh.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mesh_loaders.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
