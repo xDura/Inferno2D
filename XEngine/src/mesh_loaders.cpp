@@ -118,9 +118,9 @@ int GetNumTotalVertices(const aiScene * scene)
 
 void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vector3>* verts, std::vector<Vector3>* normals, std::vector<Vector2>* uvs, std::vector<Vector4>* weights, std::vector<Vector4>* boneIds)
 {
-	Logger::Log("Loading all vertex data ");
+	LOG("Loading all vertex data ");
 	int numVerts = (assimpMesh->mNumFaces * 3);
-	Logger::Log("num vertices ", numVerts);
+	LOG("num vertices ", numVerts);
 
 	verts->resize(numVerts);
 	normals->resize(numVerts);
@@ -138,7 +138,7 @@ void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vec
 	auxAllWeights.resize(numVerts);
 	//***
 
-	Logger::Log("setting auxiliar weight arrays");
+	LOG("setting auxiliar weight arrays");
 	for (unsigned int i = 0; i < assimpMesh->mNumBones; i++)
 	{
 		for (unsigned int j = 0; j < assimpMesh->mBones[i]->mNumWeights; j++)
@@ -159,12 +159,12 @@ void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vec
 					numWeightsOnVertex[(int)vertId] += 1;
 				}
 				else
-					Logger::Log("Index not found in hierarchy", ERR);
+					LOGERROR("Index not found in hierarchy");
 			}
 		}
 	}
 
-	Logger::Log("Unindexing vertices");
+	LOG("Unindexing vertices");
 	for (unsigned int i = 0; i < assimpMesh->mNumFaces; i++)
 	{
 		for (unsigned int j = 0; j < 3; j++)
@@ -205,7 +205,7 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 	aiNodeAnim* nodeAnim = GetNodeAnimation(mesh->boneNames[node->index], assimpAnim);
 	if (nodeAnim == NULL)
 	{
-		Logger::Log("SaveAnimationSample bone not found id: ", node->index, ERR);
+		LOGERROR("SaveAnimationSample bone not found id: %d", node->index);
 		return;
 	}
 
@@ -253,8 +253,8 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 		float timeToCompare = (float)nodeAnim->mRotationKeys[i].mTime * samplesToTime;
 		if (timeToCompare < t) continue;
 
-		//Logger::Log("Processing rotKey at: ", t);
-		//Logger::Log("timeToCompare is: ", timeToCompare);
+		//LOG("Processing rotKey at: ", t);
+		//LOG("timeToCompare is: ", timeToCompare);
 
 		//desired keyframe found!
 		if (i > 0)
@@ -289,8 +289,8 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 		float timeToCompare = (float)nodeAnim->mScalingKeys[i].mTime * samplesToTime;
 		if (timeToCompare < t) continue;
 
-		//Logger::Log("Processing scaleKey at: ", t);
-		//Logger::Log("timeToCompare is: ", timeToCompare);
+		//LOG("Processing scaleKey at: ", t);
+		//LOG("timeToCompare is: ", timeToCompare);
 
 		//desired keyframe found!
 		if (i > 0)
@@ -393,11 +393,11 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	std::string extension = path.substr(path.find_last_of("."));
 	if (extension == ".dae")
 	{
-		Logger::Log("file is collada");
+		LOG("file is collada");
 	}
 	else if (extension == ".fbx")
 	{
-		Logger::Log("file is fbx");
+		LOG("file is fbx");
 		fbx = true;
 	}
 
@@ -410,12 +410,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 
 	if (err != "" || scene == NULL)
 	{
-		std::string msg = "error importing mesh at ";
-		std::string strErr(err);
-		msg += fullpath;
-		msg += " ";
-		msg += strErr;
-		Logger::Log(msg, ERR);
+		LOGERROR("error importing mesh at: %s", fullpath);
 		return;
 	}
 
@@ -425,17 +420,14 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	//check for all our restrictions
 	if (numBones >= mesh->maxBones)
 	{
-		std::string msg = ("Mesh with path : ");
-		msg += path;
-		msg += " has too much bones: ";
-		Logger::Log(msg.c_str(), numBones, ERR);
+		LOGERROR("Mesh at: %s has to much bones: %d", fullpath, numBones);
 		importer.FreeScene();
 		mesh->boneNames.clear();
 		return;
 	}
 
 	//BONES & NODES
-	Logger::Log("Loading Bones data ", numBones);
+	LOG("Loading Bones data %d", numBones);
 	mesh->boneMatrices.resize(numBones);
 	mesh->bindMatrices.resize(numBones);
 	mesh->invBindMatrices.resize(numBones);
@@ -452,7 +444,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 			std::string boneName = (currentMesh)->mBones[i]->mName.C_Str();
 			int index = mesh->GetBoneIndex(boneName);
 
-			Logger::Log(boneName);
+			LOG("%s", boneName);
 			Mat44 boneMat = toMat44((currentMesh)->mBones[i]->mOffsetMatrix);
 			boneMat.inverse();
 			mesh->bindMatrices[index] = boneMat;
@@ -461,7 +453,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		}
 	}
 
-	Logger::Log("Loading bone hierarchy data");
+	LOG("Loading bone hierarchy data");
 	std::vector<aiNode*> orderedNodes;
 	orderedNodes.resize(numBones);
 
@@ -472,13 +464,13 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		node = GetNodeRecursively(mesh->boneNames[i], scene->mRootNode);
 		if (node == NULL)
 		{
-			Logger::Log(mesh->boneNames[i] += " not found in hierarchy", ERR);
+			LOGERROR("bone: %s not found in hierarchy", mesh->boneNames[i]);
 			continue;
 		}
 
-		Logger::Log(mesh->boneNames[i]);
-		Logger::Log(node->mName.C_Str());
-		Logger::Log("Adding node ", i);
+		LOG(mesh->boneNames[i].c_str());
+		LOG(node->mName.C_Str());
+		LOG("Adding node %d", i);
 		Mat44 boneMat = toMat44(node->mTransformation);
 		mesh->boneMatrices[i] = boneMat;
 		orderedNodes[i] = node;
@@ -504,9 +496,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 				node->childIndices.push_back(childIndex);
 			else
 			{
-				std::string err = assimpNode->mChildren[j]->mName.C_Str();
-				err += " index not found: child will have index -1";
-				Logger::Log(err, ERR);
+				LOGERROR("index not found for: %s: will have index -1", assimpNode->mChildren[j]->mName.C_Str());
 			}
 		}
 	}
@@ -564,7 +554,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 
 	mesh->LogBoneHierarchy(&(mesh->nodes[0]));
 
-	Logger::Log("Sampling Animations");
+	LOG("Sampling Animations");
 	unsigned int numAnims = scene->mNumAnimations;
 	mesh->animations.resize(numAnims);
 	for (unsigned int i = 0; i < numAnims; i++)
@@ -573,12 +563,12 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		Animation* currentAnim = &mesh->animations[i];
 		if (currentAssimpAnim == NULL)
 		{
-			Logger::Log("Anim is null: ", i, ERR);
+			LOG("Anim is null: %d", i);
 			continue;
 		}
-		Logger::Log(currentAssimpAnim->mName.C_Str());
-		Logger::Log("assimp mTicksPerSecond: ", (float)currentAssimpAnim->mTicksPerSecond);
-		Logger::Log("assimp mDuration: ", (float)currentAssimpAnim->mDuration);
+		LOG(currentAssimpAnim->mName.C_Str());
+		LOG("assimp mTicksPerSecond: %f", currentAssimpAnim->mTicksPerSecond);
+		LOG("assimp mDuration: %f", currentAssimpAnim->mDuration);
 
 		currentAnim->name = currentAssimpAnim->mName.C_Str();
 		currentAnim->keyframes.resize(numBones);
@@ -588,8 +578,8 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		int numSamples = (int)std::floor(((float)mesh->samplesPerSecond * totalTimeSecs));
 		currentAnim->numSamples = numSamples;
 		currentAnim->samplesPerSecond = mesh->samplesPerSecond;
-		Logger::Log("currentAnim->ticksPerSecond: ", (float)currentAnim->samplesPerSecond);
-		Logger::Log("currentAnim->numSamples: ", (float)currentAnim->numSamples);
+		LOG("currentAnim->ticksPerSecond: %f", currentAnim->samplesPerSecond);
+		LOG("currentAnim->numSamples: %f", currentAnim->numSamples);
 
 		//reserve space for all samples
 		for (int j = 0; j < numBones; j++) currentAnim->keyframes[i].reserve(numSamples);
@@ -597,11 +587,11 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		//make all the samples
 		for (int j = 0; j < numSamples; j++)
 		{
-			Logger::Log("--- START SAMPLE ---", j);
+			LOG("--- START SAMPLE --- %d", j);
 			float currentTime = ((1.0f / mesh->samplesPerSecond) * j);
-			Logger::Log("CurrentTime: ", currentTime);
+			LOG("CurrentTime: %d", currentTime);
 			SaveAnimationSample(mesh, &(mesh->nodes[0]), currentAssimpAnim, currentAnim, currentTime, fbx);
-			Logger::Log("---- END SAMPLE ----", j);
+			LOG("---- END SAMPLE ---- %d", j);
 		}
 	}
 
@@ -617,12 +607,12 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 void loadASE(Mesh * mesh, const std::string & path)
 {
 	std::string fullpath = Path::GetPath(path);
-	Logger::Log("loading ASE Mesh: ", LOG);
+	LOG("loading ASE Mesh: %s", fullpath);
 
 	TextParser parser;
 	if (!parser.create(fullpath.c_str()))
 	{
-		Logger::Log(std::string("loadASE failed: no file found at: ") += fullpath, ERR);
+		LOGERROR("load failed: %s", fullpath);
 		return;
 	}
 
@@ -632,7 +622,7 @@ void loadASE(Mesh * mesh, const std::string & path)
 	int numfaces = parser.getint();
 
 	//parse verts
-	Logger::Log("parsing vertices ");
+	LOG("parsing vertices ");
 	std::vector<Vector3> allverts;
 	allverts.reserve(numverts);
 	parser.seek("*MESH_VERTEX_LIST");
@@ -648,7 +638,7 @@ void loadASE(Mesh * mesh, const std::string & path)
 	}
 
 	//parse faces
-	Logger::Log("parsing faces");
+	LOG("parsing faces");
 	parser.seek("*MESH_FACE_LIST");
 	mesh->verts.reserve(numfaces);
 	for (int i = 0; i < numfaces; i++)
@@ -669,7 +659,7 @@ void loadASE(Mesh * mesh, const std::string & path)
 	allverts.clear();
 
 	//parse uvs
-	Logger::Log("parsing uvs");
+	LOG("parsing uvs");
 	parser.seek("*MESH_NUMTVERTEX");
 	if (parser.eof()) return;
 
@@ -687,7 +677,7 @@ void loadASE(Mesh * mesh, const std::string & path)
 
 
 	//parse normals
-	Logger::Log("parsing normals");
+	LOG("parsing normals");
 	parser.seek("*MESH_NORMALS");
 	if (parser.eof()) return;
 
@@ -702,8 +692,9 @@ void loadASE(Mesh * mesh, const std::string & path)
 		n.z = (float)parser.getfloat();
 		mesh->normals[index] = n;
 	}
-	Logger::Log(std::string("numTotalVerts ") += (numfaces * 3));
-	Logger::Log(std::string("done loading: ") += path);
+
+	LOG("numTotalVerts %d", (numfaces * 3));
+	LOG("done loading: %s", fullpath);
 	//materials etc
 	mesh->InitGL();
 }

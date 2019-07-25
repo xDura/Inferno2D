@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
 #ifdef USE_GLEW
 	GLenum err = glewInit();
-	Logger::Log("Glew init returned: " + err);
+	LOG("Glew init returned: %s", err);
 #endif
 	
 	Game::Init(window, &glcontext);

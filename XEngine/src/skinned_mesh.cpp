@@ -111,7 +111,7 @@ void SkinnedMesh::LogBoneHierarchy(Node * node)
 	if (node->parentIndex != -1)
 		log += boneNames[node->parentIndex];
 
-	Logger::Log(log);
+	LOG(log.c_str());
 	for (unsigned int i = 0; i < node->childIndices.size(); i++)
 		LogBoneHierarchy(&nodes[node->childIndices[i]]);
 }

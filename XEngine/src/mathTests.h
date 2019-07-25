@@ -228,10 +228,6 @@ public:
 		Quaternion rot;
 		rot.fromMatrix(rotationMat);
 		Mat44 resultRotMat = rot.toMatrix();
-
-		Logger::Log(rotationMat.toString().c_str());
-		Logger::Log("*****");
-		Logger::Log(resultRotMat.toString().c_str());
 	}
 };
 

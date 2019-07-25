@@ -25,9 +25,7 @@ public:
 		// load and generate the texture
 
 		std::string fullpath = Path::GetPath(path);
-
-		std::cout << "loading texture from: " << fullpath.c_str() << std::endl;
-
+		LOG("loading texture from: %s", fullpath.c_str());
 		unsigned char *data = stbi_load(fullpath.c_str(), &width, &height, &numChannels, 0);
 		if (data)
 		{
@@ -38,8 +36,8 @@ public:
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 			glGenerateMipmap(GL_TEXTURE_2D);
-			std::cout << "load succesfull" << std::endl;
 
+			LOG("load succesfull");
 			//TEXTURES
 			//@TODO: study if we will need this data
 			//inside this class
@@ -49,7 +47,7 @@ public:
 		}
 		else
 		{
-			std::cout << "Failed to load texture" << std::endl;
+			LOGERROR("Failed to load texture at: %s ", fullpath);
 			return false;
 		}
 	}

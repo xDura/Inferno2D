@@ -3,69 +3,10 @@
 #include <iostream>
 #include <windows.h>
 #include <sstream> 
-
-enum LOG_TYPE
-{
-	VERBOSE = 0,
-	LOG = 1,
-	WARNING = 2,
-	ERR = 3,
-};
-
-class Logger
-{
-public:
-	static void Log(const char* log, LOG_TYPE type = LOG)
-	{
-		int color = 7;
-		switch (type)
-		{
-			case VERBOSE: 
-				color = 7;
-			break;
-			case LOG:
-				color = 7;
-			break;
-			case WARNING:
-				color = 6;
-			break;
-			case ERR: 
-				color = 4;
-			break;
-		}
-		
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hConsole, color);
-		std::cout << log << std::endl;
-		SetConsoleTextAttribute(hConsole, 7);
-	}
-
-	static void Log(const char* log, int n, LOG_TYPE type = LOG)
-	{
-		std::ostringstream ss;
-		ss << log << " " << n;
-		Log(ss.str().c_str(), type);
-	}
-
-	static void Log(const char* log, unsigned int n, LOG_TYPE type = LOG)
-	{
-		std::ostringstream ss;
-		ss << log << " " << n;
-		Log(ss.str().c_str(), type);
-	}
-
-	static void Log(const char* log, float n, LOG_TYPE type = LOG)
-	{
-		std::ostringstream ss;
-		ss << log << " " << n;
-		Log(ss.str().c_str(), type);
-	}
-
-	static void Log(std::string& log, LOG_TYPE type = LOG)
-	{
-		Log(log.c_str(), type);
-	}
-};
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include "debug.h"
 
 class Path
 {

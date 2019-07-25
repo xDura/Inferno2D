@@ -68,7 +68,7 @@ std::string getGPUStats()
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) //unsupported feature by driver
 	{
-		Logger::Log("Driver error, trying to getting VRAM info", ERR);
+		LOGERROR("Driver error, trying to getting VRAM info");
 		nTotalMemoryInKB = 0;
 		nCurAvailMemoryInKB = 0;
 	}
