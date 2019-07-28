@@ -48,6 +48,8 @@ bool deserializeString(std::string& s, FILE* file);
 bool serializeCharArray(const char* string, FILE* file);
 bool deserializeCharArray(char* string, FILE* file);
 
+void readAllFile(std::string& content, FILE* file);
+
 //this memory stats stuff is taken from javi agenjo's code
 //https://www.dtic.upf.edu/~jagenjo/?page_id=11
 #define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048

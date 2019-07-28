@@ -118,6 +118,20 @@ bool deserializeCharArray(char * string, FILE * file)
 	return true;
 }
 
+void readAllFile(std::string& content, FILE * file)
+{
+	int count;
+	fseek(file, 0, SEEK_END);
+	count = ftell(file);
+	rewind(file);
+
+	content.resize(count);
+	if (count > 0)
+	{
+		count = fread(&content[0], sizeof(char), count, file);
+	}
+}
+
 std::string getGPUStats()
 {
 	GLint nTotalMemoryInKB = 0;

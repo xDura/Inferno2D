@@ -2,6 +2,8 @@
 #include "opengl_defines.h"
 #include <cassert>
 #include "math.h"
+#include <iostream>
+#include "platform.h"
 
 const char* basic_line_shader_vertex =
 "#version 330 core\n"
@@ -28,31 +30,31 @@ const char* basic_line_shader_fragment =
 "	FragColor = vec4(v_color, 1.0);"
 "}";
 
-const char* basic_vertex_shader_texture =
-"#version 330 core\n"
-"layout (location = 0) in vec3 aPos;"
-"layout (location = 1) in vec2 aTexCoord;"
-"out vec2 TexCoord;"
-"uniform mat4 M;"
-""
-"void main()"
-"{"
-"	gl_Position = M * vec4(aPos, 1.0);"
-"	TexCoord = aTexCoord;"
-"}";
-
-const char* basic_fragment_shader_texture =
-"#version 330 core\n"
-"out vec4 FragColor;"
-""
-"in vec2 TexCoord;"
-""
-"uniform sampler2D texture1;"
-""
-"void main()"
-"{"
-"	FragColor = texture2D(texture1, TexCoord);"
-"}";
+//const char* basic_vertex_shader_texture =
+//"#version 330 core\n"
+//"layout (location = 0) in vec3 aPos;"
+//"layout (location = 1) in vec2 aTexCoord;"
+//"out vec2 TexCoord;"
+//"uniform mat4 M;"
+//""
+//"void main()"
+//"{"
+//"	gl_Position = M * vec4(aPos, 1.0);"
+//"	TexCoord = aTexCoord;"
+//"}";
+//
+//const char* basic_fragment_shader_texture =
+//"#version 330 core\n"
+//"out vec4 FragColor;"
+//""
+//"in vec2 TexCoord;"
+//""
+//"uniform sampler2D texture1;"
+//""
+//"void main()"
+//"{"
+//"	FragColor = texture2D(texture1, TexCoord);"
+//"}";
 
 const char* skinned_mesh_vertex_shader =
 "#version 330 core\n"
@@ -151,31 +153,31 @@ const char* basic_vertex_shader_texture_tiled =
 "	gl_Position = M * vec4(aPos, 1.0);"
 "	TexCoord = aTexCoord;"
 "}";
-
-const char* basic_fragment_shader_texture_tiled =
-"#version 330 core\n"
-"out vec4 FragColor;"
-""
-"in vec2 TexCoord;"
-"uniform vec2 tileSize;"
-"uniform sampler2D texture1;"
-"uniform int tileIndex;"
-"uniform bool invertX;"
-""
-"void main()"
-"{"
-"	float texCoordX = TexCoord.x;"
-"	if(invertX)"
-"		texCoordX = 1.0f - TexCoord.x;"
-"	vec2 newTexCoord = vec2(0.0, 0.0);"
-"	vec2 normalizedTileSize = vec2(1.0 / max(1.0, tileSize.x), 1.0 / max(1.0, tileSize.y));"
-"	int tileRow = tileIndex / int(tileSize.x);"
-"	int tileCol = tileIndex - ((tileRow - 1) * int(tileSize.x));"
-"	newTexCoord.x = (texCoordX * normalizedTileSize.x) + (tileCol * normalizedTileSize.x);"
-"	newTexCoord.y = (TexCoord.y * normalizedTileSize.y) + (((tileSize.y - 1.0f) - float(tileRow))* normalizedTileSize.y);"
-""
-"	FragColor = texture2D(texture1, newTexCoord);"
-"}";
+//
+//const char* basic_fragment_shader_texture_tiled =
+//"#version 330 core\n"
+//"out vec4 FragColor;"
+//""
+//"in vec2 TexCoord;"
+//"uniform vec2 tileSize;"
+//"uniform sampler2D texture1;"
+//"uniform int tileIndex;"
+//"uniform bool invertX;"
+//""
+//"void main()"
+//"{"
+//"	float texCoordX = TexCoord.x;"
+//"	if(invertX)"
+//"		texCoordX = 1.0f - TexCoord.x;"
+//"	vec2 newTexCoord = vec2(0.0, 0.0);"
+//"	vec2 normalizedTileSize = vec2(1.0 / max(1.0, tileSize.x), 1.0 / max(1.0, tileSize.y));"
+//"	int tileRow = tileIndex / int(tileSize.x);"
+//"	int tileCol = tileIndex - ((tileRow - 1) * int(tileSize.x));"
+//"	newTexCoord.x = (texCoordX * normalizedTileSize.x) + (tileCol * normalizedTileSize.x);"
+//"	newTexCoord.y = (TexCoord.y * normalizedTileSize.y) + (((tileSize.y - 1.0f) - float(tileRow))* normalizedTileSize.y);"
+//""
+//"	FragColor = texture2D(texture1, newTexCoord);"
+//"}";
 
 class Shader 
 {
@@ -184,8 +186,34 @@ public:
 	unsigned int vertex_id;
 	unsigned int fragment_id;
 
-	//@TODO: make constructor for shader files
-	Shader(const char* vertex, const char* pixel)
+	std::string vsFilePath;
+	std::string psFilePath;
+
+	void Load(const std::string& vsPath, const std::string& psPath)
+	{
+		FILE* vsFile;
+		FILE* psFile;
+		std::string fullpathVS = Path::GetPath(vsPath);
+		std::string fullpathPS = Path::GetPath(psPath);
+		fopen_s(&vsFile, fullpathVS.c_str(), "r");
+		fopen_s(&psFile, fullpathPS.c_str(), "r");
+		if (vsFile == NULL || psFile == NULL)
+		{
+			ASSERT(false);
+			LOGERROR("Error loading shader files at: %s, %s", fullpathVS.c_str(), fullpathPS.c_str());
+			return;
+		}
+		vsFilePath = vsPath;
+		psFilePath = psPath;
+
+		std::string fullvsContent;
+		std::string fullpsContent;
+		readAllFile(fullvsContent, vsFile);
+		readAllFile(fullpsContent, psFile);
+		Init(fullvsContent.c_str(), fullpsContent.c_str());
+	}
+
+	void Init(const char* vertex, const char* pixel)
 	{
 		//compile vert shader
 		vertex_id = glCreateShader(GL_VERTEX_SHADER);
@@ -200,7 +228,7 @@ public:
 		if (!v_success)
 		{
 			glGetShaderInfoLog(vertex_id, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+			LOGERROR("Error compiling vertex shader: %s \ninfoLog: %s", vertex, infoLog);
 		}
 		assert(v_success);
 		//***
@@ -216,7 +244,7 @@ public:
 		if (!f_success)
 		{
 			glGetShaderInfoLog(fragment_id, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+			LOGERROR("Error compiling fragment shader: %s \ninfoLog: %s", pixel, infoLog);
 		}
 		assert(f_success);
 		//****
@@ -233,7 +261,7 @@ public:
 		if (!final_sucess)
 		{
 			glGetProgramInfoLog(id, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+			LOGERROR("Error linking shader: %s \ninfoLog: %s", vertex, infoLog);
 		}
 		assert(final_sucess);
 		//*****

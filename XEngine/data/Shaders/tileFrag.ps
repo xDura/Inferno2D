@@ -1,0 +1,23 @@
+#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoord;
+uniform vec2 tileSize;
+uniform sampler2D texture1;
+uniform int tileIndex;
+uniform bool invertX;
+
+void main()
+{
+	float texCoordX = TexCoord.x;
+	if(invertX)
+		texCoordX = 1.0f - TexCoord.x;
+	vec2 newTexCoord = vec2(0.0, 0.0);
+	vec2 normalizedTileSize = vec2(1.0 / max(1.0, tileSize.x), 1.0 / max(1.0, tileSize.y));
+	int tileRow = tileIndex / int(tileSize.x);
+	int tileCol = tileIndex - ((tileRow - 1) * int(tileSize.x));
+	newTexCoord.x = (texCoordX * normalizedTileSize.x) + (tileCol * normalizedTileSize.x);
+	newTexCoord.y = (TexCoord.y * normalizedTileSize.y) + (((tileSize.y - 1.0f) - float(tileRow))* normalizedTileSize.y);
+
+	FragColor = texture2D(texture1, newTexCoord);
+}

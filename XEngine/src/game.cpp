@@ -12,7 +12,6 @@ Mesh debugLines;
 Camera* camera;
 Texture* tex;
 Shader* lineShader;
-Shader* skinnedMeshShader;
 Shader* tiledShader;
 Shader* simpleShader;
 ImguiLayer* imguiLayer;
@@ -50,10 +49,12 @@ void Game::StartUp()
 {
 	Input::Init(window);
 
-	lineShader = new Shader(basic_line_shader_vertex, basic_line_shader_fragment);
-	simpleShader = new Shader(basic_vertex_shader_texture, basic_fragment_shader_texture);
-	skinnedMeshShader = new Shader(skinned_mesh_vertex_shader_color, skinned_mesh_fragment_shader_color);
-	tiledShader = new Shader(basic_vertex_shader_texture_tiled, basic_fragment_shader_texture_tiled);
+	//lineShader = new Shader();
+	//lineShader->Load(basic_line_shader_vertex, basic_line_shader_fragment);
+	simpleShader = new Shader();
+	simpleShader->Load("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
+	tiledShader = new Shader();
+	tiledShader->Load("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
 
 	tex = new Texture();
 	tex->load("data/Sprites/DinoSprites_doux.png");
