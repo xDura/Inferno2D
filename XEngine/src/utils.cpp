@@ -58,6 +58,66 @@ bool drawText(float x, float y, std::string text, Vector3 c, float scale, int wi
 	return true;
 }
 
+bool serializeString(std::string & s, FILE * file)
+{
+	if (file == NULL) return false;
+
+	int size = s.size();
+	fwrite(&size, sizeof(int), 1, file);
+	if (size != 0) 
+	{
+
+		int totalWrites = fwrite(&s, sizeof(char), size, file);
+		return totalWrites == size;
+	}
+	return true;
+}
+
+bool deserializeString(std::string & s, FILE * file)
+{
+	if (file == NULL) return false;
+
+	int size = 0;
+	fread(&size, sizeof(int), 1, file);
+	s.resize(size, 'c');
+	if (size != 0) 
+	{
+		int totalReads = fread(&s, sizeof(char), size, file);
+		return totalReads == size;
+	}
+	return true;
+}
+
+bool serializeCharArray(const char * string, FILE * file)
+{
+	if (file == NULL) return false;
+
+	int size = strlen(string);
+	fwrite(&size, sizeof(int), 1, file);
+	if (size != 0)
+	{
+
+		int totalWrites = fwrite(&string, sizeof(char), size, file);
+		return totalWrites == size;
+	}
+	return true;
+}
+
+bool deserializeCharArray(char * string, FILE * file)
+{
+	if (file == NULL) return false;
+
+	int size = 0;
+	fread(&size, sizeof(int), 1, file);
+	string = new char[size];
+	if (size != 0)
+	{
+		int totalReads = fread(&string, sizeof(char), size, file);
+		return totalReads == size;
+	}
+	return true;
+}
+
 std::string getGPUStats()
 {
 	GLint nTotalMemoryInKB = 0;

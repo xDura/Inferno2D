@@ -3,20 +3,6 @@
 #include <cassert>
 #include "math.h"
 
-//const char *basic_vertex_shader =
-//"layout (location = 0) in vec3 aPos; "
-//"void main()"
-//"{"
-//"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);"
-//"}";
-//
-//const char* basic_fragment_shader =
-//"out vec4 FragColor;"
-//"void main()"
-//"{"
-//"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
-//"}";
-
 const char* basic_line_shader_vertex =
 "#version 330 core\n"
 "layout(location = 0) in vec3 aPos;"
@@ -153,6 +139,44 @@ const char* skinned_mesh_fragment_shader_color =
 "	FragColor = vec4(vertColor, 1.0f);"
 "}";
 
+const char* basic_vertex_shader_texture_tiled =
+"#version 330 core\n"
+"layout (location = 0) in vec3 aPos;"
+"layout (location = 1) in vec2 aTexCoord;"
+"out vec2 TexCoord;"
+"uniform mat4 M;"
+""
+"void main()"
+"{"
+"	gl_Position = M * vec4(aPos, 1.0);"
+"	TexCoord = aTexCoord;"
+"}";
+
+const char* basic_fragment_shader_texture_tiled =
+"#version 330 core\n"
+"out vec4 FragColor;"
+""
+"in vec2 TexCoord;"
+"uniform vec2 tileSize;"
+"uniform sampler2D texture1;"
+"uniform int tileIndex;"
+"uniform bool invertX;"
+""
+"void main()"
+"{"
+"	float texCoordX = TexCoord.x;"
+"	if(invertX)"
+"		texCoordX = 1.0f - TexCoord.x;"
+"	vec2 newTexCoord = vec2(0.0, 0.0);"
+"	vec2 normalizedTileSize = vec2(1.0 / max(1.0, tileSize.x), 1.0 / max(1.0, tileSize.y));"
+"	int tileRow = tileIndex / int(tileSize.x);"
+"	int tileCol = tileIndex - ((tileRow - 1) * int(tileSize.x));"
+"	newTexCoord.x = (texCoordX * normalizedTileSize.x) + (tileCol * normalizedTileSize.x);"
+"	newTexCoord.y = (TexCoord.y * normalizedTileSize.y) + (((tileSize.y - 1.0f) - float(tileRow))* normalizedTileSize.y);"
+""
+"	FragColor = texture2D(texture1, newTexCoord);"
+"}";
+
 class Shader 
 {
 public:
@@ -220,6 +244,13 @@ public:
 		int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
 		assert(uniformLoc != -1);
 		glUniform1i(uniformLoc, value);
+	}
+
+	void SetBool(const std::string& parameterName, bool b) const
+	{
+		int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+		assert(uniformLoc != -1);
+		glUniform1i(uniformLoc, b);
 	}
 
 	void SetFloat(const std::string& parameterName, const float& value) const

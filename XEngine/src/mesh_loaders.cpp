@@ -699,6 +699,114 @@ void loadASE(Mesh * mesh, const std::string & path)
 	mesh->InitGL();
 }
 
+void SaveBinary(SkinnedMesh * mesh, const char* path)
+{
+	FILE *fp;
+	std::string fullpath = Path::GetPath(path);
+	remove(fullpath.c_str());
+	fopen_s(&fp, fullpath.c_str(), "wb+");
+
+	serializeVector(mesh->verts, fp);
+	serializeVector(mesh->normals, fp);
+	serializeVector(mesh->uvs, fp);
+	serializeVector(mesh->colors, fp);
+	serializeVector(mesh->boneIds, fp);
+	serializeVector(mesh->weights, fp);
+
+	int numBones = mesh->boneNames.size();
+	fwrite(&numBones, sizeof(int), 1, fp);
+	for (int i = 0; i < numBones; i++)
+		serializeString(mesh->boneNames[i], fp);
+
+	for (int i = 0; i < numBones; i++)
+	{
+		fwrite(&(mesh->nodes[i].parentIndex), sizeof(int), 1, fp);
+		fwrite(&(mesh->nodes[i].index), sizeof(int), 1, fp);
+		serializeVector(mesh->nodes[i].childIndices, fp);
+	}
+
+	serializeVector(mesh->boneMatrices, fp);
+	serializeVector(mesh->bindMatrices, fp);
+	serializeVector(mesh->invBindMatrices, fp);
+
+	int numAnims = mesh->animations.size();
+	fwrite(&numAnims, sizeof(int), 1, fp);
+
+	for (int i = 0; i < numAnims; i++)
+	{
+		Animation animation = mesh->animations[i];
+		serializeCharArray(animation.name, fp);
+		fwrite(&(animation.samplesPerSecond), sizeof(double), 1, fp);
+		fwrite(&(animation.numSamples), sizeof(int), 1, fp);
+
+		for (size_t i = 0; i < animation.keyframes.size(); i++)
+			serializeVector(animation.keyframes[i], fp);
+	}
+	fclose(fp);
+}
+
+void LoadBinary(SkinnedMesh* mesh, const char* path)
+{
+	std::string fullpath = Path::GetPath(path);
+
+	FILE *fp;
+	fopen_s(&fp, fullpath.c_str(), "rb");
+
+	size_t lastRead = 0;
+	//TODO: set a flag that tells what kind of asset it is
+	deserializeVector(mesh->verts, fp);
+	deserializeVector(mesh->normals, fp);
+	deserializeVector(mesh->uvs, fp);
+	deserializeVector(mesh->colors, fp);
+	deserializeVector(mesh->boneIds, fp);
+	deserializeVector(mesh->weights, fp);
+
+	int numBones = 0;
+	lastRead = fread(&numBones, sizeof(int), 1, fp);
+	mesh->boneNames.resize(numBones);
+	for (int i = 0; i < numBones; i++)
+		deserializeString(mesh->boneNames[i], fp);
+
+	mesh->nodes.resize(numBones);
+	for (int i = 0; i < numBones; i++)
+	{
+		fread(&(mesh->nodes[i].parentIndex), sizeof(int), 1, fp);
+		fread(&(mesh->nodes[i].index), sizeof(int), 1, fp);
+		deserializeVector(mesh->nodes[i].childIndices, fp);
+	}
+
+	deserializeVector(mesh->boneMatrices, fp);
+	deserializeVector(mesh->bindMatrices, fp);
+	deserializeVector(mesh->invBindMatrices, fp);
+
+	int numAnims = 0;
+	fread(&numAnims, sizeof(int), 1, fp);
+	mesh->animations.resize(numAnims);
+	for (int i = 0; i < numAnims; i++)
+	{
+		//std::string name = "";
+		char* name = NULL;
+		deserializeCharArray(name, fp);
+		mesh->animations[i].name = name;
+		double samplesPerSec = 0;
+		fread(&samplesPerSec, sizeof(double), 1, fp);
+		mesh->animations[i].samplesPerSecond = samplesPerSec;
+		int numSamples = 0;
+		fread(&numSamples, sizeof(int), 1, fp);
+		mesh->animations[i].numSamples = numSamples;
+
+		mesh->animations[i].keyframes.resize(numBones);
+		for (int j = 0; j < numBones; j++)
+			deserializeVector(mesh->animations[i].keyframes[j], fp);
+	}
+	fclose(fp);
+
+	mesh->currentPoseModelToBoneMatrices.resize(numBones);
+	mesh->SetBindPose();
+	mesh->InitGL();
+	mesh->InitBonesGL();
+}
+
 void generateQuad(Mesh * mesh, Vector3 color)
 {
 	mesh->verts.resize(6);

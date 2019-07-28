@@ -3,27 +3,6 @@
 #include <vector>
 #include <map>
 
-struct PositionKeyFrame
-{
-public:
-	double time;
-	Vector3 value;
-};
-
-struct RotationKeyFrame
-{
-public:
-	double time;
-	Quaternion value;
-};
-
-struct ScaleKeyFrame
-{
-public:
-	double time;
-	Vector3 value;
-};
-
 struct BoneKeyFrame
 {
 public:
@@ -32,7 +11,6 @@ public:
 	Quaternion rot;
 	Vector3 scale;
 };
-
 
 class Animation
 {

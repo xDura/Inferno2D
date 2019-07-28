@@ -17,10 +17,18 @@ void ImguiLayer::RenderAnimationMenu()
 {
 	int windowFlags = 0;
 	bool b = true;
-	if (!ImGui::Begin("Animation Window", &b, windowFlags))
+	if (!ImGui::Begin("Tile stuff window", &b, windowFlags))
 	{}
-	float f = 0.0f;
-	ImGui::SliderFloat("playback speed", &f, -1.0f, 1.0f, "%.2f", 1.0f);
+
+	ImGui::SliderInt("TileSizeX", &Game::tileSizeX, 1, 24, "%.2f");
+	ImGui::SliderInt("TileSizeY", &Game::tileSizeY, 1, 24, "%.2f");
+	ImGui::InputInt("TileIndex", &Game::animator.currentFrameIndex, 1);
+	ImGui::InputFloat("normalizedTime", &Game::animator.normalizedTime, 1);
+	ImGui::InputFloat("totalSeconds", &Game::animator.currentAnimation->totalSeconds, 1);
+	ImGui::InputInt("totalFrames", &Game::animator.currentAnimation->totalFrames, 1);
+	ImGui::InputInt("AnimationStart", &Game::animation.startIndex, 1);
+	ImGui::InputInt("AnimationEnd", &Game::animation.endIndex, 1);
+	ImGui::SliderFloat("FramesPerSec", &Game::animation.framesPerSecond, 0, 10, "%.2f", 1);
 	ImGui::End();
 }
 

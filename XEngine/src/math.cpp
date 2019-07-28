@@ -8,7 +8,7 @@ float randomFloat(float range)
 #pragma region VECTOR2
 
 const Vector2 Vector2::zero = Vector2();
-const Vector2 Vector2::one = Vector2(1.0, 1.0);
+const Vector2 Vector2::one = Vector2(1.0f, 1.0f);
 
 Vector2::Vector2(float values[2])
 {

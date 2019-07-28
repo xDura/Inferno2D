@@ -37,5 +37,7 @@ void loadAssimp(SkinnedMesh* mesh, const std::string& path);
 #pragma endregion
 
 void loadASE(Mesh* mesh, const std::string& path);
-void generateQuad(Mesh* mesh, Vector3 color);
 void generateQuad(Mesh* mesh);
+void generateQuad(Mesh* mesh, Vector3 color);
+void SaveBinary(SkinnedMesh* mesh, const char* path);
+void LoadBinary(SkinnedMesh* mesh, const char* path);

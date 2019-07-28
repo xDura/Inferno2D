@@ -26,6 +26,11 @@ static float clamp(float value, float min, float max)
 	return ((std::min)(((std::max)(value, min)), max));
 }
 
+static float clamp(int value, int min, int max)
+{
+	return ((std::min)(((std::max)(value, min)), max));
+}
+
 class Vector2 
 {
 public:
