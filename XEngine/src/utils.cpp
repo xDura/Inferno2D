@@ -16,7 +16,7 @@ void SetGreatestWeights(Vector4 & weights, Vector4 & boneIds, float newWeight, i
 	}
 }
 
-bool drawText(float x, float y, std::string text, Vector3 c, float scale, int window_width, int window_height)
+bool DebugDrawText(float x, float y, std::string text, Vector3 c, float scale, int window_width, int window_height)
 {
 	static char buffer[99999]; // ~500 chars
 	int num_quads;
@@ -58,22 +58,22 @@ bool drawText(float x, float y, std::string text, Vector3 c, float scale, int wi
 	return true;
 }
 
-bool serializeString(std::string & s, FILE * file)
+bool SerializeString(std::string & s, FILE * file)
 {
 	if (file == NULL) return false;
 
-	int size = s.size();
+	int size = (int)s.size();
 	fwrite(&size, sizeof(int), 1, file);
 	if (size != 0) 
 	{
 
-		int totalWrites = fwrite(&s, sizeof(char), size, file);
+		int totalWrites = (int)fwrite(&s, sizeof(char), size, file);
 		return totalWrites == size;
 	}
 	return true;
 }
 
-bool deserializeString(std::string & s, FILE * file)
+bool DeserializeString(std::string & s, FILE * file)
 {
 	if (file == NULL) return false;
 
@@ -82,28 +82,28 @@ bool deserializeString(std::string & s, FILE * file)
 	s.resize(size, 'c');
 	if (size != 0) 
 	{
-		int totalReads = fread(&s, sizeof(char), size, file);
+		int totalReads = (int)fread(&s, sizeof(char), size, file);
 		return totalReads == size;
 	}
 	return true;
 }
 
-bool serializeCharArray(const char * string, FILE * file)
+bool SerializeCharArray(const char * string, FILE * file)
 {
 	if (file == NULL) return false;
 
-	int size = strlen(string);
+	int size = (int)strlen(string);
 	fwrite(&size, sizeof(int), 1, file);
 	if (size != 0)
 	{
 
-		int totalWrites = fwrite(&string, sizeof(char), size, file);
+		int totalWrites = (int)fwrite(&string, sizeof(char), size, file);
 		return totalWrites == size;
 	}
 	return true;
 }
 
-bool deserializeCharArray(char * string, FILE * file)
+bool DeserializeCharArray(char * string, FILE * file)
 {
 	if (file == NULL) return false;
 
@@ -112,13 +112,13 @@ bool deserializeCharArray(char * string, FILE * file)
 	string = new char[size];
 	if (size != 0)
 	{
-		int totalReads = fread(&string, sizeof(char), size, file);
+		int totalReads = (int)fread(&string, sizeof(char), size, file);
 		return totalReads == size;
 	}
 	return true;
 }
 
-void readAllFile(std::string& content, FILE * file)
+void ReadAllFile(std::string& content, FILE * file)
 {
 	int count;
 	fseek(file, 0, SEEK_END);
@@ -128,7 +128,7 @@ void readAllFile(std::string& content, FILE * file)
 	content.resize(count);
 	if (count > 0)
 	{
-		count = fread(&content[0], sizeof(char), count, file);
+		count = (int)fread(&content[0], sizeof(char), count, file);
 	}
 }
 

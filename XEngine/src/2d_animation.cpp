@@ -11,7 +11,7 @@ void SpriteAnimator::Update(float delta)
 	else
 		normalizedTime = clamp(normalizedTime, 0.0f, 1.0f);
 
-	int frameNumber = normalizedTime * currentAnimation->totalSeconds;
+	int frameNumber = (int)(normalizedTime * currentAnimation->totalSeconds);
 	currentFrameIndex = currentAnimation->startIndex + frameNumber;
 	currentFrameIndex = clamp(currentFrameIndex, currentAnimation->startIndex, currentAnimation->endIndex);
 }

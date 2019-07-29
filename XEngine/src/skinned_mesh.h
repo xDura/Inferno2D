@@ -1,20 +1,6 @@
 #pragma once
 #include "mesh.h"
-
-//TODO: remove this from here as 
-//soon as skinnedMeshes are extracted from here
-#include "animation.h"
-
-//
-#pragma region assimp
-#include "..\include\assimp\postprocess.h"
-#include "..\include\assimp\cimport.h"
-#include "..\include\assimp\Importer.hpp"
-#include "..\include\assimp\scene.h"
-#include "..\include\assimp\DefaultLogger.hpp"
-#include "..\include\assimp\Logger.hpp" 
-#include "..\include\assimp\anim.h" 
-#pragma endregion
+#include "3d_animation.h"
 
 class Node
 {

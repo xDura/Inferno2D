@@ -19,6 +19,9 @@
     <Filter Include="Source Files\External\Imgui">
       <UniqueIdentifier>{8120acbe-27f7-47b9-b72a-92f6af222ff9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Collision">
+      <UniqueIdentifier>{d85b6650-5ac6-45ef-b8ec-07a2ebc9301b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
@@ -75,6 +78,12 @@
     <ClCompile Include="..\..\src\2d_animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Collision\collider.cpp">
+      <Filter>Source Files\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\math.h">
@@ -122,9 +131,6 @@
     <ClInclude Include="..\..\src\External\stb_easy_font.h">
       <Filter>Source Files\External</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\animation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imconfig.h">
       <Filter>Source Files\External\Imgui</Filter>
     </ClInclude>
@@ -163,6 +169,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\2d_animation.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\3d_animation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Collision\collider.h">
+      <Filter>Source Files\Collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

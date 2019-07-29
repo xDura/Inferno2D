@@ -13,7 +13,7 @@ void ImguiLayer::Init(SDL_Window * a_window, SDL_GLContext * a_context)
 	ImGui_ImplOpenGL2_Init();
 }
 
-void ImguiLayer::RenderAnimationMenu()
+void ImguiLayer::RenderTilemapMenu()
 {
 	int windowFlags = 0;
 	bool b = true;
@@ -22,7 +22,7 @@ void ImguiLayer::RenderAnimationMenu()
 
 	ImGui::SliderInt("TileSizeX", &Game::tileSizeX, 1, 24, "%.2f");
 	ImGui::SliderInt("TileSizeY", &Game::tileSizeY, 1, 24, "%.2f");
-	ImGui::InputInt("TileIndex", &Game::animator.currentFrameIndex, 1);
+	ImGui::InputInt("currentFrameIndex", &Game::animator.currentFrameIndex, 1);
 	ImGui::InputFloat("normalizedTime", &Game::animator.normalizedTime, 1);
 	ImGui::InputFloat("totalSeconds", &Game::animator.currentAnimation->totalSeconds, 1);
 	ImGui::InputInt("totalFrames", &Game::animator.currentAnimation->totalFrames, 1);
@@ -39,8 +39,7 @@ void ImguiLayer::OnPreRender()
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 	bool b = true;
-	RenderAnimationMenu();
-	//ImGui::ShowDemoWindow(&b);
+	RenderTilemapMenu();
 }
 
 void ImguiLayer::OnEvent(const SDL_Event& evnt)

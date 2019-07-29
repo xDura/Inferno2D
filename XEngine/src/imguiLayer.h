@@ -12,6 +12,6 @@ public:
 	void OnEvent(const SDL_Event& evnt);
 	void OnPostRender();
 	void ShutDown();
-	void RenderAnimationMenu();
+	void RenderTilemapMenu();
 	SDL_Window* window = NULL;
 };

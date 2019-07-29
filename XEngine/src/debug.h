@@ -13,7 +13,7 @@
 #define LOG(...) void(0)
 #endif
 
-constexpr auto MAX_LOG_LEN = 400;
+constexpr auto MAX_LOG_LEN = 1000;
 
 class Logger
 {
@@ -23,7 +23,7 @@ public:
 		va_list args;
 		va_start(args, format);
 		char msg[MAX_LOG_LEN];
-		vsnprintf(msg, MAX_LOG_LEN, format, args);
+		vsnprintf(msg, (MAX_LOG_LEN - 2), format, args);
 		strcat_s(msg, sizeof(msg), "\n");
 		vprintf(msg, args);
 		va_end(args);
@@ -38,7 +38,7 @@ public:
 		va_list args;
 		va_start(args, format);
 		char msg[MAX_LOG_LEN];
-		vsnprintf(msg, MAX_LOG_LEN, format, args);
+		vsnprintf(msg, (MAX_LOG_LEN - 2), format, args);
 		strcat_s(msg, sizeof(msg), "\n");
 		vprintf(msg, args);
 		va_end(args);
@@ -56,7 +56,7 @@ public:
 		va_list args;
 		va_start(args, format);
 		char msg[MAX_LOG_LEN];
-		vsnprintf(msg, MAX_LOG_LEN, format, args);
+		vsnprintf(msg, (MAX_LOG_LEN - 2), format, args);
 		strcat_s(msg, sizeof(msg), "\n");
 		vprintf(msg, args);
 		va_end(args);

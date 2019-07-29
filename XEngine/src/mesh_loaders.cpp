@@ -706,41 +706,41 @@ void SaveBinary(SkinnedMesh * mesh, const char* path)
 	remove(fullpath.c_str());
 	fopen_s(&fp, fullpath.c_str(), "wb+");
 
-	serializeVector(mesh->verts, fp);
-	serializeVector(mesh->normals, fp);
-	serializeVector(mesh->uvs, fp);
-	serializeVector(mesh->colors, fp);
-	serializeVector(mesh->boneIds, fp);
-	serializeVector(mesh->weights, fp);
+	SerializeVector(mesh->verts, fp);
+	SerializeVector(mesh->normals, fp);
+	SerializeVector(mesh->uvs, fp);
+	SerializeVector(mesh->colors, fp);
+	SerializeVector(mesh->boneIds, fp);
+	SerializeVector(mesh->weights, fp);
 
-	int numBones = mesh->boneNames.size();
+	int numBones = (int)mesh->boneNames.size();
 	fwrite(&numBones, sizeof(int), 1, fp);
 	for (int i = 0; i < numBones; i++)
-		serializeString(mesh->boneNames[i], fp);
+		SerializeString(mesh->boneNames[i], fp);
 
 	for (int i = 0; i < numBones; i++)
 	{
 		fwrite(&(mesh->nodes[i].parentIndex), sizeof(int), 1, fp);
 		fwrite(&(mesh->nodes[i].index), sizeof(int), 1, fp);
-		serializeVector(mesh->nodes[i].childIndices, fp);
+		SerializeVector(mesh->nodes[i].childIndices, fp);
 	}
 
-	serializeVector(mesh->boneMatrices, fp);
-	serializeVector(mesh->bindMatrices, fp);
-	serializeVector(mesh->invBindMatrices, fp);
+	SerializeVector(mesh->boneMatrices, fp);
+	SerializeVector(mesh->bindMatrices, fp);
+	SerializeVector(mesh->invBindMatrices, fp);
 
-	int numAnims = mesh->animations.size();
+	int numAnims = (int)mesh->animations.size();
 	fwrite(&numAnims, sizeof(int), 1, fp);
 
 	for (int i = 0; i < numAnims; i++)
 	{
 		Animation animation = mesh->animations[i];
-		serializeCharArray(animation.name, fp);
+		SerializeCharArray(animation.name, fp);
 		fwrite(&(animation.samplesPerSecond), sizeof(double), 1, fp);
 		fwrite(&(animation.numSamples), sizeof(int), 1, fp);
 
 		for (size_t i = 0; i < animation.keyframes.size(); i++)
-			serializeVector(animation.keyframes[i], fp);
+			SerializeVector(animation.keyframes[i], fp);
 	}
 	fclose(fp);
 }
@@ -754,30 +754,30 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 
 	size_t lastRead = 0;
 	//TODO: set a flag that tells what kind of asset it is
-	deserializeVector(mesh->verts, fp);
-	deserializeVector(mesh->normals, fp);
-	deserializeVector(mesh->uvs, fp);
-	deserializeVector(mesh->colors, fp);
-	deserializeVector(mesh->boneIds, fp);
-	deserializeVector(mesh->weights, fp);
+	DeserializeVector(mesh->verts, fp);
+	DeserializeVector(mesh->normals, fp);
+	DeserializeVector(mesh->uvs, fp);
+	DeserializeVector(mesh->colors, fp);
+	DeserializeVector(mesh->boneIds, fp);
+	DeserializeVector(mesh->weights, fp);
 
 	int numBones = 0;
 	lastRead = fread(&numBones, sizeof(int), 1, fp);
 	mesh->boneNames.resize(numBones);
 	for (int i = 0; i < numBones; i++)
-		deserializeString(mesh->boneNames[i], fp);
+		DeserializeString(mesh->boneNames[i], fp);
 
 	mesh->nodes.resize(numBones);
 	for (int i = 0; i < numBones; i++)
 	{
 		fread(&(mesh->nodes[i].parentIndex), sizeof(int), 1, fp);
 		fread(&(mesh->nodes[i].index), sizeof(int), 1, fp);
-		deserializeVector(mesh->nodes[i].childIndices, fp);
+		DeserializeVector(mesh->nodes[i].childIndices, fp);
 	}
 
-	deserializeVector(mesh->boneMatrices, fp);
-	deserializeVector(mesh->bindMatrices, fp);
-	deserializeVector(mesh->invBindMatrices, fp);
+	DeserializeVector(mesh->boneMatrices, fp);
+	DeserializeVector(mesh->bindMatrices, fp);
+	DeserializeVector(mesh->invBindMatrices, fp);
 
 	int numAnims = 0;
 	fread(&numAnims, sizeof(int), 1, fp);
@@ -786,7 +786,7 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 	{
 		//std::string name = "";
 		char* name = NULL;
-		deserializeCharArray(name, fp);
+		DeserializeCharArray(name, fp);
 		mesh->animations[i].name = name;
 		double samplesPerSec = 0;
 		fread(&samplesPerSec, sizeof(double), 1, fp);
@@ -797,7 +797,7 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 
 		mesh->animations[i].keyframes.resize(numBones);
 		for (int j = 0; j < numBones; j++)
-			deserializeVector(mesh->animations[i].keyframes[j], fp);
+			DeserializeVector(mesh->animations[i].keyframes[j], fp);
 	}
 	fclose(fp);
 
@@ -810,22 +810,22 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 void generateQuad(Mesh * mesh, Vector3 color)
 {
 	mesh->verts.resize(6);
-	mesh->verts[0] = Vector3(-1.0f, -1.0f, 0.0f);
+	mesh->verts[0] = Vector3(1.0f, -1.0f, 0.0f);
 	mesh->verts[1] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[2] = Vector3(1.0f, -1.0f, 0.0f);
+	mesh->verts[2] = Vector3(-1.0f, -1.0f, 0.0f);
 
-	mesh->verts[3] = Vector3(1.0f, -1.0f, 0.0f);
+	mesh->verts[3] = Vector3(1.0f, 1.0f, 0.0f);
 	mesh->verts[4] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[5] = Vector3(1.0f, 1.0f, 0.0f);
+	mesh->verts[5] = Vector3(1.0f, -1.0f, 0.0f);
 
 	mesh->uvs.resize(6);
 	mesh->uvs[0] = Vector2(1.0f, 0.0f);
-	mesh->uvs[1] = Vector2(1.0f, 1.0f);
+	mesh->uvs[1] = Vector2(0.0f, 1.0f);
 	mesh->uvs[2] = Vector2(0.0f, 0.0f);
 
-	mesh->uvs[3] = Vector2(0.0f, 0.0f);
-	mesh->uvs[4] = Vector2(1.0f, 1.0f);
-	mesh->uvs[5] = Vector2(0.0f, 1.0f);
+	mesh->uvs[3] = Vector2(1.0f, 1.0f);
+	mesh->uvs[4] = Vector2(0.0f, 1.0f);
+	mesh->uvs[5] = Vector2(1.0f, 0.0f);
 
 	mesh->colors.resize(6);
 	mesh->colors[0] = color;
@@ -842,22 +842,22 @@ void generateQuad(Mesh * mesh, Vector3 color)
 void generateQuad(Mesh * mesh)
 {
 	mesh->verts.resize(6);
-	mesh->verts[0] = Vector3(-1.0f, -1.0f, 0.0f);
+	mesh->verts[0] = Vector3(1.0f, -1.0f, 0.0f);
 	mesh->verts[1] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[2] = Vector3(1.0f, -1.0f, 0.0f);
+	mesh->verts[2] = Vector3(-1.0f, -1.0f, 0.0f);
 
-	mesh->verts[3] = Vector3(1.0f, -1.0f, 0.0f);
+	mesh->verts[3] = Vector3(1.0f, 1.0f, 0.0f);
 	mesh->verts[4] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[5] = Vector3(1.0f, 1.0f, 0.0f);
+	mesh->verts[5] = Vector3(1.0f, -1.0f, 0.0f);
 
 	mesh->uvs.resize(6);
-	mesh->uvs[0] = Vector2(0.0f, 0.0f);
+	mesh->uvs[0] = Vector2(1.0f, 0.0f);
 	mesh->uvs[1] = Vector2(0.0f, 1.0f);
-	mesh->uvs[2] = Vector2(1.0f, 0.0f);
+	mesh->uvs[2] = Vector2(0.0f, 0.0f);
 
-	mesh->uvs[3] = Vector2(1.0f, 0.0f);
+	mesh->uvs[3] = Vector2(1.0f, 1.0f);
 	mesh->uvs[4] = Vector2(0.0f, 1.0f);
-	mesh->uvs[5] = Vector2(1.0f, 1.0f);
+	mesh->uvs[5] = Vector2(1.0f, 0.0f);
 
 	mesh->InitGL();
 }

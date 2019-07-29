@@ -88,7 +88,7 @@ void Game::StartUp()
 	model = Mat44();
 	model.setScale(Vector3(1.0f, 1.0f, 1.0f));
 
-	Vector3 camPos = Vector3(0.0f, 1.0f, -10.0f);
+	Vector3 camPos = Vector3(0.0f, 1.0f, 10.0f);
 	Vector3 camTarget = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 camUp = Vector3(0.0f, 1.0f, 0.0f);
 
@@ -134,7 +134,7 @@ void Game::Update(float deltaTime)
 	if (Input::state[SDL_SCANCODE_LEFT])
 	{
 		lookingRight = false;
-		Vector3 translation = Vector3(4.0f, 0.0f, 0.0f);
+		Vector3 translation = Vector3(-4.0f, 0.0f, 0.0f);
 		translation = translation * deltaTime;
 		model.translateLocal(translation);
 		if (animator.currentAnimation != &walkAnimation)
@@ -144,7 +144,7 @@ void Game::Update(float deltaTime)
 	else if (Input::state[SDL_SCANCODE_RIGHT])
 	{
 		lookingRight = true;
-		Vector3 translation = Vector3(-4.0f, 0.0f, 0.0f);
+		Vector3 translation = Vector3(4.0f, 0.0f, 0.0f);
 		translation = translation * deltaTime;
 		model.translateLocal(translation);
 		if (animator.currentAnimation != &walkAnimation)

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\2d_animation.cpp" />
+    <ClCompile Include="..\..\src\Collision\collider.cpp" />
     <ClCompile Include="..\..\src\External\imgui\imgui.cpp" />
     <ClCompile Include="..\..\src\External\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\src\External\imgui\imgui_draw.cpp" />
@@ -35,12 +36,14 @@
     <ClCompile Include="..\..\src\mesh.cpp" />
     <ClCompile Include="..\..\src\mesh_loaders.cpp" />
     <ClCompile Include="..\..\src\platform.cpp" />
+    <ClCompile Include="..\..\src\shader.cpp" />
     <ClCompile Include="..\..\src\skinned_mesh.cpp" />
     <ClCompile Include="..\..\src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\2d_animation.h" />
-    <ClInclude Include="..\..\src\animation.h" />
+    <ClInclude Include="..\..\src\3d_animation.h" />
+    <ClInclude Include="..\..\src\Collision\collider.h" />
     <ClInclude Include="..\..\src\debug.h" />
     <ClInclude Include="..\..\src\mesh_loaders.h" />
     <ClInclude Include="..\..\src\camera.h" />
