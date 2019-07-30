@@ -1,5 +1,7 @@
 #include "platform.h"
 
+void* Memory::gameMemory = NULL;
+
 const Uint8* Input::state = NULL;
 Uint8 Input::prevState[SDL_NUM_SCANCODES];
 
