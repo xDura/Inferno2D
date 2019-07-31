@@ -6,6 +6,8 @@
 #include "vector"
 #include <stdio.h>
 
+#define BIT(bit) 1 << bit;
+
 void SetGreatestWeights(Vector4& weights, Vector4& boneIds, float newWeight, int newBoneId);
 
 template<typename T>

@@ -53,6 +53,9 @@ void Game::StartUp()
 {
 	Input::Init(window);
 
+	unsigned int memsize = (unsigned int)10000;
+	void* m = Memory::AllocateGameMemory(memsize);
+
 	//lineShader = new Shader();
 	//lineShader->Load(basic_line_shader_vertex, basic_line_shader_fragment);
 	simpleShader = new Shader();

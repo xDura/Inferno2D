@@ -15,6 +15,17 @@ public:
 	static std::string GetPath(const std::string& relativePath);
 };
 
+class Memory
+{
+public:
+	static void* gameMemory;
+	static void* AllocateGameMemory(unsigned int size)
+	{
+		gameMemory = calloc(1, size);
+		return gameMemory;
+	}
+};
+
 class Time
 {
 public:
