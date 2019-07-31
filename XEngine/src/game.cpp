@@ -11,6 +11,7 @@
 Mesh debugLines;
 Camera* camera;
 Texture* tex;
+Texture* tileTex;
 Shader* lineShader;
 Shader* tiledShader;
 Shader* simpleShader;
@@ -19,8 +20,11 @@ ImguiLayer* imguiLayer;
 Mat44 model;
 
 Mesh quadMesh;
+std::vector<Mesh> levelTiles;
+std::vector<Mat44> levelTileTransforms;
 
 //static defs
+float Game::timeScale = 1.0f;
 bool Game::needsShutDown = false;
 int Game::tileSizeX = 24;
 int Game::tileSizeY = 1;
@@ -58,6 +62,9 @@ void Game::StartUp()
 
 	tex = new Texture();
 	tex->load("data/Sprites/DinoSprites_doux.png");
+	tileTex = new Texture();
+	tileTex->load("data/Sprites/tiles.png");
+
 	animator.currentAnimation = &idleAnimation;
 	animator.normalizedTime = 0.0f;
 	animator.currentFrameIndex = 0;
@@ -81,12 +88,22 @@ void Game::StartUp()
 
 	quadMesh = Mesh();
 	Vector3 size = Vector3(1.0f, 1.0f, 1.0f);
-	generateQuad(&quadMesh, size);
+	generateQuad(&quadMesh);
+
+	levelTiles.resize(10);
+	levelTileTransforms.resize(levelTiles.size());
+
+	for (size_t i = 0; i < levelTiles.size(); i++)
+		generateQuad(&levelTiles[i]);
+
+	for (size_t i = 0; i < levelTileTransforms.size(); i++)
+		levelTileTransforms[i].translateLocal((float)i * 2.0f, 0.0f, 0.0f);
+
 
 	//debugLines.InitLines();
 	//debugLines.ReserveLines();
 	model = Mat44();
-	model.setScale(Vector3(1.0f, 1.0f, 1.0f));
+	model.translateLocal(0.0f, 1.7f, 0.0f);
 
 	Vector3 camPos = Vector3(0.0f, 1.0f, 10.0f);
 	Vector3 camTarget = Vector3(0.0f, 1.0f, 0.0f);
@@ -100,6 +117,7 @@ void Game::StartUp()
 
 void Game::Update(float deltaTime)
 {
+	deltaTime *= timeScale;
 	Input::Update();
 
 	////******** MOVE THIS TO ONE OTHER PLACE : UPDATEINPUT **************
@@ -196,6 +214,7 @@ void Game::Update(float deltaTime)
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	tiledShader->enable();
 	tiledShader->SetTexture(tex->tex_id);
 	tiledShader->SetMat44("M", model * camera->viewProjectionMat);
@@ -206,6 +225,7 @@ void Game::Update(float deltaTime)
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glBindVertexArray(quadMesh.VAO);
@@ -217,6 +237,30 @@ void Game::Update(float deltaTime)
 
 	tiledShader->disable();
 
+	for (size_t i = 0; i < levelTiles.size(); i++)
+	{
+		tiledShader->enable();
+		tiledShader->SetTexture(tileTex->tex_id);
+		tiledShader->SetMat44("M", levelTileTransforms[i] * camera->viewProjectionMat);
+		Vector2 tileSize(8.0f, 5.0f);
+		tiledShader->SetVector2("tileSize", tileSize);
+		tiledShader->SetInt("tileIndex", 25);
+		tiledShader->SetBool("invertX", false);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendEquation(GL_FUNC_ADD);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glBindVertexArray(levelTiles[i].VAO);
+		glDrawArrays(GL_TRIANGLES, 0, levelTiles[i].length);
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+
+		tiledShader->disable();
+	}
 	//for (unsigned int i = 0; i < meshes.size(); i++)
 	//{
 	//	skinnedMeshShader->enable();

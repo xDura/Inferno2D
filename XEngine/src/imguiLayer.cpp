@@ -1,6 +1,10 @@
 #pragma once
 #include "imguiLayer.h"
 #include "game.h"
+#include "SDL2/SDL.h"
+
+bool ImguiLayer::showDebugMenu = false;
+bool ImguiLayer::showTilemapMenu = false;
 
 void ImguiLayer::Init(SDL_Window * a_window, SDL_GLContext * a_context)
 {
@@ -17,8 +21,12 @@ void ImguiLayer::RenderTilemapMenu()
 {
 	int windowFlags = 0;
 	bool b = true;
-	if (!ImGui::Begin("Tile stuff window", &b, windowFlags))
-	{}
+	if (!ImGui::Begin("Tile stuff window", &showTilemapMenu, windowFlags))
+	{
+		showTilemapMenu = false;
+		ImGui::End();
+		return;
+	}
 
 	ImGui::SliderInt("TileSizeX", &Game::tileSizeX, 1, 24, "%.2f");
 	ImGui::SliderInt("TileSizeY", &Game::tileSizeY, 1, 24, "%.2f");
@@ -32,18 +40,46 @@ void ImguiLayer::RenderTilemapMenu()
 	ImGui::End();
 }
 
+void ImguiLayer::RenderDebugMenu()
+{
+	int windowFlags = 0;
+	if (!ImGui::Begin("Debug Window", &showDebugMenu, windowFlags))
+	{
+		showDebugMenu = false;
+		ImGui::End();
+		return;
+	}
+
+	ImGui::SliderFloat("TimeScale", &Game::timeScale, 0, 10, "%.2f");
+	ImGui::End();
+}
+
 
 void ImguiLayer::OnPreRender()
 {
 	ImGui_ImplOpenGL2_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
-	bool b = true;
-	RenderTilemapMenu();
+
+	if (showDebugMenu) RenderDebugMenu();
+	if (showTilemapMenu) RenderTilemapMenu();
 }
 
 void ImguiLayer::OnEvent(const SDL_Event& evnt)
 {
+	if (evnt.type == SDL_KEYDOWN) 
+	{
+		switch (evnt.key.keysym.scancode)
+		{
+			case SDL_SCANCODE_INSERT:
+				showDebugMenu = !showDebugMenu;
+				break;
+			case SDL_SCANCODE_LEFTBRACKET:
+				showTilemapMenu = !showTilemapMenu;
+				break;
+		}
+	}
+	
 	ImGui_ImplSDL2_ProcessEvent(&evnt);
 }
 

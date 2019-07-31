@@ -13,5 +13,8 @@ public:
 	void OnPostRender();
 	void ShutDown();
 	void RenderTilemapMenu();
+	void RenderDebugMenu();
 	SDL_Window* window = NULL;
+	static bool showDebugMenu;
+	static bool showTilemapMenu;
 };

@@ -16,6 +16,7 @@ public:
 	static SDL_Window* window;
 	static SDL_GLContext* glContext;
 
+	static float timeScale;
 	static int tileSizeX;
 	static int tileSizeY;
 	static int tileIndex;

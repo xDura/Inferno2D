@@ -22,7 +22,6 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		stbi_set_flip_vertically_on_load(flipVertical);
-		// load and generate the texture
 
 		std::string fullpath = Path::GetPath(path);
 		LOG("loading texture from: %s", fullpath.c_str());
