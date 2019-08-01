@@ -40,6 +40,8 @@ SpriteAnimation walkAnimation;
 bool invertX = false;
 bool lookingRight = true;
 
+std::vector<int> ints;
+
 
 void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 {
@@ -52,6 +54,23 @@ void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 void Game::StartUp()
 {
 	Input::Init(window);
+
+	ints.resize(8000);
+	float oldTime = Time::GetTimeInSeconds();
+	for (size_t i = 0; i < ints.size(); i++)
+	{
+		int a = ints[i];
+	}
+	float newTime = Time::GetTimeInSeconds();
+	LOG("Time: %.6f", (newTime - oldTime));
+	int* a = &ints[0];
+	oldTime = Time::GetTimeInSeconds();
+	for (size_t i = 0; i < ints.size(); i++)
+	{
+		int b = *(a + i);
+	}
+	newTime = Time::GetTimeInSeconds();
+	LOG("Time2: %.6f", (newTime - oldTime));
 
 	/*unsigned int memsize = (unsigned int)10000;
 	void* m = Memory::AllocateGameMemory(memsize);*/

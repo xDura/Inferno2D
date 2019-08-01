@@ -40,6 +40,7 @@
     <ClCompile Include="..\..\src\mesh.cpp" />
     <ClCompile Include="..\..\src\mesh_loaders.cpp" />
     <ClCompile Include="..\..\src\platform.cpp" />
+    <ClCompile Include="..\..\src\pool.cpp" />
     <ClCompile Include="..\..\src\shader.cpp" />
     <ClCompile Include="..\..\src\skinned_mesh.cpp" />
     <ClCompile Include="..\..\src\utils.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="..\..\src\main.h" />
     <ClInclude Include="..\..\src\mesh.h" />
     <ClInclude Include="..\..\src\platform.h" />
+    <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\skinned_mesh.h" />
     <ClInclude Include="..\..\src\texture.h" />
     <ClInclude Include="..\..\src\math.h" />
