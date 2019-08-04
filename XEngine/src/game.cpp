@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "imguiLayer.h"
 #include "mesh_loaders.h"
+#include "pool.h"
 
 Mesh debugLines;
 Camera* camera;
@@ -55,22 +56,22 @@ void Game::StartUp()
 {
 	Input::Init(window);
 
-	ints.resize(8000);
-	float oldTime = Time::GetTimeInSeconds();
-	for (size_t i = 0; i < ints.size(); i++)
-	{
-		int a = ints[i];
-	}
-	float newTime = Time::GetTimeInSeconds();
-	LOG("Time: %.6f", (newTime - oldTime));
-	int* a = &ints[0];
-	oldTime = Time::GetTimeInSeconds();
-	for (size_t i = 0; i < ints.size(); i++)
-	{
-		int b = *(a + i);
-	}
-	newTime = Time::GetTimeInSeconds();
-	LOG("Time2: %.6f", (newTime - oldTime));
+	//ints.resize(8000);
+	//float oldTime = Time::GetTimeInSeconds();
+	//for (size_t i = 0; i < ints.size(); i++)
+	//{
+	//	int a = ints[i];
+	//}
+	//float newTime = Time::GetTimeInSeconds();
+	//LOG("Time: %.6f", (newTime - oldTime));
+	//int* a = &ints[0];
+	//oldTime = Time::GetTimeInSeconds();
+	//for (size_t i = 0; i < ints.size(); i++)
+	//{
+	//	int b = *(a + i);
+	//}
+	//newTime = Time::GetTimeInSeconds();
+	//LOG("Time2: %.6f", (newTime - oldTime));
 
 	/*unsigned int memsize = (unsigned int)10000;
 	void* m = Memory::AllocateGameMemory(memsize);*/

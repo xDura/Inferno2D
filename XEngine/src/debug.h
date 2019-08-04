@@ -1,5 +1,9 @@
 #pragma once
 #include <cassert>
+#include "stdarg.h"
+#if _WIN32
+#include "windows.h"
+#endif
 
 #ifdef _DEBUG
 #define ASSERT(exp) assert(exp)
