@@ -43,10 +43,11 @@ int main(int argc, char* argv[])
 
 	SDL_GLContext glcontext = SDL_GL_CreateContext(window);
 
-#ifdef USE_GLEW
-	GLenum err = glewInit();
-	LOG("Glew init returned: %s", err);
-#endif
+	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) 
+	{
+		LOG("Failed initializing GLAD opengl context");
+		return -1;
+	}
 	
 	Game::Init(window, &glcontext);
 	Game::StartUp();
