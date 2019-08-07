@@ -5,7 +5,6 @@
 
 bool ImguiLayer::showDebugMenu = false;
 bool ImguiLayer::showTilemapMenu = false;
-
 void ImguiLayer::Init(SDL_Window * a_window, SDL_GLContext * a_context)
 {
 	IMGUI_CHECKVERSION();
@@ -13,6 +12,11 @@ void ImguiLayer::Init(SDL_Window * a_window, SDL_GLContext * a_context)
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGui::StyleColorsDark();
+
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
 	ImGui_ImplSDL2_InitForOpenGL(a_window, a_context);
 	ImGui_ImplOpenGL2_Init();
 }
@@ -87,6 +91,14 @@ void ImguiLayer::OnPostRender()
 {
 	ImGui::Render();
 	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+	}
 }
 
 void ImguiLayer::ShutDown()

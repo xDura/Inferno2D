@@ -221,7 +221,6 @@ void Game::Update(float deltaTime)
 				{}
 				break;
 			case SDL_WINDOWEVENT: 
-
 				switch (event.window.event)
 				{
 					case SDL_WINDOWEVENT_RESIZED:
