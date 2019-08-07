@@ -3,8 +3,8 @@
 #include "opengl_defines.h"
 #include "platform.h"
 
-int defaultWindowWidth = 1000;
-int defaultWindowHeight = 800;
+int defaultWindowWidth = 1600;
+int defaultWindowHeight = 1000;
 
 int main(int argc, char* argv[])
 {
@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 		SDL_WINDOWPOS_UNDEFINED,           // initial y position
 		defaultWindowWidth,				   // width, in pixels
 		defaultWindowHeight,				// height, in pixels
-		SDL_WINDOW_OPENGL                  // flags - see below
+		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
 	);
 
 	// check for window creation error
@@ -48,6 +48,10 @@ int main(int argc, char* argv[])
 		LOG("Failed initializing GLAD opengl context");
 		return -1;
 	}
+
+	int windowWidth, windowHeight;
+	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+	glViewport(0, 0, windowWidth, windowHeight);
 	
 	Game::Init(window, &glcontext);
 	Game::StartUp();

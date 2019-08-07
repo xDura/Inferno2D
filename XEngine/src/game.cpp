@@ -209,21 +209,30 @@ void Game::Update(float deltaTime)
 	{
 		switch (event.type)
 		{
-		case SDL_KEYUP:
-			if (event.key.keysym.scancode == SDL_SCANCODE_0)
-			{}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_1)
-			{}
+			case SDL_KEYUP:
+				if (event.key.keysym.scancode == SDL_SCANCODE_0)
+				{}
+				else if (event.key.keysym.scancode == SDL_SCANCODE_1)
+				{}
 
-			if (event.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
-			{}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
-			{}
-		case SDL_WINDOWEVENT_RESIZED:
-			break;
-		case SDL_QUIT:
-			Game::needsShutDown = true;
-			break;
+				if (event.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
+				{}
+				else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
+				{}
+				break;
+			case SDL_WINDOWEVENT: 
+
+				switch (event.window.event)
+				{
+					case SDL_WINDOWEVENT_RESIZED:
+						glViewport(0, 0, event.window.data1, event.window.data2);
+						camera->SetPerspective(60.0f, (float)event.window.data1 / (float)event.window.data2, 0.1f, 10000.f);
+					break;
+				}
+				break;
+			case SDL_QUIT:
+				Game::needsShutDown = true;
+				break;
 		}
 		imguiLayer->OnEvent(event);
 	}
