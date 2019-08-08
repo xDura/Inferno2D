@@ -1,7 +1,7 @@
 #include "2d_animation.h"
 #include <math.h>
 
-void SpriteAnimator::Update(float delta)
+void SpriteAnimator2::Update(float delta)
 {
 	float normalizedTimeToAdvance = delta * currentAnimation->framesPerSecond;
 	normalizedTime += normalizedTimeToAdvance;

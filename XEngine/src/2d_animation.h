@@ -17,7 +17,7 @@ public:
 	bool loop;
 };
 
-class SpriteAnimator
+class SpriteAnimator2
 {
 public:
 	SpriteAnimation* currentAnimation;

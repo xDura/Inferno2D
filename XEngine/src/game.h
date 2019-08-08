@@ -21,5 +21,5 @@ public:
 	static int tileSizeY;
 	static int tileIndex;
 	static SpriteAnimation animation;
-	static SpriteAnimator animator;
+	static SpriteAnimator2 animator;
 };

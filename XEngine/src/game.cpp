@@ -8,6 +8,7 @@
 #include "imguiLayer.h"
 #include "mesh_loaders.h"
 #include "pool.h"
+#include "ECS/entity_manager.h"
 
 Mesh debugLines;
 Camera* camera;
@@ -33,7 +34,7 @@ int Game::tileIndex = 1;
 SDL_Window* Game::window = NULL;
 SDL_GLContext* Game::glContext = NULL;
 SpriteAnimation Game::animation;
-SpriteAnimator Game::animator;
+SpriteAnimator2 Game::animator;
 
 //Test dinos
 SpriteAnimation idleAnimation;
@@ -43,6 +44,8 @@ bool lookingRight = true;
 
 std::vector<int> ints;
 
+EntityManager entityManager;
+Entity* entity;
 
 void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 {
@@ -78,6 +81,19 @@ void Game::StartUp()
 
 	//lineShader = new Shader();
 	//lineShader->Load(basic_line_shader_vertex, basic_line_shader_fragment);
+
+	//Component component;
+	//ComponentA componenta;
+	//LOG("a %li", Component::GetStaticComponentID());
+	//LOG("b %li", ComponentA::GetStaticComponentID());
+
+	//LOG("a %li", component.GetComponentID());
+	//LOG("b %li", componenta.GetComponentID());
+
+	//Component* pcomponent;
+	//pcomponent = &componenta;
+	//LOG("b %li", pcomponent->GetComponentID());
+
 	simpleShader = new Shader();
 	simpleShader->Load("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
 	tiledShader = new Shader();
@@ -87,6 +103,16 @@ void Game::StartUp()
 	tex->load("data/Sprites/DinoSprites_doux.png");
 	tileTex = new Texture();
 	tileTex->load("data/Sprites/tiles.png");
+
+	entityManager.InitPools();
+	COMPONENT_ID transformAndSprite = (COMPONENT_ID)(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
+	entity = entityManager.CreateEntity(transformAndSprite);
+	Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
+	t->transform.translate(2.0f, 2.0f, 0.0f);
+	SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
+	r->texture = tileTex;
+	r->tileSize = Vector2(8.0f, 5.0f);
+	r->index = 25;
 
 	animator.currentAnimation = &idleAnimation;
 	animator.normalizedTime = 0.0f;
@@ -272,10 +298,35 @@ void Game::Update(float deltaTime)
 		tiledShader->disable();
 	}
 
+	Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
+	SpriteRenderer* s = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
+	tiledShader->enable();
+	tiledShader->SetTexture(tileTex->tex_id);
+	tiledShader->SetMat44("M", t->transform * camera->viewProjectionMat);
+	Vector2 tileSize = s->tileSize;
+	tiledShader->SetVector2("tileSize", tileSize);
+	tiledShader->SetInt("tileIndex", s->index);
+	tiledShader->SetBool("invertX", false);
+
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
+	glEnable(GL_CULL_FACE);
+	glBindVertexArray(levelTiles[0].VAO);
+	glDrawArrays(GL_TRIANGLES, 0, levelTiles[0].length);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	tiledShader->disable();
+
+
 	tiledShader->enable();
 	tiledShader->SetTexture(tex->tex_id);
 	tiledShader->SetMat44("M", model * camera->viewProjectionMat);
-	Vector2 tileSize((float)tileSizeX, (float)tileSizeY);
+	tileSize = Vector2((float)tileSizeX, (float)tileSizeY);
 	tiledShader->SetVector2("tileSize", tileSize);
 	tiledShader->SetInt("tileIndex", animator.currentFrameIndex);
 	tiledShader->SetBool("invertX", !lookingRight);
