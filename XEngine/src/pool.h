@@ -14,7 +14,7 @@ private:
 
 	void resize(int extra_size)
 	{
-		int current_size = memory.size();
+		int current_size = (int)memory.size();
 		int new_size = current_size + extra_size;
 		LOG("resizing pool of items: %s, lastSize: %d, newSize: %d", typeid(T).name(), current_size, new_size);
 

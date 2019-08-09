@@ -28,7 +28,7 @@ void Input::Update()
 	prevMouseX = mouseX;
 	prevMouseY = mouseY;
 
-	//read keyboard state and stored in keystate
+	//read keyboard state and store it in keystate
 	memcpy((void*)&prevState, state, SDL_NUM_SCANCODES);
 	prevMouseState = mouseState;
 

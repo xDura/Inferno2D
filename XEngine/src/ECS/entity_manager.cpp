@@ -12,15 +12,14 @@ void EntityManager::InitPools()
 Entity* EntityManager::CreateEntity()
 {
 	Entity* entity = entityPool.spawn();
-	entity->id = (lastEntityId + 1);
+	entity->id = (lastEntityId++);
 	return entity;
 }
-
 
 Entity* EntityManager::CreateEntity(COMPONENT_ID components)
 {
 	Entity* entity = entityPool.spawn();
-	entity->id = (lastEntityId + 1);
+	entity->id = (lastEntityId++);
 	entities.insert(std::make_pair(entity->id, entity));
 
 	if ((components & COMPONENT_ID::TRANSFORM) != 0) 

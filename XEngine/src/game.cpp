@@ -3,12 +3,12 @@
 #include "math.h"
 #include "mathTests.h"
 #include "shader.h"
-#include "texture.h"
 #include "camera.h"
 #include "imguiLayer.h"
 #include "mesh_loaders.h"
 #include "pool.h"
 #include "ECS/entity_manager.h"
+#include "sprite_sheet.h"
 
 Mesh debugLines;
 Camera* camera;
@@ -22,7 +22,6 @@ ImguiLayer* imguiLayer;
 Mat44 model;
 
 Mesh quadMesh;
-std::vector<Mesh> levelTiles;
 std::vector<Mat44> levelTileTransforms;
 
 //static defs
@@ -44,8 +43,8 @@ bool lookingRight = true;
 
 std::vector<int> ints;
 
+SpriteSheet environtmentSpriteSheet;
 EntityManager entityManager;
-Entity* entity;
 
 void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 {
@@ -59,40 +58,11 @@ void Game::StartUp()
 {
 	Input::Init(window);
 
-	//ints.resize(8000);
-	//float oldTime = Time::GetTimeInSeconds();
-	//for (size_t i = 0; i < ints.size(); i++)
-	//{
-	//	int a = ints[i];
-	//}
-	//float newTime = Time::GetTimeInSeconds();
-	//LOG("Time: %.6f", (newTime - oldTime));
-	//int* a = &ints[0];
-	//oldTime = Time::GetTimeInSeconds();
-	//for (size_t i = 0; i < ints.size(); i++)
-	//{
-	//	int b = *(a + i);
-	//}
-	//newTime = Time::GetTimeInSeconds();
-	//LOG("Time2: %.6f", (newTime - oldTime));
-
 	/*unsigned int memsize = (unsigned int)10000;
 	void* m = Memory::AllocateGameMemory(memsize);*/
 
 	//lineShader = new Shader();
 	//lineShader->Load(basic_line_shader_vertex, basic_line_shader_fragment);
-
-	//Component component;
-	//ComponentA componenta;
-	//LOG("a %li", Component::GetStaticComponentID());
-	//LOG("b %li", ComponentA::GetStaticComponentID());
-
-	//LOG("a %li", component.GetComponentID());
-	//LOG("b %li", componenta.GetComponentID());
-
-	//Component* pcomponent;
-	//pcomponent = &componenta;
-	//LOG("b %li", pcomponent->GetComponentID());
 
 	simpleShader = new Shader();
 	simpleShader->Load("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
@@ -104,15 +74,22 @@ void Game::StartUp()
 	tileTex = new Texture();
 	tileTex->load("data/Sprites/tiles.png");
 
+	environtmentSpriteSheet.Setup(5, 8, tileTex);
+	environtmentSpriteSheet.height = 5;
+	environtmentSpriteSheet.width = 8;
+
 	entityManager.InitPools();
 	COMPONENT_ID transformAndSprite = (COMPONENT_ID)(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
-	entity = entityManager.CreateEntity(transformAndSprite);
-	Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
-	t->transform.translate(2.0f, 2.0f, 0.0f);
-	SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-	r->texture = tileTex;
-	r->tileSize = Vector2(8.0f, 5.0f);
-	r->index = 25;
+	for (unsigned int i = 0; i < 10; i++)
+	{
+		Entity* entity = entityManager.CreateEntity(transformAndSprite);
+		Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
+		SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
+		r->layer = 1;
+		t->transform.translateLocal((float)i * 2.0f, 0.0f, (float)r->layer);
+		r->index = 25;
+		r->spriteSheet = &environtmentSpriteSheet;
+	}
 
 	animator.currentAnimation = &idleAnimation;
 	animator.normalizedTime = 0.0f;
@@ -139,18 +116,6 @@ void Game::StartUp()
 	Vector3 size = Vector3(1.0f, 1.0f, 1.0f);
 	generateQuad(&quadMesh);
 
-	levelTiles.resize(10);
-	levelTileTransforms.resize(levelTiles.size());
-
-	for (size_t i = 0; i < levelTiles.size(); i++)
-		generateQuad(&levelTiles[i]);
-
-	for (size_t i = 0; i < levelTileTransforms.size(); i++)
-		levelTileTransforms[i].translateLocal((float)i * 2.0f, 0.0f, 0.0f);
-
-
-	//debugLines.InitLines();
-	//debugLines.ReserveLines();
 	model = Mat44();
 	model.translateLocal(0.0f, 1.7f, -1.0f);
 
@@ -160,7 +125,7 @@ void Game::StartUp()
 
 	int width, height;
 	SDL_GetWindowSize(window, &width, &height);
-	//camera = new Camera(camPos, camTarget, camUp, -1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 10000.f);
+	//camera = new Camera(camPos, camTarget, camUp, -10.0f, 10.0f, -7.0f, 7.0f, 0.1f, 10000.f);
 	camera = new Camera(camPos, camTarget, camUp, 60.0f, width / (float)height, 0.1f, 10000.f);
 }
 
@@ -240,7 +205,6 @@ void Game::Update(float deltaTime)
 				{}
 				else if (event.key.keysym.scancode == SDL_SCANCODE_1)
 				{}
-
 				if (event.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
 				{}
 				else if (event.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
@@ -271,57 +235,35 @@ void Game::Update(float deltaTime)
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-
-	for (size_t i = 0; i < levelTiles.size(); i++)
+	Vector2 tileSize;
+	for (auto it = entityManager.entities.begin(); it != entityManager.entities.end(); ++it)
 	{
+		Entity* currentEntity = (Entity*)it->second;
+		if ((currentEntity->currentComponents & COMPONENT_ID::TRANSFORM) == 0) continue;
+		if ((currentEntity->currentComponents & COMPONENT_ID::SPRITE_RENDERER) == 0) continue;
+
+		Transform* t = (Transform*)currentEntity->GetComponent(COMPONENT_ID::TRANSFORM);
+		SpriteRenderer* s = (SpriteRenderer*)currentEntity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
 		tiledShader->enable();
 		tiledShader->SetTexture(tileTex->tex_id);
-		tiledShader->SetMat44("M", levelTileTransforms[i] * camera->viewProjectionMat);
-		Vector2 tileSize(8.0f, 5.0f);
+		tiledShader->SetMat44("M", t->transform * camera->viewProjectionMat);
+		tileSize = Vector2((float)s->spriteSheet->width, (float)s->spriteSheet->height);
 		tiledShader->SetVector2("tileSize", tileSize);
-		tiledShader->SetInt("tileIndex", 25);
-		tiledShader->SetBool("invertX", false);
+		tiledShader->SetInt("tileIndex", s->index);
+		tiledShader->SetBool("invertX", (s->flags & SPRITE_RENDERER_FLAGS::INVERT_X) != 0);
 
 		glEnable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquation(GL_FUNC_ADD);
 		glEnable(GL_CULL_FACE);
-		glBindVertexArray(levelTiles[i].VAO);
-		glDrawArrays(GL_TRIANGLES, 0, levelTiles[i].length);
+		glBindVertexArray(quadMesh.VAO);
+		glDrawArrays(GL_TRIANGLES, 0, quadMesh.length);
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
-
-		tiledShader->disable();
 	}
-
-	Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
-	SpriteRenderer* s = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-	tiledShader->enable();
-	tiledShader->SetTexture(tileTex->tex_id);
-	tiledShader->SetMat44("M", t->transform * camera->viewProjectionMat);
-	Vector2 tileSize = s->tileSize;
-	tiledShader->SetVector2("tileSize", tileSize);
-	tiledShader->SetInt("tileIndex", s->index);
-	tiledShader->SetBool("invertX", false);
-
-	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glBlendEquation(GL_FUNC_ADD);
-	glEnable(GL_CULL_FACE);
-	glBindVertexArray(levelTiles[0].VAO);
-	glDrawArrays(GL_TRIANGLES, 0, levelTiles[0].length);
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-
-	tiledShader->disable();
-
 
 	tiledShader->enable();
 	tiledShader->SetTexture(tex->tex_id);
@@ -344,26 +286,6 @@ void Game::Update(float deltaTime)
 	glDisable(GL_DEPTH_TEST);
 
 	tiledShader->disable();
-	//for (unsigned int i = 0; i < meshes.size(); i++)
-	//{
-	//	skinnedMeshShader->enable();
-	//	skinnedMeshShader->SetTexture(tex->tex_id);
-	//	skinnedMeshShader->SetMat44("M", models[i] * camera->viewProjectionMat);
-	//	skinnedMeshShader->SetMat44Array("boneMats", meshes[i].boneMatrices[0], (int)meshes[i].boneMatrices.size());
-	//	//skinnedMeshShader.SetFloat("desiredBoneID", (float)desiredBoneId);
-
-
-	//	glEnable(GL_DEPTH_TEST);
-	//	glEnable(GL_CULL_FACE);
-	//	glBindVertexArray(meshes[i].VAO);
-	//	glDrawArrays(GL_TRIANGLES, 0, meshes[i].length);
-	//	glBindVertexArray(0);
-	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//	glDisable(GL_CULL_FACE);
-	//	glDisable(GL_DEPTH_TEST);
-
-	//	skinnedMeshShader->disable();
-	//}
 
 	//DRAWING DEBUG LINES
 	////TODO: Move this to some debug draw module

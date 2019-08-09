@@ -78,6 +78,7 @@
     <ClInclude Include="..\..\src\platform.h" />
     <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\skinned_mesh.h" />
+    <ClInclude Include="..\..\src\sprite_sheet.h" />
     <ClInclude Include="..\..\src\texture.h" />
     <ClInclude Include="..\..\src\math.h" />
     <ClInclude Include="..\..\src\mathTests.h" />

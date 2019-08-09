@@ -4,7 +4,9 @@
 #include <algorithm>
 #include <cmath>
 
+#ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
 
 #define DEGTORAD(a) (((a) * 180.0) / M_PI)
 #define RADTODEG(a) (((a) * M_PI) / 180.0)
@@ -177,18 +179,18 @@ public:
 	void setIdentity();
 	void setTranslation(const Vector2& translation);
 	void setRotation(float rotX, float rotY, float rotZ);
-	void setRotation(const Vector3& axis, float angle);
+	//void setRotation(const Vector3& axis, float angle);
 	void setScale(const Vector2& scale);
 	void transpose();
 	void inverse();
 	void orthonormalize();
 	void translate(const Vector2& translation);
-	void rotate(float rot);
+	//void rotate(float rot);
 	void scale(const Vector2& scale);
 
 	Vector2 up() const;
 	Vector2 right()const;
-	Vector2 front()const;
+	//Vector2 front()const;
 
 	void lookAt(Vector2& v);
 
@@ -222,7 +224,7 @@ public:
 	void setScale(const Vector3& scale);
 	void transpose();
 	bool inverse();
-	void orthonormalize();
+	//void orthonormalize();
 	void translate(const Vector3& translation);
 	void translate(float tx, float ty, float tz);
 	void translateLocal(const Vector3& translation);
@@ -322,10 +324,10 @@ public:
 float DotProduct(const Quaternion &q1, const Quaternion &q2);
 Quaternion Qlerp(const Quaternion &q1, const Quaternion &q2, float t);
 Quaternion Qslerp(const Quaternion &q1, const Quaternion &q2, float t);
-Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, const Quaternion &b, float t);
-Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, float t);
-Quaternion Qspline(const Quaternion &q1, const Quaternion &q2, const Quaternion &q3);
-Quaternion QslerpNoInvert(const Quaternion &q1, const Quaternion &q2, float t);
+//Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, const Quaternion &b, float t);
+//Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, float t);
+//Quaternion Qspline(const Quaternion &q1, const Quaternion &q2, const Quaternion &q3);
+//Quaternion QslerpNoInvert(const Quaternion &q1, const Quaternion &q2, float t);
 Quaternion Qexp(const Quaternion &q);
 Quaternion Qlog(const Quaternion &q);
 Quaternion SimpleRotation(const Vector3 &a, const Vector3 &b);
