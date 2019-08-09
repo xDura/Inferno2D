@@ -8,6 +8,7 @@
 #include "mesh_loaders.h"
 #include "pool.h"
 #include "ECS/entity_manager.h"
+#include "ECS/system_manager.h"
 #include "sprite_sheet.h"
 
 Mesh debugLines;
@@ -20,9 +21,7 @@ Shader* simpleShader;
 ImguiLayer* imguiLayer;
 
 Mat44 model;
-
 Mesh quadMesh;
-std::vector<Mat44> levelTileTransforms;
 
 //static defs
 float Game::timeScale = 1.0f;
@@ -61,9 +60,6 @@ void Game::StartUp()
 	/*unsigned int memsize = (unsigned int)10000;
 	void* m = Memory::AllocateGameMemory(memsize);*/
 
-	//lineShader = new Shader();
-	//lineShader->Load(basic_line_shader_vertex, basic_line_shader_fragment);
-
 	simpleShader = new Shader();
 	simpleShader->Load("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
 	tiledShader = new Shader();
@@ -79,15 +75,15 @@ void Game::StartUp()
 	environtmentSpriteSheet.width = 8;
 
 	entityManager.InitPools();
-	COMPONENT_ID transformAndSprite = (COMPONENT_ID)(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
+	COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
 	for (unsigned int i = 0; i < 10; i++)
 	{
 		Entity* entity = entityManager.CreateEntity(transformAndSprite);
 		Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
 		SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-		r->layer = 1;
+		r->layer = (RENDERER_LAYERS)1;
 		t->transform.translateLocal((float)i * 2.0f, 0.0f, (float)r->layer);
-		r->index = 25;
+		r->spriteIndex = 25;
 		r->spriteSheet = &environtmentSpriteSheet;
 	}
 
@@ -235,36 +231,9 @@ void Game::Update(float deltaTime)
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	SpriteRendererSystem::RenderSprites(&entityManager, tiledShader, camera, &quadMesh);
+
 	Vector2 tileSize;
-	for (auto it = entityManager.entities.begin(); it != entityManager.entities.end(); ++it)
-	{
-		Entity* currentEntity = (Entity*)it->second;
-		if ((currentEntity->currentComponents & COMPONENT_ID::TRANSFORM) == 0) continue;
-		if ((currentEntity->currentComponents & COMPONENT_ID::SPRITE_RENDERER) == 0) continue;
-
-		Transform* t = (Transform*)currentEntity->GetComponent(COMPONENT_ID::TRANSFORM);
-		SpriteRenderer* s = (SpriteRenderer*)currentEntity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-		tiledShader->enable();
-		tiledShader->SetTexture(tileTex->tex_id);
-		tiledShader->SetMat44("M", t->transform * camera->viewProjectionMat);
-		tileSize = Vector2((float)s->spriteSheet->width, (float)s->spriteSheet->height);
-		tiledShader->SetVector2("tileSize", tileSize);
-		tiledShader->SetInt("tileIndex", s->index);
-		tiledShader->SetBool("invertX", (s->flags & SPRITE_RENDERER_FLAGS::INVERT_X) != 0);
-
-		glEnable(GL_BLEND);
-		glEnable(GL_DEPTH_TEST);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glBlendEquation(GL_FUNC_ADD);
-		glEnable(GL_CULL_FACE);
-		glBindVertexArray(quadMesh.VAO);
-		glDrawArrays(GL_TRIANGLES, 0, quadMesh.length);
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-	}
-
 	tiledShader->enable();
 	tiledShader->SetTexture(tex->tex_id);
 	tiledShader->SetMat44("M", model * camera->viewProjectionMat);
@@ -286,24 +255,6 @@ void Game::Update(float deltaTime)
 	glDisable(GL_DEPTH_TEST);
 
 	tiledShader->disable();
-
-	//DRAWING DEBUG LINES
-	////TODO: Move this to some debug draw module
-	//debugLines.ReserveLines();
-	//lineShader.enable();
-	//////TODO: push backs are super slow, just do a big ass resize or something
-	//lineShader.SetMat44("MVP", models[0] * camera.viewProjectionMat);
-
-	//////debug stuff to visualize the skeleton
-	//Mesh::DebugSkeleton(&meshes[0], &debugLines);
-	//////Vector3 pos = xbot.currentPoseBindMatrices[desiredBoneId].getPosition();
-	//////debugLines.AddWhireSphereLines(pos, y, 0.3f);
-
-	//debugLines.RenderAsLines();
-	//debugLines.ClearLines();
-
-	//lineShader.disable();
-	//******
 
 	imguiLayer->OnPostRender();
 

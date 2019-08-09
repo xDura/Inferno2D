@@ -1,6 +1,4 @@
 #pragma once
-#include "entity.h"
-#include "component.h"
 #include "../pool.h"
 #include <unordered_map>
 #include "../utils.h"
@@ -21,6 +19,11 @@ enum COMPONENT_ID : int64_t
 	CIRCLE_COLLIDER = 1 << 5,
 	PLAYER_CONTROLLER = 1 << 6
 };
+
+static COMPONENT_ID component_id(int64_t values) 
+{
+	return (COMPONENT_ID)values;
+}
 
 typedef long int ENTITY_ID;
 
@@ -45,13 +48,19 @@ enum SPRITE_RENDERER_FLAGS
 	INVERT_Y = 1 << 1
 };
 
+enum RENDERER_LAYERS 
+{
+	PLAYER = 0,
+	BACKGROUND = 1,
+};
+
 class SpriteRenderer : public Component
 {
 public:
 	SpriteSheet* spriteSheet;
-	int layer;
-	int index;
-	int flags;
+	int spriteIndex;
+	RENDERER_LAYERS layer;
+	SPRITE_RENDERER_FLAGS flags;
 	virtual COMPONENT_ID GetComponentID() { return COMPONENT_ID::SPRITE_RENDERER; }
 };
 

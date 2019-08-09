@@ -1,227 +1,217 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="Root">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Source Files\External">
+    <Filter Include="Root\External">
       <UniqueIdentifier>{ef2b2bff-c458-4fd2-9a87-cdcb370358f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\External\Imgui">
+    <Filter Include="Root\External\Imgui">
       <UniqueIdentifier>{8120acbe-27f7-47b9-b72a-92f6af222ff9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Collision">
+    <Filter Include="Root\External\GLAD">
+      <UniqueIdentifier>{5cbe879f-b70e-4335-acb5-06b3c6ddf103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Root\Collision">
       <UniqueIdentifier>{d85b6650-5ac6-45ef-b8ec-07a2ebc9301b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Editor">
+    <Filter Include="Root\Editor">
       <UniqueIdentifier>{6ec86d2a-0349-4633-a789-6aff1120f4d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ECS">
+    <Filter Include="Root\ECS">
       <UniqueIdentifier>{6b8aa023-12b5-4dcb-9885-f7f023bdba66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\External\GLAD">
-      <UniqueIdentifier>{5cbe879f-b70e-4335-acb5-06b3c6ddf103}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\math.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\platform.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\textparser.cpp">
-      <Filter>Source Files\External</Filter>
+      <Filter>Root\External</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\tinyxml2.cpp">
-      <Filter>Source Files\External</Filter>
+      <Filter>Root\External</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\imgui\imgui.cpp">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\imgui\imgui_demo.cpp">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\imgui\imgui_draw.cpp">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\imgui\imgui_widgets.cpp">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\imgui\imgui_impl_sdl.cpp">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\imgui\imgui_impl_opengl2.cpp">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\imguiLayer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\skinned_mesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\mesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\utils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\mesh_loaders.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\2d_animation.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\shader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Collision\collider.cpp">
-      <Filter>Source Files\Collision</Filter>
+      <Filter>Root\Collision</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Editor\editor.cpp">
-      <Filter>Source Files\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ECS\entity.cpp">
-      <Filter>Source Files\ECS</Filter>
+      <Filter>Root\Editor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ECS\entity_manager.cpp">
-      <Filter>Source Files\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ECS\component.cpp">
-      <Filter>Source Files\ECS</Filter>
+      <Filter>Root\ECS</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\pool.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\External\GLAD\src\glad.c">
-      <Filter>Source Files\External\GLAD</Filter>
+      <Filter>Root\External\GLAD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ECS\system_manager.cpp">
+      <Filter>Root\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\texture.cpp">
+      <Filter>Root</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\math.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\mathTests.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\opengl_defines.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\shader.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\stb_image.h">
-      <Filter>Source Files\External</Filter>
+      <Filter>Root\External</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\texture.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\platform.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\mesh.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\camera.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\textparser.h">
-      <Filter>Source Files\External</Filter>
+      <Filter>Root\External</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\tinyxml2.h">
-      <Filter>Source Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\main.h">
-      <Filter>Header Files</Filter>
+      <Filter>Root\External</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\utils.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\stb_easy_font.h">
-      <Filter>Source Files\External</Filter>
+      <Filter>Root\External</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imconfig.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imgui.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imgui_internal.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imstb_rectpack.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imstb_textedit.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imstb_truetype.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imgui_impl_opengl2.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imgui_impl_sdl.h">
-      <Filter>Source Files\External\Imgui</Filter>
+      <Filter>Root\External\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\imguiLayer.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\skinned_mesh.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\mesh_loaders.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\debug.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\2d_animation.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\3d_animation.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Collision\collider.h">
-      <Filter>Source Files\Collision</Filter>
+      <Filter>Root\Collision</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Editor\editor.h">
-      <Filter>Source Files\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ECS\entity.h">
-      <Filter>Source Files\ECS</Filter>
+      <Filter>Root\Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ECS\entity_manager.h">
-      <Filter>Source Files\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ECS\component.h">
-      <Filter>Source Files\ECS</Filter>
+      <Filter>Root\ECS</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\pool.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\GLAD\include\glad\glad.h">
-      <Filter>Source Files\External\GLAD</Filter>
+      <Filter>Root\External\GLAD</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\GLAD\include\KHR\khrplatform.h">
-      <Filter>Source Files\External\GLAD</Filter>
+      <Filter>Root\External\GLAD</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\sprite_sheet.h">
-      <Filter>Source Files</Filter>
+      <Filter>Root</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ECS\system_manager.h">
+      <Filter>Root\ECS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
