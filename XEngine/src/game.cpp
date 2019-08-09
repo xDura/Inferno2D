@@ -60,6 +60,8 @@ void Game::StartUp()
 	/*unsigned int memsize = (unsigned int)10000;
 	void* m = Memory::AllocateGameMemory(memsize);*/
 
+	LOG("Sizeof Shader: %d", sizeof(Shader));
+
 	simpleShader = new Shader();
 	simpleShader->Load("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
 	tiledShader = new Shader();

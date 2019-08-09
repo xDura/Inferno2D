@@ -20,7 +20,6 @@ int main(int argc, char* argv[])
 
 	//antialiasing (disable this lines if it goes too slow)
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetSwapInterval(0);
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample); //increase to have smoother polygons
 
 	SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
@@ -30,24 +29,23 @@ int main(int argc, char* argv[])
 		SDL_WINDOWPOS_UNDEFINED,           // initial x position
 		SDL_WINDOWPOS_UNDEFINED,           // initial y position
 		defaultWindowWidth,				   // width, in pixels
-		defaultWindowHeight,				// height, in pixels
+		defaultWindowHeight,			   // height, in pixels
 		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
 	);
 
-	// check for window creation error
 	if (window == NULL)
 	{
 		printf("Error creating window: %s\n", SDL_GetError());
-		return 1;
+		return -1;
 	}
 
 	SDL_GLContext glcontext = SDL_GL_CreateContext(window);
-
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) 
 	{
 		LOG("Failed initializing GLAD opengl context");
 		return -1;
 	}
+ 	int interval = SDL_GL_SetSwapInterval(0);
 
 	int windowWidth, windowHeight;
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
@@ -58,7 +56,7 @@ int main(int argc, char* argv[])
 
 	bool continueGameLoop = true;
 	double lastTime = Time::GetTimeInSeconds();
-	while (continueGameLoop) 
+	while (continueGameLoop)
 	{
 		double currentTime = Time::GetTimeInSeconds();
 		double elapsed = currentTime - lastTime;

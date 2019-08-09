@@ -9,6 +9,7 @@ public:
 	int width;
 	int height;
 	int numChannels;
+	std::string path;
 
-	bool load(std::string path, bool flipVertical = true);
+	bool load(std::string a_path, bool flipVertical = true);
 };

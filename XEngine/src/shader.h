@@ -12,10 +12,10 @@ public:
 	unsigned int vertex_id;
 	unsigned int fragment_id;
 
-	std::string vsFilePath;
-	std::string psFilePath;
+	char* vsFilePath;
+	char* psFilePath;
 
-	void Load(const std::string& vsPath, const std::string& psPath);
+	void Load(const char* vsPath, const char* psPath);
 	void Init(const char* vertex, const char* pixel);
 
 	void SetInt(const std::string& parameterName, const int& value) const

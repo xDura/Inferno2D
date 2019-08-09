@@ -3,10 +3,12 @@
 #include "opengl_defines.h"
 #include "platform.h"
 
-bool Texture::load(std::string path, bool flipVertical)
+bool Texture::load(std::string a_path, bool flipVertical)
 {
 	glGenTextures(1, &tex_id);
 	glBindTexture(GL_TEXTURE_2D, tex_id);
+	//TODO: set this flags in the file so that we can load
+	//the parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
@@ -19,6 +21,7 @@ bool Texture::load(std::string path, bool flipVertical)
 	unsigned char *data = stbi_load(fullpath.c_str(), &width, &height, &numChannels, 0);
 	if (data)
 	{
+		path = a_path;
 		//@TODO: modify the glTexImage2D acording to the numChannels
 		if (numChannels > 3)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);

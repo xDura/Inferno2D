@@ -1,7 +1,8 @@
 #include "shader.h"
 #include "utils.h"
+#include <string.h>
 
-void Shader::Load(const std::string & vsPath, const std::string & psPath)
+void Shader::Load(const char* vsPath, const char* psPath)
 {
 	FILE* vsFile;
 	FILE* psFile;
@@ -15,8 +16,10 @@ void Shader::Load(const std::string & vsPath, const std::string & psPath)
 		LOGERROR("Error loading shader files at: %s, %s", fullpathVS.c_str(), fullpathPS.c_str());
 		return;
 	}
-	vsFilePath = vsPath;
-	psFilePath = psPath;
+	vsFilePath = new char[strlen(vsPath)];
+	psFilePath = new char[strlen(psPath)];
+	memcpy(vsFilePath, vsPath, sizeof(vsPath));
+	memcpy(psFilePath, psPath, sizeof(psPath));
 
 	std::string fullvsContent;
 	std::string fullpsContent;
