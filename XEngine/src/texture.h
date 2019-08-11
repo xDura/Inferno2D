@@ -9,7 +9,8 @@ public:
 	int width;
 	int height;
 	int numChannels;
-	std::string path;
+	char* path;
 
-	bool load(std::string a_path, bool flipVertical = true);
+	bool Load(const char* a_path, bool flipVertical = true);
+	void Destroy();
 };

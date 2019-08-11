@@ -44,11 +44,10 @@ bool DeserializeVector(std::vector<T>& vector, FILE* file)
 
 bool SerializeString(std::string& s, FILE* file);
 bool DeserializeString(std::string& s, FILE* file);
-
 bool SerializeCharArray(const char* string, FILE* file);
 bool DeserializeCharArray(char* string, FILE* file);
-
 void ReadAllFile(std::string& content, FILE* file);
+char* Copy(const char* source);
 
 //this memory stats stuff is taken from javi agenjo's code
 //https://www.dtic.upf.edu/~jagenjo/?page_id=11

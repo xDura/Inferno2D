@@ -12,19 +12,21 @@ void Shader::Load(const char* vsPath, const char* psPath)
 	fopen_s(&psFile, fullpathPS.c_str(), "r");
 	if (vsFile == NULL || psFile == NULL)
 	{
+		fclose(vsFile);
+		fclose(psFile);
 		ASSERT(false);
 		LOGERROR("Error loading shader files at: %s, %s", fullpathVS.c_str(), fullpathPS.c_str());
 		return;
 	}
-	vsFilePath = new char[strlen(vsPath)];
-	psFilePath = new char[strlen(psPath)];
-	memcpy(vsFilePath, vsPath, sizeof(vsPath));
-	memcpy(psFilePath, psPath, sizeof(psPath));
+	vsFilePath = Copy(vsPath);
+	psFilePath = Copy(psPath);
 
 	std::string fullvsContent;
 	std::string fullpsContent;
 	ReadAllFile(fullvsContent, vsFile);
 	ReadAllFile(fullpsContent, psFile);
+	fclose(vsFile);
+	fclose(psFile);
 	Init(fullvsContent.c_str(), fullpsContent.c_str());
 }
 
@@ -43,7 +45,7 @@ void Shader::Init(const char * vertex, const char * pixel)
 		glGetShaderInfoLog(vertex_id, 512, NULL, infoLog);
 		LOGERROR("Error compiling vertex shader: %s \ninfoLog: %s", vertex, infoLog);
 	}
-	assert(v_success);
+	ASSERT(v_success);
 
 	unsigned int fragment_id;
 	fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
@@ -57,7 +59,7 @@ void Shader::Init(const char * vertex, const char * pixel)
 		glGetShaderInfoLog(fragment_id, 512, NULL, infoLog);
 		LOGERROR("Error compiling fragment shader: %s \ninfoLog: %s", pixel, infoLog);
 	}
-	assert(f_success);
+	ASSERT(f_success);
 
 	
 	id = glCreateProgram();
@@ -72,5 +74,87 @@ void Shader::Init(const char * vertex, const char * pixel)
 		glGetProgramInfoLog(id, 512, NULL, infoLog);
 		LOGERROR("Error linking shader: %s \ninfoLog: %s", vertex, infoLog);
 	}
-	assert(final_sucess);
+	ASSERT(final_sucess);
+}
+
+void Shader::Destroy()
+{
+	free(vsFilePath);
+	free(psFilePath);
+	glDetachShader(id, vertex_id);
+	glDetachShader(id, fragment_id);
+	glDeleteProgram(id);
+}
+
+void Shader::SetInt(const std::string & parameterName, const int & value) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniform1i(uniformLoc, value);
+}
+
+void Shader::SetBool(const std::string & parameterName, bool b) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniform1i(uniformLoc, b);
+}
+
+void Shader::SetFloat(const std::string & parameterName, const float & value) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniform1f(uniformLoc, value);
+}
+
+void Shader::SetVector2(const std::string & parameterName, const Vector2 & value) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniform2f(uniformLoc, value.x, value.y);
+}
+
+void Shader::SetVector3(const std::string & parameterName, const Vector3 & value) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniform3f(uniformLoc, value.x, value.y, value.z);
+}
+
+void Shader::SetMat33(const std::string & parameterName, const Mat33 & value) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniformMatrix3fv(uniformLoc, 1, GL_FALSE, value.M);
+}
+
+void Shader::SetMat44(const std::string & parameterName, const Mat44 & value) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, value.values);
+}
+
+void Shader::SetMat44Array(const std::string & parameterName, const Mat44 & value, int nummats) const
+{
+	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
+	ASSERT(uniformLoc != -1);
+	glUniformMatrix4fv(uniformLoc, nummats, GL_FALSE, value.values);
+}
+
+void Shader::SetTexture(unsigned int id) const
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Shader::enable() const
+{
+	glUseProgram(id);
+}
+
+void Shader::disable() const
+{
+	glActiveTexture(GL_TEXTURE0);
+	glUseProgram(0);
 }

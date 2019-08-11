@@ -1,9 +1,10 @@
 #include "texture.h"
-#include "External/stb_image.h"
+#include "External/STB/stb_image.h"
 #include "opengl_defines.h"
 #include "platform.h"
+#include "utils.h"
 
-bool Texture::load(std::string a_path, bool flipVertical)
+bool Texture::Load(const char* a_path, bool flipVertical)
 {
 	glGenTextures(1, &tex_id);
 	glBindTexture(GL_TEXTURE_2D, tex_id);
@@ -16,12 +17,13 @@ bool Texture::load(std::string a_path, bool flipVertical)
 
 	stbi_set_flip_vertically_on_load(flipVertical);
 
-	std::string fullpath = Path::GetPath(path);
+	std::string fullpath = Path::GetPath(a_path);
 	LOG("loading texture from: %s", fullpath.c_str());
 	unsigned char *data = stbi_load(fullpath.c_str(), &width, &height, &numChannels, 0);
 	if (data)
 	{
-		path = a_path;
+
+		path = Copy(a_path);
 		//@TODO: modify the glTexImage2D acording to the numChannels
 		if (numChannels > 3)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -41,6 +43,13 @@ bool Texture::load(std::string a_path, bool flipVertical)
 	else
 	{
 		LOGERROR("Failed to load texture at: %s ", fullpath);
+		ASSERT(false);
 		return false;
 	}
+}
+
+void Texture::Destroy()
+{
+	free(path);
+	glDeleteTextures(1, &tex_id);
 }

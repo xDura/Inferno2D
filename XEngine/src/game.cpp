@@ -2,14 +2,13 @@
 #include "game.h"
 #include "math.h"
 #include "mathTests.h"
-#include "shader.h"
 #include "camera.h"
 #include "imguiLayer.h"
 #include "mesh_loaders.h"
 #include "pool.h"
 #include "ECS/entity_manager.h"
 #include "ECS/system_manager.h"
-#include "sprite_sheet.h"
+#include "resource_manager.h"
 
 Mesh debugLines;
 Camera* camera;
@@ -62,15 +61,11 @@ void Game::StartUp()
 
 	LOG("Sizeof Shader: %d", sizeof(Shader));
 
-	simpleShader = new Shader();
-	simpleShader->Load("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
-	tiledShader = new Shader();
-	tiledShader->Load("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
+	simpleShader = AssetManager::GetShader("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
+	tiledShader = AssetManager::GetShader("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
 
-	tex = new Texture();
-	tex->load("data/Sprites/DinoSprites_doux.png");
-	tileTex = new Texture();
-	tileTex->load("data/Sprites/tiles.png");
+	tex = AssetManager::GetTexture("data/Sprites/DinoSprites_doux.png");
+	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
 
 	environtmentSpriteSheet.Setup(5, 8, tileTex);
 	environtmentSpriteSheet.height = 5;
@@ -271,6 +266,8 @@ void Game::FixedUpdate(float deltaTime)
 
 void Game::ShutDown()
 {
+	//TODO: entityManager.Destroy()
 	imguiLayer->ShutDown();
+	AssetManager::Destroy();
 	free(imguiLayer);
 }

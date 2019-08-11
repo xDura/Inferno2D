@@ -54,7 +54,7 @@ public:
 
 	void release()
 	{
-		available.clear();
+		while (!available.empty()) available.pop();
 		memory.clear();
 	}
 };

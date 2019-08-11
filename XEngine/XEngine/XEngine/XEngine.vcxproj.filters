@@ -23,6 +23,9 @@
     <Filter Include="Root\ECS">
       <UniqueIdentifier>{6b8aa023-12b5-4dcb-9885-f7f023bdba66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Root\External\STB">
+      <UniqueIdentifier>{e1dcd01b-48f1-4c57-9589-c053ce847a47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
@@ -103,6 +106,9 @@
     <ClCompile Include="..\..\src\texture.cpp">
       <Filter>Root</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\resource_manager.cpp">
+      <Filter>Root</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\math.h">
@@ -119,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\game.h">
       <Filter>Root</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\External\stb_image.h">
-      <Filter>Root\External</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\texture.h">
       <Filter>Root</Filter>
@@ -143,9 +146,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\utils.h">
       <Filter>Root</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\External\stb_easy_font.h">
-      <Filter>Root\External</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\External\imgui\imconfig.h">
       <Filter>Root\External\Imgui</Filter>
@@ -212,6 +212,18 @@
     </ClInclude>
     <ClInclude Include="..\..\src\ECS\system_manager.h">
       <Filter>Root\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\resource_manager.h">
+      <Filter>Root</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\STB\stb_easy_font.h">
+      <Filter>Root\External\STB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\STB\stb_image.h">
+      <Filter>Root\External\STB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\External\STB\stb_vorbis.h">
+      <Filter>Root\External\STB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

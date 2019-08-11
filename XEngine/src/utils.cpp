@@ -1,6 +1,6 @@
 #pragma once
 #include "utils.h"
-#include "External\stb_easy_font.h"
+#include "External/STB/stb_easy_font.h"
 #include "platform.h"
 #include "iostream"
 #include "string"
@@ -130,6 +130,13 @@ void ReadAllFile(std::string& content, FILE * file)
 	{
 		count = (int)fread(&content[0], sizeof(char), count, file);
 	}
+}
+
+char * Copy(const char * source)
+{
+	char* new_string = new char[strlen(source) + 1];
+	memcpy(new_string, source, strlen(source) + 1);
+	return new_string;
 }
 
 std::string getGPUStats()
