@@ -22,4 +22,5 @@ public:
 	static int tileIndex;
 	static SpriteAnimation animation;
 	static SpriteAnimator2 animator;
+	static float musicVolume;
 };

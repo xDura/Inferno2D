@@ -55,6 +55,7 @@ void ImguiLayer::RenderDebugMenu()
 	}
 
 	ImGui::SliderFloat("TimeScale", &Game::timeScale, 0, 10, "%.2f");
+	ImGui::SliderFloat("Audio Volume", &Game::musicVolume, 0, 100, "%.2f");
 	ImGui::End();
 }
 

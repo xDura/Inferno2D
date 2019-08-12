@@ -9,6 +9,7 @@
 #include "ECS/entity_manager.h"
 #include "ECS/system_manager.h"
 #include "resource_manager.h"
+#include "SDL2_Mixer/SDL_mixer.h"
 
 Mesh debugLines;
 Camera* camera;
@@ -44,6 +45,9 @@ std::vector<int> ints;
 SpriteSheet environtmentSpriteSheet;
 EntityManager entityManager;
 
+Mix_Music *music = NULL;
+float Game::musicVolume = 10.0f;
+
 void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 {
 	window = a_window;
@@ -66,6 +70,16 @@ void Game::StartUp()
 
 	tex = AssetManager::GetTexture("data/Sprites/DinoSprites_doux.png");
 	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
+
+	//TODO: move this audio stuff
+	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) LOGERROR("Error initializing mixer");
+
+	// Load our music
+	music = Mix_LoadMUS(Path::GetPath("data/Audio/background_music1.ogg").c_str());
+	if (music == NULL) LOGERROR("Error loading music");
+
+	if (Mix_PlayMusic(music, -1) == -1) LOGERROR("Error playing music");
+	//***
 
 	environtmentSpriteSheet.Setup(5, 8, tileTex);
 	environtmentSpriteSheet.height = 5;
@@ -219,6 +233,9 @@ void Game::Update(float deltaTime)
 		imguiLayer->OnEvent(event);
 	}
 
+	Mix_PlayingMusic();
+	Mix_VolumeMusic(musicVolume);
+
 	imguiLayer->OnPreRender();
 	animator.currentAnimation->totalFrames = animator.currentAnimation->endIndex - animator.currentAnimation->startIndex;
 	animator.currentAnimation->totalSeconds = animator.currentAnimation->totalFrames * (1.0f / animator.currentAnimation->framesPerSecond);
@@ -266,6 +283,11 @@ void Game::FixedUpdate(float deltaTime)
 
 void Game::ShutDown()
 {
+	//TODO: move this audio stuff
+	Mix_FreeMusic(music);
+	Mix_CloseAudio();
+	//**
+
 	//TODO: entityManager.Destroy()
 	imguiLayer->ShutDown();
 	AssetManager::Destroy();
