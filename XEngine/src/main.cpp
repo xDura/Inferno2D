@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample); //increase to have smoother polygons
 
-	SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);              // Initialize SDL2
 										   // Create an application window with the following settings:
 	window = SDL_CreateWindow(
 		"XDEngine",						   // window title
