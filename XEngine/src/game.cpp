@@ -94,7 +94,7 @@ void Game::StartUp()
 		SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
 		r->layer = (RENDERER_LAYERS)1;
 		t->transform.translateLocal((float)i * 2.0f, 0.0f, (float)r->layer);
-		r->spriteIndex = 25;
+		r->spriteIndex = 27;
 		r->spriteSheet = &environtmentSpriteSheet;
 	}
 
@@ -126,8 +126,8 @@ void Game::StartUp()
 	model = Mat44();
 	model.translateLocal(0.0f, 1.7f, -1.0f);
 
-	Vector3 camPos = Vector3(0.0f, 1.0f, 10.0f);
-	Vector3 camTarget = Vector3(0.0f, 1.0f, 0.0f);
+	Vector3 camPos = Vector3(10.0f, 1.0f, 20.0f);
+	Vector3 camTarget = Vector3(10.0f, 1.0f, 0.0f);
 	Vector3 camUp = Vector3(0.0f, 1.0f, 0.0f);
 
 	int width, height;
@@ -233,7 +233,6 @@ void Game::Update(float deltaTime)
 		imguiLayer->OnEvent(event);
 	}
 
-	Mix_PlayingMusic();
 	Mix_VolumeMusic(musicVolume);
 
 	imguiLayer->OnPreRender();
