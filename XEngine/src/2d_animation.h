@@ -2,6 +2,11 @@
 #include "utils.h"
 #include <vector>
 
+enum SPRITE_ANIMATION_FLAGS
+{
+	LOOP = 1 << 1,
+};
+
 class SpriteAnimation
 {
 public:
@@ -13,8 +18,7 @@ public:
 	int totalFrames;
 	float totalSeconds;
 	float framesPerSecond;
-	//turn this bool into more flags if needed
-	bool loop;
+	int flags;
 };
 
 class SpriteAnimator2

@@ -2,6 +2,7 @@
 #include "opengl_defines.h"
 #include "math.h"
 #include "2d_animation.h"
+#include "texture.h"
 
 class Game 
 {
@@ -20,7 +21,9 @@ public:
 	static int tileSizeX;
 	static int tileSizeY;
 	static int tileIndex;
-	static SpriteAnimation animation;
+	static SpriteAnimation idleAnimation;
 	static SpriteAnimator2 animator;
 	static float musicVolume;
+
+	static Texture* tileTex;
 };

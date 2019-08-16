@@ -8,13 +8,12 @@
 #include "pool.h"
 #include "ECS/entity_manager.h"
 #include "ECS/system_manager.h"
-#include "resource_manager.h"
+#include "asset_manager.h"
 #include "SDL2_Mixer/SDL_mixer.h"
 
 Mesh debugLines;
 Camera* camera;
 Texture* tex;
-Texture* tileTex;
 Shader* lineShader;
 Shader* tiledShader;
 Shader* simpleShader;
@@ -24,6 +23,7 @@ Mat44 model;
 Mesh quadMesh;
 
 //static defs
+Texture* Game::tileTex;
 float Game::timeScale = 1.0f;
 bool Game::needsShutDown = false;
 int Game::tileSizeX = 24;
@@ -31,22 +31,20 @@ int Game::tileSizeY = 1;
 int Game::tileIndex = 1;
 SDL_Window* Game::window = NULL;
 SDL_GLContext* Game::glContext = NULL;
-SpriteAnimation Game::animation;
+SpriteAnimation Game::idleAnimation;
 SpriteAnimator2 Game::animator;
 
-//Test dinos
-SpriteAnimation idleAnimation;
 SpriteAnimation walkAnimation;
 bool invertX = false;
 bool lookingRight = true;
 
 std::vector<int> ints;
 
-SpriteSheet environtmentSpriteSheet;
+SpriteSheet* environtmentSpriteSheet;
 EntityManager entityManager;
 
 Mix_Music *music = NULL;
-float Game::musicVolume = 10.0f;
+float Game::musicVolume = 2.0f;
 
 void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 {
@@ -67,9 +65,9 @@ void Game::StartUp()
 
 	simpleShader = AssetManager::GetShader("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
 	tiledShader = AssetManager::GetShader("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
-
 	tex = AssetManager::GetTexture("data/Sprites/DinoSprites_doux.png");
 	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
+	environtmentSpriteSheet = AssetManager::GetSpriteSheet("data/SpriteSheets/environtmentSpriteSheet_1.xml");
 
 	//TODO: move this audio stuff
 	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) LOGERROR("Error initializing mixer");
@@ -79,11 +77,8 @@ void Game::StartUp()
 	if (music == NULL) LOGERROR("Error loading music");
 
 	if (Mix_PlayMusic(music, -1) == -1) LOGERROR("Error playing music");
+	Mix_VolumeMusic(musicVolume);
 	//***
-
-	environtmentSpriteSheet.Setup(5, 8, tileTex);
-	environtmentSpriteSheet.height = 5;
-	environtmentSpriteSheet.width = 8;
 
 	entityManager.InitPools();
 	COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
@@ -95,7 +90,7 @@ void Game::StartUp()
 		r->layer = (RENDERER_LAYERS)1;
 		t->transform.translateLocal((float)i * 2.0f, 0.0f, (float)r->layer);
 		r->spriteIndex = 27;
-		r->spriteSheet = &environtmentSpriteSheet;
+		r->spriteSheet = environtmentSpriteSheet;
 	}
 
 	animator.currentAnimation = &idleAnimation;
@@ -103,16 +98,16 @@ void Game::StartUp()
 	animator.currentFrameIndex = 0;
 
 	idleAnimation.startIndex = 0;
-	idleAnimation.endIndex = 4;
-	idleAnimation.totalFrames = 5;
-	idleAnimation.loop = true;
+	idleAnimation.endIndex = 3;
+	idleAnimation.totalFrames = 4;
+	idleAnimation.flags = SPRITE_ANIMATION_FLAGS::LOOP;
 	idleAnimation.framesPerSecond = 1.2f;
 	idleAnimation.totalSeconds = 5 * (1.0f / 1.2f);
 
 	walkAnimation.startIndex = 4;
 	walkAnimation.endIndex = 9;
 	walkAnimation.totalFrames = 6;
-	walkAnimation.loop = true;
+	walkAnimation.flags = SPRITE_ANIMATION_FLAGS::LOOP;
 	walkAnimation.framesPerSecond = 1.3f;
 	walkAnimation.totalSeconds = 6 * (1.0f / 1.3f);
 

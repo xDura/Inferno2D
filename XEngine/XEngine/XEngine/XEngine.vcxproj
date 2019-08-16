@@ -41,10 +41,12 @@
     <ClCompile Include="..\..\src\mesh_loaders.cpp" />
     <ClCompile Include="..\..\src\platform.cpp" />
     <ClCompile Include="..\..\src\pool.cpp" />
-    <ClCompile Include="..\..\src\resource_manager.cpp" />
+    <ClCompile Include="..\..\src\asset_manager.cpp" />
     <ClCompile Include="..\..\src\shader.cpp" />
     <ClCompile Include="..\..\src\skinned_mesh.cpp" />
+    <ClCompile Include="..\..\src\sprite_sheet.cpp" />
     <ClCompile Include="..\..\src\texture.cpp" />
+    <ClCompile Include="..\..\src\tilemap.cpp" />
     <ClCompile Include="..\..\src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -77,7 +79,7 @@
     <ClInclude Include="..\..\src\mesh.h" />
     <ClInclude Include="..\..\src\platform.h" />
     <ClInclude Include="..\..\src\pool.h" />
-    <ClInclude Include="..\..\src\resource_manager.h" />
+    <ClInclude Include="..\..\src\asset_manager.h" />
     <ClInclude Include="..\..\src\skinned_mesh.h" />
     <ClInclude Include="..\..\src\sprite_sheet.h" />
     <ClInclude Include="..\..\src\texture.h" />
@@ -85,6 +87,7 @@
     <ClInclude Include="..\..\src\mathTests.h" />
     <ClInclude Include="..\..\src\opengl_defines.h" />
     <ClInclude Include="..\..\src\shader.h" />
+    <ClInclude Include="..\..\src\tilemap.h" />
     <ClInclude Include="..\..\src\utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

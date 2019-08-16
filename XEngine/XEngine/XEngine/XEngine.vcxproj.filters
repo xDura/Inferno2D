@@ -106,7 +106,13 @@
     <ClCompile Include="..\..\src\texture.cpp">
       <Filter>Root</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\resource_manager.cpp">
+    <ClCompile Include="..\..\src\sprite_sheet.cpp">
+      <Filter>Root</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\asset_manager.cpp">
+      <Filter>Root</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tilemap.cpp">
       <Filter>Root</Filter>
     </ClCompile>
   </ItemGroup>
@@ -213,9 +219,6 @@
     <ClInclude Include="..\..\src\ECS\system_manager.h">
       <Filter>Root\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\resource_manager.h">
-      <Filter>Root</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\External\STB\stb_easy_font.h">
       <Filter>Root\External\STB</Filter>
     </ClInclude>
@@ -224,6 +227,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\External\STB\stb_vorbis.h">
       <Filter>Root\External\STB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\asset_manager.h">
+      <Filter>Root</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tilemap.h">
+      <Filter>Root</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

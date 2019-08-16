@@ -2,9 +2,13 @@
 #include "imguiLayer.h"
 #include "game.h"
 #include "SDL2/SDL.h"
+#include "debug.h"
 
 bool ImguiLayer::showDebugMenu = false;
 bool ImguiLayer::showTilemapMenu = false;
+float editorWindowWidthPercent = 0.05f;
+float editorWindowHeightPercent = 0.08f;
+Texture* buttonTex;
 void ImguiLayer::Init(SDL_Window * a_window, SDL_GLContext * a_context)
 {
 	IMGUI_CHECKVERSION();
@@ -16,6 +20,9 @@ void ImguiLayer::Init(SDL_Window * a_window, SDL_GLContext * a_context)
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
+	buttonTex = new Texture();
+	buttonTex->Load("data/Sprites/tiles.png");
 
 	ImGui_ImplSDL2_InitForOpenGL(a_window, a_context);
 	ImGui_ImplOpenGL2_Init();
@@ -38,9 +45,23 @@ void ImguiLayer::RenderTilemapMenu()
 	ImGui::InputFloat("normalizedTime", &Game::animator.normalizedTime, 1);
 	ImGui::InputFloat("totalSeconds", &Game::animator.currentAnimation->totalSeconds, 1);
 	ImGui::InputInt("totalFrames", &Game::animator.currentAnimation->totalFrames, 1);
-	ImGui::InputInt("AnimationStart", &Game::animation.startIndex, 1);
-	ImGui::InputInt("AnimationEnd", &Game::animation.endIndex, 1);
-	ImGui::SliderFloat("FramesPerSec", &Game::animation.framesPerSecond, 0, 10, "%.2f", 1);
+	ImGui::SliderFloat("FramesPerSec", &Game::idleAnimation.framesPerSecond, 0, 10, "%.2f", 1);
+	Game::idleAnimation.totalSeconds = (1.0f / Game::idleAnimation.framesPerSecond * Game::idleAnimation.totalFrames);
+	ImGui::End();
+}
+
+void ImguiLayer::RenderEditorMenu()
+{
+	int windowFlags = 0;
+	bool b = true;
+	if (ImGui::Begin("Editor Window", &b, windowFlags))
+	{
+		int windowWidth, windowHeight;
+		SDL_GetWindowSize(Game::window, &windowWidth, &windowHeight);
+		bool buttonPressed = ImGui::ImageButton((void*)Game::tileTex->tex_id, ImVec2(windowWidth*editorWindowWidthPercent, windowHeight*editorWindowHeightPercent), ImVec2(0, 0), ImVec2(1, 1), 10, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		if (buttonPressed)
+			LOG("Button Pressed!");
+	}
 	ImGui::End();
 }
 
@@ -66,6 +87,7 @@ void ImguiLayer::OnPreRender()
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
+	RenderEditorMenu();
 	if (showDebugMenu) RenderDebugMenu();
 	if (showTilemapMenu) RenderTilemapMenu();
 }

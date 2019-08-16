@@ -5,6 +5,8 @@
 #include "pool.h"
 #include <unordered_map>
 #include <string>
+#include "External/tinyxml2.h"
+#include "utils.h"
 
 #define DEFAULT_ASSET_POOL_SIZE 100
 
@@ -98,10 +100,11 @@ private:
 
 	static SpriteSheet* LoadSpriteSheet(const char* path)
 	{
-		std::string pathString = path;
-		ASSERT(spriteSheets.find(pathString) == spriteSheets.end());
-		SpriteSheet* newSpriteSheet = spriteSheet_pool.spawn();
-		spriteSheets.emplace(pathString, newSpriteSheet);
-		return newSpriteSheet;
+		std::string keyString = path;
+		ASSERT(spriteSheets.find(path) == spriteSheets.end());
+		SpriteSheet* spriteSheet = spriteSheet_pool.spawn();
+		spriteSheet->Delete();
+		spriteSheet->LoadXML(path);
+		return spriteSheet;
 	}
 };

@@ -7,17 +7,10 @@ public:
 	unsigned int width;
 	unsigned int height;
 	Texture* texture;
-	char* name;
+	char* path;
 
-	void Setup(int a_width, int a_height, Texture* a_tex)
-	{
-		width = a_width;
-		height = a_height;
-		texture = a_tex;
-	}
-
-	void Delete()
-	{
-		free(name);
-	}
+	void Setup(int a_width, int a_height, Texture* a_tex);
+	void Delete();
+	void SaveXML(const char* a_path);
+	void LoadXML(const char* a_path);
 };

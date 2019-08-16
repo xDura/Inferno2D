@@ -1,5 +1,5 @@
 #pragma once
-#include "resource_manager.h"
+#include "asset_manager.h"
 #include "debug.h"
 
 std::unordered_map<std::string, Shader*> AssetManager::shaders;
