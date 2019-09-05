@@ -21,7 +21,6 @@ std::string Tilemap::ValuesToString()
 		}
 		ss << std::endl;
 	}
-	std::cout << ss.str();
 	return ss.str();
 }
 

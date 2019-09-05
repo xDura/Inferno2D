@@ -9,6 +9,7 @@ bool ImguiLayer::showTilemapMenu = false;
 float editorWindowWidthPercent = 0.05f;
 float editorWindowHeightPercent = 0.08f;
 Texture* buttonTex;
+
 void ImguiLayer::Init(SDL_Window * a_window, SDL_GLContext * a_context)
 {
 	IMGUI_CHECKVERSION();

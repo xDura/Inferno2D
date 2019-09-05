@@ -57,11 +57,8 @@ void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 void Game::StartUp()
 {
 	Input::Init(window);
-
 	/*unsigned int memsize = (unsigned int)10000;
 	void* m = Memory::AllocateGameMemory(memsize);*/
-
-	LOG("Sizeof Shader: %d", sizeof(Shader));
 
 	simpleShader = AssetManager::GetShader("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
 	tiledShader = AssetManager::GetShader("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
@@ -69,19 +66,6 @@ void Game::StartUp()
 	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
 
 	environtmentSpriteSheet = AssetManager::GetSpriteSheet("data/SpriteSheets/environtmentSpriteSheet_1.xml");
-
-	Tilemap* t = new Tilemap();
-	std::string s = "data/Tilemaps/tileMap_1.xml";
-	t->spriteSheet = environtmentSpriteSheet;
-	t->path = Copy(s.c_str());
-	t->tileHeight = 1;
-	t->tileWidth = 1;
-	t->width = 10;
-	t->height = 10;
-	t->tileValues.resize(100);
-	for (int i = 0; i < 100; i++) t->tileValues[i] = 27;
-	t->SaveXML("data/Tilemaps/tileMap_1.xml");
-
 	Tilemap* t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
 
 	//TODO: move this audio stuff
