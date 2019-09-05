@@ -74,10 +74,10 @@ void Game::StartUp()
 	std::string s = "data/Tilemaps/tileMap_1.xml";
 	t->spriteSheet = environtmentSpriteSheet;
 	t->path = Copy(s.c_str());
-	t->tileHeight = 10;
-	t->tileWidth = 10;
-	t->width = 1;
-	t->height = 1;
+	t->tileHeight = 1;
+	t->tileWidth = 1;
+	t->width = 10;
+	t->height = 10;
 	t->tileValues.resize(100);
 	for (int i = 0; i < 100; i++) t->tileValues[i] = 27;
 	t->SaveXML("data/Tilemaps/tileMap_1.xml");

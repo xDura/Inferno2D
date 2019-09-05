@@ -4,18 +4,20 @@
 #include "debug.h"
 #include "External/tinyxml2.h"
 #include "asset_manager.h"
+#include <iostream>
+#include <sstream>
 
 std::string Tilemap::ValuesToString()
 {
 	std::stringstream ss;
 	ss << std::endl;
-	for (int i = 0; i < tileHeight; i++)
+	for (int i = 0; i < width; i++)
 	{
-		for (int j = 0; j < tileWidth; j++)
+		for (int j = 0; j < height; j++)
 		{
-			size_t desiredIndex = size_t(i * j + j);
+			unsigned int desiredIndex = (i * width) + j;
 			ss << tileValues[desiredIndex];
-			if (j < tileWidth) ss << " ";
+			if (i < width) ss << " ";
 		}
 		ss << std::endl;
 	}
@@ -82,20 +84,24 @@ void Tilemap::LoadXML(const char* a_path)
 	const char* spritesheet_path;
 	tilemapElem->QueryStringAttribute("SpriteSheet", &spritesheet_path);
 
-	size_t newSize = size_t(tileWidth) * size_t(tileHeight);
+	size_t newSize = size_t(height) * size_t(width);
 	tileValues.resize(newSize);
 	const char* tilemapValues = tilemapElem->GetText();
 
 	std::istringstream ss(tilemapValues);
-	char endl = '0';
-	for (unsigned int i = 0; i < tileHeight; i++)
+	std::string aux_line;
+	std::getline(ss, aux_line);
+	for (unsigned int i = 0; i < width; i++)
 	{
-		for (unsigned int j = 0; j < tileWidth; j++)
+		std::getline(ss, aux_line);
+		std::istringstream lineStream(aux_line);
+		for (unsigned int j = 0; j < height; j++)
 		{
-			size_t desiredIndex = size_t(i * j + j);
-			ss >> tileValues[desiredIndex];
+			int value;
+			lineStream >> value;
+			unsigned int desiredIndex = (i * width) + j;
+			tileValues[desiredIndex] = value;
 		}
-		ss >> endl;
 	}
 	
 	spriteSheet = AssetManager::GetSpriteSheet(spritesheet_path);
