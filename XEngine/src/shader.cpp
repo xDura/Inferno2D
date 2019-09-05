@@ -12,8 +12,9 @@ void Shader::Load(const char* vsPath, const char* psPath)
 	fopen_s(&psFile, fullpathPS.c_str(), "r");
 	if (vsFile == NULL || psFile == NULL)
 	{
-		fclose(vsFile);
-		fclose(psFile);
+		if(vsFile) fclose(vsFile);
+		if(psFile) fclose(psFile);
+
 		ASSERT(false);
 		LOGERROR("Error loading shader files at: %s, %s", fullpathVS.c_str(), fullpathPS.c_str());
 		return;

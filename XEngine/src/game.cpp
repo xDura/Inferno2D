@@ -67,7 +67,22 @@ void Game::StartUp()
 	tiledShader = AssetManager::GetShader("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
 	tex = AssetManager::GetTexture("data/Sprites/DinoSprites_doux.png");
 	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
+
 	environtmentSpriteSheet = AssetManager::GetSpriteSheet("data/SpriteSheets/environtmentSpriteSheet_1.xml");
+
+	Tilemap* t = new Tilemap();
+	std::string s = "data/Tilemaps/tileMap_1.xml";
+	t->spriteSheet = environtmentSpriteSheet;
+	t->path = Copy(s.c_str());
+	t->tileHeight = 10;
+	t->tileWidth = 10;
+	t->width = 1;
+	t->height = 1;
+	t->tileValues.resize(100);
+	for (int i = 0; i < 100; i++) t->tileValues[i] = 27;
+	t->SaveXML("data/Tilemaps/tileMap_1.xml");
+
+	Tilemap* t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
 
 	//TODO: move this audio stuff
 	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) LOGERROR("Error initializing mixer");

@@ -1,15 +1,18 @@
 #pragma once
+#include <vector>
 #include "sprite_sheet.h"
 
 class Tilemap
 {
 public:
+	//TODO: add support for animated tiles inside tilemaps
+	//using AnimatedSprite
 	SpriteSheet* spriteSheet;
 	int width;
 	int height;
 	int tileHeight;
 	int tileWidth;
-	int* values;
+	std::vector<int> tileValues;
 	char* path;
 
 	std::string ValuesToString();
@@ -17,9 +20,5 @@ public:
 
 	void SaveXML(const char* a_path);
 	void LoadXML(const char* a_path);
-	void Delete()
-	{
-		spriteSheet = NULL;
-		free(path);
-	}
+	void Delete();
 };

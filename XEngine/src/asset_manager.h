@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <string>
 #include "External/tinyxml2.h"
+#include "tilemap.h"
 #include "utils.h"
 
 #define DEFAULT_ASSET_POOL_SIZE 100
@@ -16,6 +17,7 @@ public:
 	static std::unordered_map<std::string, Shader*> shaders;
 	static std::unordered_map<std::string, Texture*> textures;
 	static std::unordered_map<std::string, SpriteSheet*> spriteSheets;
+	static std::unordered_map<std::string, Tilemap*> tilemaps;
 
 	static Texture* GetTexture(const char* path)
 	{
@@ -29,6 +31,7 @@ public:
 		ASSERT(tex != NULL);
 		return tex;
 	}
+
 	static Shader* GetShader(const char* vsPath, const char* psPath)
 	{
 		std::string keyString = vsPath;
@@ -42,6 +45,7 @@ public:
 		ASSERT(shader != NULL);
 		return shader;
 	}
+
 	static SpriteSheet* GetSpriteSheet(const char* path)
 	{
 		std::string pathString = path;
@@ -54,11 +58,26 @@ public:
 		ASSERT(spriteSheet != NULL);
 		return spriteSheet;
 	}
+
+	static Tilemap* GetTilemap(const char* path) 
+	{
+		std::string pathString = path;
+		std::unordered_map<std::string, Tilemap*>::const_iterator findResult = tilemaps.find(pathString);
+		Tilemap* tilemap = NULL;
+		if (findResult == tilemaps.end())
+			tilemap = LoadTilemap(path);
+		else
+			tilemap = findResult->second;
+		ASSERT(tilemap != NULL);
+		return tilemap;
+	}
+
 	static void Init()
 	{
 		shader_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 		texture_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 		spriteSheet_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
+		tilemap_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 	}
 	static void ReloadAll()
 	{
@@ -71,12 +90,14 @@ public:
 		shader_pool.release();
 		texture_pool.release();
 		spriteSheet_pool.release();
+		tilemap_pool.release();
 	}
 
 private:
 	static Pool<Shader> shader_pool;
 	static Pool<Texture> texture_pool;
 	static Pool<SpriteSheet> spriteSheet_pool;
+	static Pool<Tilemap> tilemap_pool;
 
 	static Texture* LoadTexture(const char* path)
 	{
@@ -106,5 +127,15 @@ private:
 		spriteSheet->Delete();
 		spriteSheet->LoadXML(path);
 		return spriteSheet;
+	}
+
+	static Tilemap* LoadTilemap(const char* path)
+	{
+		std::string keyString = path;
+		ASSERT(spriteSheets.find(path) == spriteSheets.end());
+		Tilemap* tilemap = tilemap_pool.spawn();
+		tilemap->Delete();
+		tilemap->LoadXML(path);
+		return tilemap;
 	}
 };
