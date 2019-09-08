@@ -64,9 +64,9 @@ void Game::StartUp()
 	tiledShader = AssetManager::GetShader("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
 	tex = AssetManager::GetTexture("data/Sprites/DinoSprites_doux.png");
 	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
-
 	environtmentSpriteSheet = AssetManager::GetSpriteSheet("data/SpriteSheets/environtmentSpriteSheet_1.xml");
-	Tilemap* t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
+
+
 
 	//TODO: move this audio stuff
 	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) LOGERROR("Error initializing mixer");
@@ -81,16 +81,26 @@ void Game::StartUp()
 
 	entityManager.InitPools();
 	COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
-	for (unsigned int i = 0; i < 10; i++)
+	Tilemap* t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
+	for (int i = 0; i < t2->width; i++)
 	{
-		Entity* entity = entityManager.CreateEntity(transformAndSprite);
-		Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
-		SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-		r->layer = (RENDERER_LAYERS)1;
-		t->transform.translateLocal((float)i * 2.0f, 0.0f, (float)r->layer);
-		r->spriteIndex = 27;
-		r->spriteSheet = environtmentSpriteSheet;
+		for (int j = 0; j < t2->height; j++)
+		{
+			Entity* entity = entityManager.CreateEntity(transformAndSprite);
+			Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
+			SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
+			r->layer = (RENDERER_LAYERS)1;
+
+			int currentTilemapX = t2->width - i;
+			int currentTilemapY = t2->height - j;
+
+			t->transform.translateLocal(currentTilemapX * t2->tileWidth * 2, currentTilemapY * t2->tileHeight * 2, (float)r->layer);
+			t->transform.scale(Vector3((float)t2->tileWidth, (float)t2->tileHeight, 0.0f));
+			r->spriteIndex = t2->tileValues[i*t2->width + j];
+			r->spriteSheet = t2->spriteSheet;
+		}
 	}
+
 
 	animator.currentAnimation = &idleAnimation;
 	animator.normalizedTime = 0.0f;
