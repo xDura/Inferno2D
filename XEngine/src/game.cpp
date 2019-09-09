@@ -86,18 +86,23 @@ void Game::StartUp()
 	{
 		for (int j = 0; j < t2->height; j++)
 		{
-			Entity* entity = entityManager.CreateEntity(transformAndSprite);
-			Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
-			SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-			r->layer = (RENDERER_LAYERS)1;
+			unsigned int desiredIndex = (i * t2->width) + j;
+			int spriteValue = t2->tileValues[desiredIndex];
+			if (spriteValue != -1)
+			{
+				Entity* entity = entityManager.CreateEntity(transformAndSprite);
+				Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
+				SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
+				r->layer = (RENDERER_LAYERS)1;
 
-			int currentTilemapX = t2->width - i;
-			int currentTilemapY = t2->height - j;
+				int currentTilemapY = t2->width - i;
+				int currentTilemapX = /*t2->height - */j;
 
-			t->transform.translateLocal(currentTilemapX * t2->tileWidth * 2, currentTilemapY * t2->tileHeight * 2, (float)r->layer);
-			t->transform.scale(Vector3((float)t2->tileWidth, (float)t2->tileHeight, 0.0f));
-			r->spriteIndex = t2->tileValues[i*t2->width + j];
-			r->spriteSheet = t2->spriteSheet;
+				t->transform.translate(currentTilemapX * t2->tileWidth * 2, currentTilemapY * t2->tileHeight * 2, (float)r->layer);
+				t->transform.scale(Vector3((float)t2->tileWidth, (float)t2->tileHeight, 0.0f));
+				r->spriteIndex = t2->tileValues[desiredIndex];
+				r->spriteSheet = t2->spriteSheet;
+			}
 		}
 	}
 
@@ -128,10 +133,10 @@ void Game::StartUp()
 	generateQuad(&quadMesh);
 
 	model = Mat44();
-	model.translateLocal(0.0f, 1.7f, -1.0f);
+	model.translateLocal(0.0f, 3.3f, -1.0f);
 
-	Vector3 camPos = Vector3(10.0f, 1.0f, 20.0f);
-	Vector3 camTarget = Vector3(10.0f, 1.0f, 0.0f);
+	Vector3 camPos = Vector3(10.0f, 10.0f, 40.0f);
+	Vector3 camTarget = Vector3(10.0f, 10.0f, 0.0f);
 	Vector3 camUp = Vector3(0.0f, 1.0f, 0.0f);
 
 	int width, height;
