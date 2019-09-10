@@ -264,6 +264,7 @@ void Game::Update(float deltaTime)
 
 void Game::ReloadTileMap() 
 {
+	//TODO: coment on TilemapToEntites
 	for (unsigned int i = 0; i < tilemapEntites.size(); i++)
 	{
 		entityManager.DestroyEntity(tilemapEntites[i]);
@@ -277,6 +278,10 @@ void Game::ReloadTileMap()
 
 void Game::TilemapToEntities() 
 {
+	//TODO not only remove this
+	//but also each tile should not be an entity
+	//instead add a TilemapRenderer component
+	//and a Tilemap collider 
 	if (t2 == NULL)
 	{
 		LOGERROR("No tilemap and called TilemapToEntities");
