@@ -5,8 +5,6 @@
 class Tilemap
 {
 public:
-	//TODO: add support for animated tiles inside tilemaps
-	//using AnimatedSprite
 	SpriteSheet* spriteSheet;
 	int width;
 	int height;
@@ -15,10 +13,10 @@ public:
 	std::vector<int> tileValues;
 	char* path;
 
-	std::string ValuesToString();
+	std::string ValuesToString() const;
 	void GetValues(const std::string& s);
 
-	void SaveXML(const char* a_path);
+	void SaveXML(const char* a_path) const;
 	void LoadXML(const char* a_path);
 	void Delete();
 };

@@ -13,6 +13,10 @@ public:
 	static void FixedUpdate(float deltaTime);
 	static void ShutDown();
 
+	//TODO: remove this
+	static void ReloadTileMap();
+	static void TilemapToEntities();
+
 	static bool needsShutDown;
 	static SDL_Window* window;
 	static SDL_GLContext* glContext;

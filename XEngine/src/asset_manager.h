@@ -79,9 +79,22 @@ public:
 		spriteSheet_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 		tilemap_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 	}
+
 	static void ReloadAll()
 	{
 	}
+
+	static void ReloadTilemaps() 
+	{
+		std::unordered_map<std::string, Tilemap*>::iterator it = tilemaps.begin();
+		while (it != tilemaps.end())
+		{
+			it->second->Delete();
+			it->second->LoadXML(it->first.c_str());
+			it++;
+		}
+	}
+
 	static void Destroy()
 	{
 		shaders.clear();

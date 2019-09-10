@@ -60,7 +60,11 @@ void ImguiLayer::RenderEditorMenu()
 		int windowWidth, windowHeight;
 		SDL_GetWindowSize(Game::window, &windowWidth, &windowHeight);
 		bool buttonPressed = ImGui::ImageButton((void*)Game::tileTex->tex_id, ImVec2(windowWidth*editorWindowWidthPercent, windowHeight*editorWindowHeightPercent), ImVec2(0, 0), ImVec2(1, 1), 3, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-		if (buttonPressed) LOG("Button Pressed!");
+		if (buttonPressed)
+		{ 
+			LOG("Button Pressed!"); 
+			Game::ReloadTileMap();
+		}
 	}
 	ImGui::End();
 }

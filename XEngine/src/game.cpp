@@ -46,6 +46,9 @@ EntityManager entityManager;
 Mix_Music *music = NULL;
 float Game::musicVolume = 2.0f;
 
+Tilemap* t2;
+std::vector<Entity*> tilemapEntites;
+
 void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 {
 	window = a_window;
@@ -66,8 +69,6 @@ void Game::StartUp()
 	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
 	environtmentSpriteSheet = AssetManager::GetSpriteSheet("data/SpriteSheets/environtmentSpriteSheet_1.xml");
 
-
-
 	//TODO: move this audio stuff
 	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) LOGERROR("Error initializing mixer");
 
@@ -80,32 +81,8 @@ void Game::StartUp()
 	//***
 
 	entityManager.InitPools();
-	COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
-	Tilemap* t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
-	for (int i = 0; i < t2->width; i++)
-	{
-		for (int j = 0; j < t2->height; j++)
-		{
-			unsigned int desiredIndex = (i * t2->width) + j;
-			int spriteValue = t2->tileValues[desiredIndex];
-			if (spriteValue != -1)
-			{
-				Entity* entity = entityManager.CreateEntity(transformAndSprite);
-				Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
-				SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-				r->layer = (RENDERER_LAYERS)1;
-
-				int currentTilemapY = t2->width - i;
-				int currentTilemapX = /*t2->height - */j;
-
-				t->transform.translate(currentTilemapX * t2->tileWidth * 2, currentTilemapY * t2->tileHeight * 2, (float)r->layer);
-				t->transform.scale(Vector3((float)t2->tileWidth, (float)t2->tileHeight, 0.0f));
-				r->spriteIndex = t2->tileValues[desiredIndex];
-				r->spriteSheet = t2->spriteSheet;
-			}
-		}
-	}
-
+	t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
+	TilemapToEntities();
 
 	animator.currentAnimation = &idleAnimation;
 	animator.normalizedTime = 0.0f;
@@ -283,6 +260,57 @@ void Game::Update(float deltaTime)
 	SDL_GL_SwapWindow(window);
 
 	//********************************************************
+}
+
+void Game::ReloadTileMap() 
+{
+	for (unsigned int i = 0; i < tilemapEntites.size(); i++)
+	{
+		entityManager.DestroyEntity(tilemapEntites[i]);
+	}
+
+	tilemapEntites.clear();
+	AssetManager::ReloadTilemaps();
+	t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
+	TilemapToEntities();
+}
+
+void Game::TilemapToEntities() 
+{
+	if (t2 == NULL)
+	{
+		LOGERROR("No tilemap and called TilemapToEntities");
+		return;
+	}
+
+	COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
+	for (int i = 0; i < t2->width; i++)
+	{
+		for (int j = 0; j < t2->height; j++)
+		{
+			unsigned int desiredIndex = (i * t2->width) + j;
+			int spriteValue = t2->tileValues[desiredIndex];
+			LOG("%d", spriteValue);
+			if (spriteValue != -1)
+			{
+				Entity* entity = entityManager.CreateEntity(transformAndSprite);
+				tilemapEntites.push_back(entity);
+				Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
+				SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
+				r->layer = (RENDERER_LAYERS)1;
+
+				int currentTilemapY = t2->width - i;
+				int currentTilemapX = /*t2->height - */j;
+
+				t->transform.setIdentity();
+				t->transform.translate(currentTilemapX * t2->tileWidth * 2, currentTilemapY * t2->tileHeight * 2, (float)r->layer);
+				t->transform.scale(Vector3((float)t2->tileWidth, (float)t2->tileHeight, 0.0f));
+				r->spriteIndex = t2->tileValues[desiredIndex];
+				r->spriteSheet = t2->spriteSheet;
+			}
+		}
+		LOG("\n");
+	}
 }
 
 void Game::FixedUpdate(float deltaTime)

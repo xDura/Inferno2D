@@ -7,7 +7,7 @@
 #include <iostream>
 #include <sstream>
 
-std::string Tilemap::ValuesToString()
+std::string Tilemap::ValuesToString() const
 {
 	std::stringstream ss;
 	ss << std::endl;
@@ -24,11 +24,26 @@ std::string Tilemap::ValuesToString()
 	return ss.str();
 }
 
-void Tilemap::GetValues(const std::string & s)
+void Tilemap::GetValues(const std::string& s)
 {
+	std::istringstream ss(s);
+	std::string aux_line;
+	std::getline(ss, aux_line);
+	for (unsigned int i = 0; i < width; i++)
+	{
+		std::getline(ss, aux_line);
+		std::istringstream lineStream(aux_line);
+		for (unsigned int j = 0; j < height; j++)
+		{
+			int value;
+			lineStream >> value;
+			unsigned int desiredIndex = (i * width) + j;
+			tileValues[desiredIndex] = value;
+		}
+	}
 }
 
-void Tilemap::SaveXML(const char* a_path)
+void Tilemap::SaveXML(const char* a_path) const
 {
 	ASSERT(spriteSheet != NULL);
 	tinyxml2::XMLDocument doc;
@@ -43,7 +58,7 @@ void Tilemap::SaveXML(const char* a_path)
 	spriteSheetNode->SetAttribute("tileWidth", tileWidth);
 	spriteSheetNode->SetAttribute("tileHeight", tileHeight);
 	spriteSheetNode->SetAttribute("SpriteSheet", spriteSheet->path);
-	//TODO: investigate other way to serialize the int array
+	//TODO: investigate better way to serialize the int array
 	spriteSheetNode->SetText(ValuesToString().c_str());
 	doc.InsertEndChild(spriteSheetNode);
 
@@ -69,11 +84,10 @@ void Tilemap::LoadXML(const char* a_path)
 	{
 		LOG("Error reading Tilemap from XML at %s", a_path);
 		ASSERT(false);
+		return;
 	}
 
 	tinyxml2::XMLNode* versionNode = doc.FirstChild();
-	//TODO: check versions
-
 	tinyxml2::XMLNode* tilemapNode = versionNode->NextSibling();
 	tinyxml2::XMLElement* tilemapElem = tilemapNode->ToElement();
 	tilemapElem->QueryIntAttribute("width", &width);
@@ -86,28 +100,18 @@ void Tilemap::LoadXML(const char* a_path)
 	size_t newSize = size_t(height) * size_t(width);
 	tileValues.resize(newSize);
 	const char* tilemapValues = tilemapElem->GetText();
-
-	std::istringstream ss(tilemapValues);
-	std::string aux_line;
-	std::getline(ss, aux_line);
-	for (unsigned int i = 0; i < width; i++)
-	{
-		std::getline(ss, aux_line);
-		std::istringstream lineStream(aux_line);
-		for (unsigned int j = 0; j < height; j++)
-		{
-			int value;
-			lineStream >> value;
-			unsigned int desiredIndex = (i * width) + j;
-			tileValues[desiredIndex] = value;
-		}
-	}
-	
+	GetValues(tilemapValues);
 	spriteSheet = AssetManager::GetSpriteSheet(spritesheet_path);
+	fclose(file);
 }
 
 void Tilemap::Delete()
 {
+	width = 0;
+	height = 0;
+	tileWidth = 0;
+	tileHeight = 0;
 	spriteSheet = NULL;
+	tileValues.clear();
 	free(path);
 }
