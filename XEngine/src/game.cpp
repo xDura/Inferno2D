@@ -289,9 +289,9 @@ void Game::TilemapToEntities()
 	}
 
 	COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
-	for (int i = 0; i < t2->width; i++)
+	for (int i = 0; i < t2->height; i++)
 	{
-		for (int j = 0; j < t2->height; j++)
+		for (int j = 0; j < t2->width; j++)
 		{
 			unsigned int desiredIndex = (i * t2->width) + j;
 			int spriteValue = t2->tileValues[desiredIndex];
@@ -304,8 +304,8 @@ void Game::TilemapToEntities()
 				SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
 				r->layer = (RENDERER_LAYERS)1;
 
-				int currentTilemapY = t2->width - i;
-				int currentTilemapX = /*t2->height - */j;
+				int currentTilemapY = t2->height - i;
+				int currentTilemapX = j;
 
 				t->transform.setIdentity();
 				t->transform.translate(currentTilemapX * t2->tileWidth * 2, currentTilemapY * t2->tileHeight * 2, (float)r->layer);
