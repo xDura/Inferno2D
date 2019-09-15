@@ -265,10 +265,7 @@ void Game::Update(float deltaTime)
 void Game::ReloadTileMap() 
 {
 	//TODO: coment on TilemapToEntites
-	for (unsigned int i = 0; i < tilemapEntites.size(); i++)
-	{
-		entityManager.DestroyEntity(tilemapEntites[i]);
-	}
+	for (unsigned int i = 0; i < tilemapEntites.size(); i++) entityManager.DestroyEntity(tilemapEntites[i]);
 
 	tilemapEntites.clear();
 	AssetManager::ReloadTilemaps();

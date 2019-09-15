@@ -18,5 +18,6 @@ public:
 
 	void SaveXML(const char* a_path) const;
 	void LoadXML(const char* a_path);
+	void ReloadXML();
 	void Delete();
 };

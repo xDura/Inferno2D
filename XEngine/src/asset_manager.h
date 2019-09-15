@@ -89,8 +89,7 @@ public:
 		std::unordered_map<std::string, Tilemap*>::iterator it = tilemaps.begin();
 		while (it != tilemaps.end())
 		{
-			it->second->Delete();
-			it->second->LoadXML(it->first.c_str());
+			it->second->ReloadXML();
 			it++;
 		}
 	}
@@ -139,6 +138,7 @@ private:
 		SpriteSheet* spriteSheet = spriteSheet_pool.spawn();
 		spriteSheet->Delete();
 		spriteSheet->LoadXML(path);
+		spriteSheets.emplace(keyString, spriteSheet);
 		return spriteSheet;
 	}
 
@@ -149,6 +149,7 @@ private:
 		Tilemap* tilemap = tilemap_pool.spawn();
 		tilemap->Delete();
 		tilemap->LoadXML(path);
+		tilemaps.emplace(keyString, tilemap);
 		return tilemap;
 	}
 };

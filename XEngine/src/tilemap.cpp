@@ -68,6 +68,7 @@ void Tilemap::SaveXML(const char* a_path) const
 	ASSERT(file != NULL);
 
 	doc.SaveFile(file);
+	doc.Clear();
 	fclose(file);
 }
 
@@ -102,7 +103,21 @@ void Tilemap::LoadXML(const char* a_path)
 	const char* tilemapValues = tilemapElem->GetText();
 	GetValues(tilemapValues);
 	spriteSheet = AssetManager::GetSpriteSheet(spritesheet_path);
+	doc.Clear();
 	fclose(file);
+}
+
+void Tilemap::ReloadXML()
+{
+	if (path == NULL)
+	{
+		LOGERROR("trying to reload an uninitialized tilemap");
+		return;
+	}
+	const char* pathCopy = Copy(path);
+	Delete();
+	LoadXML(pathCopy);
+	free((char*)pathCopy);
 }
 
 void Tilemap::Delete()
@@ -114,4 +129,5 @@ void Tilemap::Delete()
 	spriteSheet = NULL;
 	tileValues.clear();
 	free(path);
+	path = NULL;
 }

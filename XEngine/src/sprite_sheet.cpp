@@ -41,6 +41,7 @@ void SpriteSheet::SaveXML(const char * a_path)
 	ASSERT(file != NULL);
 
 	doc.SaveFile(file);
+	doc.Clear();
 	fclose(file);
 }
 
@@ -71,4 +72,7 @@ void SpriteSheet::LoadXML(const char * a_path)
 	const char* texturePath;
 	elem->QueryStringAttribute("texture", &texturePath);
 	texture = AssetManager::GetTexture(texturePath);
+
+	doc.Clear();
+	fclose(file);
 }
