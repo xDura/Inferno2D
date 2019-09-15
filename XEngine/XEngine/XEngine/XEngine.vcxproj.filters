@@ -115,6 +115,9 @@
     <ClCompile Include="..\..\src\tilemap.cpp">
       <Filter>Root</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\level.cc">
+      <Filter>Root</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\math.h">
@@ -232,6 +235,9 @@
       <Filter>Root</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\tilemap.h">
+      <Filter>Root</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\level.h">
       <Filter>Root</Filter>
     </ClInclude>
   </ItemGroup>
