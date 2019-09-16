@@ -8,6 +8,7 @@
 #include "External/tinyxml2.h"
 #include "tilemap.h"
 #include "utils.h"
+#include "level.h"
 
 #define DEFAULT_ASSET_POOL_SIZE 100
 
@@ -18,6 +19,7 @@ public:
 	static std::unordered_map<std::string, Texture*> textures;
 	static std::unordered_map<std::string, SpriteSheet*> spriteSheets;
 	static std::unordered_map<std::string, Tilemap*> tilemaps;
+	static std::unordered_map<std::string, Level*> levels;
 
 	static Texture* GetTexture(const char* path)
 	{
@@ -72,12 +74,27 @@ public:
 		return tilemap;
 	}
 
+	static Level* GetLevel(const char* path)
+	{
+		std::string pathString = path;
+		std::unordered_map<std::string, Level*>::const_iterator findResult = levels.find(pathString);
+		Level* level = NULL;
+		if (findResult == levels.end())
+			level = LoadLevel(path);
+		else
+			level = findResult->second;
+		ASSERT(level != NULL);
+		return level;
+	}
+
+
 	static void Init()
 	{
 		shader_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 		texture_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 		spriteSheet_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 		tilemap_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
+		level_pool.prewarm(DEFAULT_ASSET_POOL_SIZE);
 	}
 
 	static void ReloadAll()
@@ -99,10 +116,14 @@ public:
 		shaders.clear();
 		textures.clear();
 		spriteSheets.clear();
+		tilemaps.clear();
+		levels.clear();
+
 		shader_pool.release();
 		texture_pool.release();
 		spriteSheet_pool.release();
 		tilemap_pool.release();
+		level_pool.release();
 	}
 
 private:
@@ -110,6 +131,7 @@ private:
 	static Pool<Texture> texture_pool;
 	static Pool<SpriteSheet> spriteSheet_pool;
 	static Pool<Tilemap> tilemap_pool;
+	static Pool<Level> level_pool;
 
 	static Texture* LoadTexture(const char* path)
 	{
@@ -151,5 +173,16 @@ private:
 		tilemap->LoadXML(path);
 		tilemaps.emplace(keyString, tilemap);
 		return tilemap;
+	}
+
+	static Level* LoadLevel(const char* path)
+	{
+		std::string keyString = path;
+		ASSERT(spriteSheets.find(path) == spriteSheets.end());
+		Level* level = level_pool.spawn();
+		level->Delete();
+		level->LoadXML(path);
+		levels.emplace(keyString, level);
+		return level;
 	}
 };

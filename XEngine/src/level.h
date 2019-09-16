@@ -10,7 +10,7 @@ class Level
 public:
 	std::vector<Tilemap*> tilemaps;
 	std::vector<int> tilemap_layers;
-	Vector3 position;
+	Vector2 position;
 
 	char* path;
 	std::vector<Entity*> level_entities;
