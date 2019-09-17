@@ -49,6 +49,8 @@ float Game::musicVolume = 2.0f;
 Tilemap* t2;
 std::vector<Entity*> tilemapEntites;
 
+Level* level;
+
 void Game::Init(SDL_Window* a_window, SDL_GLContext* a_context)
 {
 	window = a_window;
@@ -65,7 +67,7 @@ void Game::StartUp()
 
 	simpleShader = AssetManager::GetShader("data/Shaders/simpleVert.vs", "data/Shaders/simpleFrag.ps");
 	tiledShader = AssetManager::GetShader("data/Shaders/tileVert.vs", "data/Shaders/tileFrag.ps");
-	tex = AssetManager::GetTexture("data/Sprites/DinoSprites_doux.png");
+	tex = AssetManager::GetTexture("data/Sprites/DinoSprites_mort.png");
 	tileTex = AssetManager::GetTexture("data/Sprites/tiles.png");
 	environtmentSpriteSheet = AssetManager::GetSpriteSheet("data/SpriteSheets/environtmentSpriteSheet_1.xml");
 
@@ -82,6 +84,8 @@ void Game::StartUp()
 
 	entityManager.InitPools();
 	t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
+
+	level = AssetManager::GetLevel("data/Levels/level01.xml");
 	TilemapToEntities();
 
 	animator.currentAnimation = &idleAnimation;
@@ -110,7 +114,7 @@ void Game::StartUp()
 	generateQuad(&quadMesh);
 
 	model = Mat44();
-	model.translateLocal(0.0f, 3.3f, -1.0f);
+	model.translateLocal(0.0f, 3.6f, 0.0f);
 
 	Vector3 camPos = Vector3(10.0f, 10.0f, 40.0f);
 	Vector3 camTarget = Vector3(10.0f, 10.0f, 0.0f);
@@ -269,7 +273,9 @@ void Game::ReloadTileMap()
 
 	tilemapEntites.clear();
 	AssetManager::ReloadTilemaps();
+	AssetManager::ReloadLevels();
 	t2 = AssetManager::GetTilemap("data/Tilemaps/tileMap_1.xml");
+	level = AssetManager::GetLevel("data/Levels/level01.xml");
 	TilemapToEntities();
 }
 
@@ -279,40 +285,39 @@ void Game::TilemapToEntities()
 	//but also each tile should not be an entity
 	//instead add a TilemapRenderer component
 	//and a Tilemap collider 
-	if (t2 == NULL)
+	for (unsigned int i = 0; i < level->tilemaps.size(); i++)
 	{
-		LOGERROR("No tilemap and called TilemapToEntities");
-		return;
-	}
+		Tilemap* t = level->tilemaps[i];
+		RENDERER_LAYERS layer = (RENDERER_LAYERS)level->tilemap_layers[i];
 
-	COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
-	for (int i = 0; i < t2->height; i++)
-	{
-		for (int j = 0; j < t2->width; j++)
+		COMPONENT_ID transformAndSprite = component_id(COMPONENT_ID::SPRITE_RENDERER | COMPONENT_ID::TRANSFORM);
+		for (int i = 0; i < t->height; i++)
 		{
-			unsigned int desiredIndex = (i * t2->width) + j;
-			int spriteValue = t2->tileValues[desiredIndex];
-			LOG("%d", spriteValue);
-			if (spriteValue != -1)
+			for (int j = 0; j < t->width; j++)
 			{
-				Entity* entity = entityManager.CreateEntity(transformAndSprite);
-				tilemapEntites.push_back(entity);
-				Transform* t = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
-				SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
-				r->layer = (RENDERER_LAYERS)1;
+				unsigned int desiredIndex = (i * t->width) + j;
+				int spriteValue = t->tileValues[desiredIndex];
+				if (spriteValue != -1)
+				{
+					Entity* entity = entityManager.CreateEntity(transformAndSprite);
+					tilemapEntites.push_back(entity);
+					Transform* trans = (Transform*)entity->GetComponent(COMPONENT_ID::TRANSFORM);
+					SpriteRenderer* r = (SpriteRenderer*)entity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
+					r->layer = layer;
 
-				int currentTilemapY = t2->height - i;
-				int currentTilemapX = j;
+					int currentTilemapY = t->height - i;
+					int currentTilemapX = j;
 
-				t->transform.setIdentity();
-				t->transform.translate(currentTilemapX * t2->tileWidth * 2, currentTilemapY * t2->tileHeight * 2, (float)r->layer);
-				t->transform.scale(Vector3((float)t2->tileWidth, (float)t2->tileHeight, 0.0f));
-				r->spriteIndex = t2->tileValues[desiredIndex];
-				r->spriteSheet = t2->spriteSheet;
+					trans->transform.setIdentity();
+					trans->transform.translate(currentTilemapX * t->tileWidth * 2, currentTilemapY * t->tileHeight * 2, (float)layer);
+					trans->transform.scale(Vector3((float)t->tileWidth, (float)t->tileHeight, 0.0f));
+					r->spriteIndex = t->tileValues[desiredIndex];
+					r->spriteSheet = t->spriteSheet;
+				}
 			}
 		}
-		LOG("\n");
 	}
+
 }
 
 void Game::FixedUpdate(float deltaTime)

@@ -81,6 +81,7 @@ void Tilemap::LoadXML(const char* a_path)
 
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLError err = doc.LoadFile(file);
+	path = Copy(a_path);
 	if (err != 0)
 	{
 		LOG("Error reading Tilemap from XML at %s", a_path);

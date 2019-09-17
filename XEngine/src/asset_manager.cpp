@@ -11,4 +11,5 @@ std::unordered_map<std::string, Level*> AssetManager::levels;
 Pool<Texture> AssetManager::texture_pool;
 Pool<Shader> AssetManager::shader_pool;
 Pool<SpriteSheet> AssetManager::spriteSheet_pool;
+Pool<Tilemap> AssetManager::tilemap_pool;
 Pool<Level> AssetManager::level_pool;

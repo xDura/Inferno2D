@@ -3,9 +3,9 @@
 
 void EntityManager::InitPools()
 {
-	entityPool.prewarm(100);
-	transforms.prewarm(200);
-	sprites.prewarm(200);
+	entityPool.prewarm(300);
+	transforms.prewarm(300);
+	sprites.prewarm(300);
 	animators.prewarm(30);
 }
 

@@ -1,4 +1,5 @@
 #ifndef LEVEL_H
+#define LEVEL_H
 #include "ECS/entity_manager.h"
 #include "tilemap.h"
 #include "sprite_sheet.h"

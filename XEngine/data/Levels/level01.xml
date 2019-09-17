@@ -1,0 +1,6 @@
+<Version>0.0.1</Version>
+
+<level numTilemaps="2" x="0" y="0">
+    <tilemap layer="1" path="data/Tilemaps/tileMap_1.xml"/>
+	<tilemap layer="-1" path="data/Tilemaps/tileMap_2.xml"/>
+</level>

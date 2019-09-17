@@ -5,6 +5,34 @@
 
 void Level::SaveXML(const char * a_path) const
 {
+	tinyxml2::XMLDocument doc;
+	tinyxml2::XMLElement* versionNode = doc.NewElement("Version");
+	tinyxml2::XMLText* versionText = doc.NewText("0.0.1");
+	versionNode->InsertEndChild(versionText);
+	doc.InsertEndChild(versionNode);
+
+	tinyxml2::XMLElement* levelNode = doc.NewElement("level");
+	levelNode->SetAttribute("numTilemaps", (int)tilemaps.size());
+	levelNode->SetAttribute("x", position.x);
+	levelNode->SetAttribute("y", position.y);
+	doc.InsertEndChild(levelNode);
+
+	for (unsigned int i = 0; i < tilemaps.size(); i++)
+	{
+		tinyxml2::XMLElement* currentTilemapNode = doc.NewElement("tilemap");
+		currentTilemapNode->SetAttribute("layer", tilemap_layers[i]);
+		currentTilemapNode->SetAttribute("path", tilemaps[i]->path);
+		levelNode->InsertEndChild(currentTilemapNode);
+	}
+
+	std::string fullpath = Path::GetPath(a_path);
+	FILE* file;
+	fopen_s(&file, fullpath.c_str(), "w+");
+	ASSERT(file != NULL);
+
+	doc.SaveFile(file);
+	doc.Clear();
+	fclose(file);
 }
 
 void Level::LoadXML(const char * a_path)
@@ -52,8 +80,24 @@ void Level::LoadXML(const char * a_path)
 
 void Level::ReloadXML()
 {
+	if (path == NULL)
+	{
+		LOGERROR("trying to reload an uninitialized level");
+		return;
+	}
+	const char* pathCopy = Copy(path);
+	Delete();
+	LoadXML(pathCopy);
+	free((char*)pathCopy);
 }
 
 void Level::Delete()
 {
+	tilemaps.clear();
+	tilemap_layers.clear();
+	free(path);
+	path = NULL;
+
+	//TODO: check out if we have to always do the entity destruction here
+	level_entities.clear();
 }

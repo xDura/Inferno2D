@@ -111,6 +111,16 @@ public:
 		}
 	}
 
+	static void ReloadLevels()
+	{
+		std::unordered_map<std::string, Level*>::iterator it = levels.begin();
+		while (it != levels.end())
+		{
+			it->second->ReloadXML();
+			it++;
+		}
+	}
+
 	static void Destroy()
 	{
 		shaders.clear();
