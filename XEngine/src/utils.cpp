@@ -109,10 +109,10 @@ bool DeserializeCharArray(char * string, FILE * file)
 
 	int size = 0;
 	fread(&size, sizeof(int), 1, file);
-	string = new char[size];
+	string = (char*)malloc(size * sizeof(char));
 	if (size != 0)
 	{
-		int totalReads = (int)fread(&string, sizeof(char), size, file);
+		int totalReads = (int)fread(string, sizeof(char), size, file);
 		return totalReads == size;
 	}
 	return true;
