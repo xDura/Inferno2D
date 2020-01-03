@@ -11,18 +11,18 @@ class Mesh
 {
 public:
 
-	std::vector<Vector3> verts;
-	std::vector<Vector3> normals;
-	std::vector<Vector2> uvs;
-	std::vector<Vector3> colors;
+	std::vector<Vec3f> verts;
+	std::vector<Vec3f> normals;
+	std::vector<Vec2f> uvs;
+	std::vector<Vec3f> colors;
 
-	unsigned int verts_VBO;
-	unsigned int uvs_VBO;
-	unsigned int colors_VBO;
-	unsigned int VAO;
+	u32 verts_VBO;
+	u32 uvs_VBO;
+	u32 colors_VBO;
+	u32 VAO;
 
 	//@TODO: remove this when we add the verts
-	unsigned int length;
+	u32 length;
 
 	Mesh(){}
 
@@ -35,5 +35,5 @@ public:
 		//TODO: clear any stuff on the GPU etc
 	}
 
-	void InitGL();
+	void initGL();
 };

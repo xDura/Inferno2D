@@ -5,7 +5,7 @@
 #include "iostream"
 #include "string"
 
-void setGreatestWeights(Vector4 & weights, Vector4 & boneIds, float newWeight, int newBoneId)
+void setGreatestWeights(Vec4f & weights, Vec4f & boneIds, float newWeight, s32 newBoneId)
 {
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -16,10 +16,10 @@ void setGreatestWeights(Vector4 & weights, Vector4 & boneIds, float newWeight, i
 	}
 }
 
-bool debugDrawText(float x, float y, std::string text, Vector3 c, float scale, int window_width, int window_height)
+bool debugDrawText(float x, float y, std::string text, Vec3f c, float scale, s32 window_width, s32 window_height)
 {
 	static char buffer[99999]; // ~500 chars
-	int num_quads;
+	s32 num_quads;
 
 	if (scale == 0)
 		return true;
@@ -29,7 +29,7 @@ bool debugDrawText(float x, float y, std::string text, Vector3 c, float scale, i
 
 	num_quads = stb_easy_font_print(x, y, (char*)(text.c_str()), NULL, buffer, sizeof(buffer));
 
-	Mat44 projection_matrix;
+	Mat44f projection_matrix;
 	projection_matrix.setOrthographic(0, window_width / scale, window_height / scale, 0, -1, 1);
 
 	glDisable(GL_DEPTH_TEST);
@@ -37,7 +37,7 @@ bool debugDrawText(float x, float y, std::string text, Vector3 c, float scale, i
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	glLoadMatrixf(Mat44().values);
+	glLoadMatrixf(Mat44f().values);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadMatrixf(projection_matrix.values);
@@ -62,12 +62,12 @@ bool serializeString(std::string & s, FILE * file)
 {
 	if (file == NULL) return false;
 
-	int size = (int)s.size();
+	s32 size = (int)s.size();
 	fwrite(&size, sizeof(int), 1, file);
 	if (size != 0)
 	{
 
-		int totalWrites = (int)fwrite(&s[0], sizeof(char), size, file);
+		s32 totalWrites = (int)fwrite(&s[0], sizeof(char), size, file);
 		return totalWrites == size;
 	}
 	return true;
@@ -77,12 +77,12 @@ bool deserializeString(std::string & s, FILE * file)
 {
 	if (file == NULL) return false;
 
-	int size = 0;
+	s32 size = 0;
 	fread(&size, sizeof(int), 1, file);
 	s.resize(size, 'c');
 	if (size != 0)
 	{
-		int totalReads = (int)fread(&s[0], sizeof(char), size, file);
+		s32 totalReads = (int)fread(&s[0], sizeof(char), size, file);
 		return totalReads == size;
 	}
 	return true;
@@ -92,12 +92,12 @@ bool serializeCharArray(const char * string, FILE * file)
 {
 	if (file == NULL) return false;
 
-	int size = (int)strlen(string);
+	s32 size = (int)strlen(string);
 	fwrite(&size, sizeof(int), 1, file);
 	if (size != 0)
 	{
 
-		int totalWrites = (int)fwrite(&string, sizeof(char), size, file);
+		s32 totalWrites = (int)fwrite(&string, sizeof(char), size, file);
 		return totalWrites == size;
 	}
 	return true;
@@ -107,12 +107,12 @@ bool deserializeCharArray(char * string, FILE * file)
 {
 	if (file == NULL) return false;
 
-	int size = 0;
+	s32 size = 0;
 	fread(&size, sizeof(int), 1, file);
 	string = (char*)malloc(size * sizeof(char));
 	if (size != 0)
 	{
-		int totalReads = (int)fread(string, sizeof(char), size, file);
+		s32 totalReads = (int)fread(string, sizeof(char), size, file);
 		return totalReads == size;
 	}
 	return true;
@@ -120,7 +120,7 @@ bool deserializeCharArray(char * string, FILE * file)
 
 void readAllFile(std::string& content, FILE * file)
 {
-	int count;
+	s32 count;
 	fseek(file, 0, SEEK_END);
 	count = ftell(file);
 	rewind(file);
@@ -141,9 +141,9 @@ char * copySTR(const char * source)
 
 std::string getGPUStats()
 {
-	GLint nTotalMemoryInKB = 0;
+	s32 nTotalMemoryInKB = 0;
 	glGetIntegerv(GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX, &nTotalMemoryInKB);
-	GLint nCurAvailMemoryInKB = 0;
+	s32 nCurAvailMemoryInKB = 0;
 	glGetIntegerv(GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX, &nCurAvailMemoryInKB);
 
 	GLenum err = glGetError();

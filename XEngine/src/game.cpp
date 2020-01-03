@@ -19,7 +19,7 @@ Shader* tiledShader;
 Shader* simpleShader;
 ImguiLayer* imguiLayer;
 
-Mat44 model;
+Mat44f model;
 Mesh quadMesh;
 
 //static defs
@@ -110,15 +110,15 @@ void Game::StartUp()
 	glDisable(GL_MULTISAMPLE);
 
 	quadMesh = Mesh();
-	Vector3 size = Vector3(1.0f, 1.0f, 1.0f);
+	Vec3f size = Vec3f(1.0f, 1.0f, 1.0f);
 	generateQuad(&quadMesh);
 
-	model = Mat44();
+	model = Mat44f();
 	model.translateLocal(0.0f, 3.6f, 0.0f);
 
-	Vector3 camPos = Vector3(10.0f, 10.0f, 40.0f);
-	Vector3 camTarget = Vector3(10.0f, 10.0f, 0.0f);
-	Vector3 camUp = Vector3(0.0f, 1.0f, 0.0f);
+	Vec3f camPos = Vec3f(10.0f, 10.0f, 40.0f);
+	Vec3f camTarget = Vec3f(10.0f, 10.0f, 0.0f);
+	Vec3f camUp = Vec3f(0.0f, 1.0f, 0.0f);
 
 	int width, height;
 	SDL_GetWindowSize(window, &width, &height);
@@ -132,7 +132,7 @@ void Game::Update(float deltaTime)
 	Input::Update();
 
 	////******** MOVE THIS TO ONE OTHER PLACE : UPDATEINPUT **************
-	Vector3 cameraDir;
+	Vec3f cameraDir;
 	if (Input::state[SDL_SCANCODE_W])
 		cameraDir.z = 1.0f;
 	else if (Input::state[SDL_SCANCODE_S])
@@ -155,7 +155,7 @@ void Game::Update(float deltaTime)
 	if ((Input::mouseState & SDL_BUTTON_MIDDLE))
 	{
 		camera->RotateLocal(0, Input::mouse_dx * (float)deltaTime * 0.01f, 0.0f);
-		camera->RotateLocal(Input::mouse_dy * (float)deltaTime * 0.01f, camera->getLocalVector(Vector3(1.0f, 0.0f, 0.0f)));
+		camera->RotateLocal(Input::mouse_dy * (float)deltaTime * 0.01f, camera->getLocalVector(Vec3f(1.0f, 0.0f, 0.0f)));
 		Input::CenterMouse();
 	}
 
@@ -163,7 +163,7 @@ void Game::Update(float deltaTime)
 	if (Input::state[SDL_SCANCODE_LEFT])
 	{
 		lookingRight = false;
-		Vector3 translation = Vector3(-5.0f, 0.0f, 0.0f);
+		Vec3f translation = Vec3f(-5.0f, 0.0f, 0.0f);
 		translation = translation * deltaTime;
 		model.translateLocal(translation);
 		if (animator.currentAnimation != &walkAnimation)
@@ -173,7 +173,7 @@ void Game::Update(float deltaTime)
 	else if (Input::state[SDL_SCANCODE_RIGHT])
 	{
 		lookingRight = true;
-		Vector3 translation = Vector3(5.0f, 0.0f, 0.0f);
+		Vec3f translation = Vec3f(5.0f, 0.0f, 0.0f);
 		translation = translation * deltaTime;
 		model.translateLocal(translation);
 		if (animator.currentAnimation != &walkAnimation)
@@ -236,11 +236,11 @@ void Game::Update(float deltaTime)
 
 	SpriteRendererSystem::RenderSprites(&entityManager, tiledShader, camera, &quadMesh);
 
-	Vector2 tileSize;
+	Vec2f tileSize;
 	tiledShader->enable();
 	tiledShader->SetTexture(tex->tex_id);
 	tiledShader->SetMat44("M", model * camera->viewProjectionMat);
-	tileSize = Vector2((float)tileSizeX, (float)tileSizeY);
+	tileSize = Vec2f((float)tileSizeX, (float)tileSizeY);
 	tiledShader->SetVector2("tileSize", tileSize);
 	tiledShader->SetInt("tileIndex", animator.currentFrameIndex);
 	tiledShader->SetBool("invertX", !lookingRight);
@@ -310,7 +310,7 @@ void Game::TilemapToEntities()
 
 					trans->transform.setIdentity();
 					trans->transform.translate(currentTilemapX * t->tileWidth * 2, currentTilemapY * t->tileHeight * 2, (float)layer);
-					trans->transform.scale(Vector3((float)t->tileWidth, (float)t->tileHeight, 0.0f));
+					trans->transform.scale(Vec3f((float)t->tileWidth, (float)t->tileHeight, 0.0f));
 					r->spriteIndex = t->tileValues[desiredIndex];
 					r->spriteSheet = t->spriteSheet;
 				}

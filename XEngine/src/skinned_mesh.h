@@ -22,7 +22,7 @@
 	public:
 		int index = 0;
 		int parentIndex = 0;
-		std::vector<int> childIndices;
+		std::vector<u32> childIndices;
 	};
 
 	class SkinnedMesh : public Mesh
@@ -30,30 +30,30 @@
 	public:
 
 		//skinning
-		std::vector<Vector4> boneIds;
-		std::vector<Vector4> weights;
-		unsigned int boneIds_VBO;
-		unsigned int boneWeights_VBO;
+		std::vector<Vec4f> boneIds;
+		std::vector<Vec4f> weights;
+		u32 boneIds_VBO;
+		u32 boneWeights_VBO;
 		//******
 
 		//skeleton
 		std::vector<std::string> boneNames;
 		std::vector<Node> nodes;
-		std::vector<Mat44> bindMatrices;
-		std::vector<Mat44> invBindMatrices;
+		std::vector<Mat44f> bindMatrices;
+		std::vector<Mat44f> invBindMatrices;
 		//******
 
 		//skeleton runtime
-		std::vector<Mat44> boneMatrices;
-		std::vector<Mat44> currentPoseModelToBoneMatrices;
+		std::vector<Mat44f> boneMatrices;
+		std::vector<Mat44f> currentPoseModelToBoneMatrices;
 		//******
 
 		//skeleton (move to constatns)
-		const static int maxBones = 80;
+		const static u32 maxBones = 80;
 
 		//animation (move to somewhere)
 		std::vector<Animation> animations;
-		const static int samplesPerSecond = 15;
+		const static u32 samplesPerSecond = 15;
 		//*****
 
 		SkinnedMesh()
@@ -76,14 +76,14 @@
 
 		//TODO: change the indices that I use for the glVertexAttribPointers
 		//to be constants: ex : Vertices is always 1 colors is always 4
-		void InitBonesGL();
-		void SampleAnimation(Node* node, Animation* anim, int keyframeIndex);
-		void SampleAnimation(Node* node, Animation* anim, float t);
-		void LogBoneHierarchy(Node* node);
+		void initBonesGL();
+		void sampleAnimation(Node* node, Animation* anim, s32 keyframeIndex);
+		void sampleAnimation(Node* node, Animation* anim, f32 t);
+		void logBoneHierarchy(Node* node);
 		//returns the index of the bone or -1 if not found
-		int GetBoneIndex(const std::string& boneName);
-		void SetBindPose();
-		void ComputeBindMatrices();
-		void ComputeBindMatrices(Node* node);
+		int getBoneIndex(const std::string& boneName);
+		void setBindPose();
+		void computeBindMatrices();
+		void computeBindMatrices(Node* node);
 	};
 //}

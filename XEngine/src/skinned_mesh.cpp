@@ -7,7 +7,7 @@
 	//TODO: change the indices that I use for the glVertexAttribPointers
 	//to be constants: ex : Vertices is always 1 colors is always 4
 
-	void SkinnedMesh::InitBonesGL()
+	void SkinnedMesh::initBonesGL()
 	{
 		glBindVertexArray(VAO);
 
@@ -15,15 +15,15 @@
 		//boneWeights attribute
 		glGenBuffersARB(1, &boneWeights_VBO);
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB, boneWeights_VBO);
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB, weights.size() * sizeof(Vector4), &weights[0], GL_STATIC_DRAW_ARB);
-		glVertexAttribPointerARB(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vector4), (void*)0);
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB, weights.size() * sizeof(Vec4f), &weights[0], GL_STATIC_DRAW_ARB);
+		glVertexAttribPointerARB(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4f), (void*)0);
 		glEnableVertexAttribArrayARB(2);
 
 		//boneIds attribute
 		glGenBuffersARB(1, &boneIds_VBO);
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB, boneIds_VBO);
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB, boneIds.size() * sizeof(Vector4), &boneIds[0], GL_STATIC_DRAW_ARB);
-		glVertexAttribPointerARB(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vector4), (void*)0);
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB, boneIds.size() * sizeof(Vec4f), &boneIds[0], GL_STATIC_DRAW_ARB);
+		glVertexAttribPointerARB(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4f), (void*)0);
 		glEnableVertexAttribArrayARB(3);
 		//**
 
@@ -31,33 +31,33 @@
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 	}
 
-	void SkinnedMesh::SampleAnimation(Node * node, Animation * anim, int keyframeIndex)
+	void SkinnedMesh::sampleAnimation(Node * node, Animation * anim, s32 keyframeIndex)
 	{
 		BoneKeyFrame a = anim->keyframes[node->index][keyframeIndex];
-		Vector3 desiredPos = a.pos;
+		Vec3f desiredPos = a.pos;
 		Quaternion desiredRot = a.rot;
-		Vector3 desiredScale = a.scale;
-		Mat44 pos;
+		Vec3f desiredScale = a.scale;
+		Mat44f pos;
 		pos.setTranslation(desiredPos);
-		Mat44 rot;
+		Mat44f rot;
 		rot = desiredRot.toMatrix();
-		Mat44 scale;
+		Mat44f scale;
 		scale.setScale(desiredScale);
-		Mat44 desiredTransform = scale * rot * pos;
+		Mat44f desiredTransform = scale * rot * pos;
 
 		boneMatrices[node->index] = desiredTransform;
 
-		for (unsigned int i = 0; i < node->childIndices.size(); i++)
-			SampleAnimation(&nodes[node->childIndices[i]], anim, keyframeIndex);
+		for (u32 i = 0; i < node->childIndices.size(); i++)
+			sampleAnimation(&nodes[node->childIndices[i]], anim, keyframeIndex);
 	}
 
-	void SkinnedMesh::SampleAnimation(Node * node, Animation * anim, float t)
+	void SkinnedMesh::sampleAnimation(Node * node, Animation * anim, f32 t)
 	{
-		int sampleA = (int)(anim->samplesPerSecond * t);
+		s32 sampleA = (s32)(anim->samplesPerSecond * t);
 		if (sampleA >= anim->numSamples) 
 			sampleA = anim->numSamples - 1;
 
-		int sampleB = sampleA + 1;
+		s32 sampleB = sampleA + 1;
 		if (sampleB >= anim->numSamples)
 		{
 			if (anim->loop)
@@ -73,41 +73,41 @@
 		BoneKeyFrame a = anim->keyframes[node->index][sampleA];
 		BoneKeyFrame b = anim->keyframes[node->index][sampleB];
 
-		float blendTime = t;
-		blendTime = clamp(blendTime, (float)a.time, (float)b.time);
+		f32 blendTime = t;
+		blendTime = clamp(blendTime, (f32)a.time, (f32)b.time);
 
-		blendTime = map(blendTime, (float)a.time, (float)b.time, 0.0f, 1.0f);
+		blendTime = map(blendTime, (f32)a.time, (f32)b.time, 0.0f, 1.0f);
 		blendTime = clamp(blendTime, 0.0f, 1.0f);
 
-		Vector3 desiredPos = Vector3::lerp(a.pos, b.pos, blendTime);
+		Vec3f desiredPos = Vec3f::lerp(a.pos, b.pos, blendTime);
 		Quaternion desiredRot = a.rot;
 		desiredRot.lerp(b.rot, blendTime);
-		Vector3 desiredScale = Vector3::lerp(a.scale, b.scale, blendTime);
+		Vec3f desiredScale = Vec3f::lerp(a.scale, b.scale, blendTime);
 
-		Mat44 pos;
+		Mat44f pos;
 		pos.setTranslation(desiredPos);
-		Mat44 rot;
+		Mat44f rot;
 		rot = desiredRot.toMatrix();
-		Mat44 scale;
+		Mat44f scale;
 		scale.setScale(desiredScale);
-		Mat44 desiredTransform = scale * rot * pos;
+		Mat44f desiredTransform = scale * rot * pos;
 
-		Mat44 parentModelToBone;
+		Mat44f parentModelToBone;
 		if (node->parentIndex != -1)
 			parentModelToBone = currentPoseModelToBoneMatrices[node->parentIndex];
 
 		currentPoseModelToBoneMatrices[node->index] = (desiredTransform * parentModelToBone);
 
 		//multiply ModelToBone * invBindMatrix to get the Local&Relative matrix
-		Mat44 localRelativeMat = (invBindMatrices[node->index] * currentPoseModelToBoneMatrices[node->index]);
+		Mat44f localRelativeMat = (invBindMatrices[node->index] * currentPoseModelToBoneMatrices[node->index]);
 
 		boneMatrices[node->index] = localRelativeMat;
 
-		for (unsigned int i = 0; i < node->childIndices.size(); i++)
-			SampleAnimation(&nodes[node->childIndices[i]], anim, t);
+		for (u32 i = 0; i < node->childIndices.size(); i++)
+			sampleAnimation(&nodes[node->childIndices[i]], anim, t);
 	}
 
-	void SkinnedMesh::LogBoneHierarchy(Node * node)
+	void SkinnedMesh::logBoneHierarchy(Node * node)
 	{
 		std::string log = boneNames[node->index];
 		log += " with parent: ";
@@ -115,15 +115,15 @@
 			log += boneNames[node->parentIndex];
 
 		LOG(log.c_str());
-		for (unsigned int i = 0; i < node->childIndices.size(); i++)
-			LogBoneHierarchy(&nodes[node->childIndices[i]]);
+		for (u32 i = 0; i < node->childIndices.size(); i++)
+			logBoneHierarchy(&nodes[node->childIndices[i]]);
 	}
 
 	//returns the index of the bone or -1 if not found
 
-	int SkinnedMesh::GetBoneIndex(const std::string & boneName)
+	int SkinnedMesh::getBoneIndex(const std::string & boneName)
 	{
-		for (unsigned int i = 0; i < boneNames.size(); i++)
+		for (u32 i = 0; i < boneNames.size(); i++)
 		{
 			if (boneNames[i] != boneName) continue;
 
@@ -134,37 +134,37 @@
 		return -1;
 	}
 
-	void SkinnedMesh::SetBindPose()
+	void SkinnedMesh::setBindPose()
 	{
-		for (unsigned int i = 0; i < boneMatrices.size(); i++)
+		for (u32 i = 0; i < boneMatrices.size(); i++)
 			boneMatrices[i].setIdentity();
 	}
 
-	void SkinnedMesh::ComputeBindMatrices()
+	void SkinnedMesh::computeBindMatrices()
 	{
-		ComputeBindMatrices(&nodes[0]);
+		computeBindMatrices(&nodes[0]);
 	}
 
-	void SkinnedMesh::ComputeBindMatrices(Node * node)
+	void SkinnedMesh::computeBindMatrices(Node * node)
 	{
-		Mat44 parentBindMat;
-		Mat44 currentMat;
-		Mat44 bindMat;
+		Mat44f parentBindMat;
+		Mat44f currentMat;
+		Mat44f bindMat;
 		currentMat = boneMatrices[node->index];
 		if (node->parentIndex != -1)
 			parentBindMat = bindMatrices[node->parentIndex];
 
-		Mat44 bind = currentMat * parentBindMat;
+		Mat44f bind = currentMat * parentBindMat;
 		bindMatrices[node->index] = bind;
 		invBindMatrices[node->index] = bind;
 		invBindMatrices[node->index].inverse();
 
-		unsigned int childCount = (unsigned int)node->childIndices.size();
-		for (unsigned int i = 0; i < childCount; i++)
+		u32 childCount = (u32)node->childIndices.size();
+		for (u32 i = 0; i < childCount; i++)
 		{
 			assert(node->childIndices[i] > 0 && node->childIndices[i] < nodes.size());
 			Node* currentChild = &nodes[node->childIndices[i]];
-			ComputeBindMatrices(currentChild);
+			computeBindMatrices(currentChild);
 		}
 	}
 //}

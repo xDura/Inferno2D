@@ -38,20 +38,20 @@ public:
 	{
 		std::cout << "Vector2Tests" << std::endl;
 		//vector2 zero
-		Vector2 v = Vector2::zero;
+		Vec2f v = Vec2f::zero;
 		bool result = (v.x == 0.0 && v.y == 0.0);
 		LogResult("Vector2::zero is 0,0", result);
 
 		//constructors
 		//Vector2() { x = y = 0; };
-		v = Vector2();
+		v = Vec2f();
 		result = (v.x == 0.0 && v.y == 0.0);
 		LogResult("empty constructor set to zero", result);
 
 		//Vector2(float a_x, float a_y) { x = a_x; y = a_y; };
 		float a = 1.0;
 		float b = 2.0;
-		v = Vector2(a, b);
+		v = Vec2f(a, b);
 		result = (v.x == a && v.y == b);
 		LogResult("double float constructor", result);
 
@@ -69,7 +69,7 @@ public:
 		f[0] = 1.0;
 		f[1] = 2.0;
 
-		v = Vector2(f);
+		v = Vec2f(f);
 		result = (v.x == 1.0 && v.y == 2.0);
 		LogResult("float array constructor", result);
 
@@ -100,7 +100,7 @@ public:
 		LogResult("normalized return", result);
 
 		//float dot(const Vector2& other);
-		Vector2 v2 = Vector2(2.0, 1.5);
+		Vec2f v2 = Vec2f(2.0, 1.5);
 		v.x = 1.0;
 		v.y = 2.0;
 		float dot = v.dot(v2);
@@ -120,12 +120,12 @@ public:
 		LogResult("distance", result);
 
 		//static Vector2 random(float range);
-		std::vector<Vector2> vects = std::vector<Vector2>();
-		vects.push_back(Vector2::random(2.0));
-		vects.push_back(Vector2::random(2.0));
-		vects.push_back(Vector2::random(2.0));
-		vects.push_back(Vector2::random(2.0));
-		vects.push_back(Vector2::random(2.0));
+		std::vector<Vec2f> vects = std::vector<Vec2f>();
+		vects.push_back(Vec2f::random(2.0));
+		vects.push_back(Vec2f::random(2.0));
+		vects.push_back(Vec2f::random(2.0));
+		vects.push_back(Vec2f::random(2.0));
+		vects.push_back(Vec2f::random(2.0));
 		result = true;
 		for (unsigned int i = 0; i < vects.size(); i++)
 		{
@@ -202,13 +202,13 @@ public:
 
 	static void testMat44()
 	{
-		Vector3 desiredScale(1.0f, 2.0f, 2.0f);
-		Vector3 targetScale;
-		Mat44 mat;
+		Vec3f desiredScale(1.0f, 2.0f, 2.0f);
+		Vec3f targetScale;
+		Mat44f mat;
 		mat.setScale(desiredScale);
-		Mat44 translationMat;
-		translationMat.setTranslation(Vector3(1.0f, 1.0f, 2.0f));
-		Mat44 rotationMat;
+		Mat44f translationMat;
+		translationMat.setTranslation(Vec3f(1.0f, 1.0f, 2.0f));
+		Mat44f rotationMat;
 		rotationMat.setRotation(10.0f, 20.0f, 2.0f);
 
 		mat = mat * rotationMat * translationMat;
@@ -216,18 +216,18 @@ public:
 
 		LogResult("mat44 getScale", desiredScale.equals(targetScale));
 
-		Mat44 resultRotation;
+		Mat44f resultRotation;
 		resultRotation = mat.getRotationOnly();
 	}
 
 	static void testQuaternion()
 	{
-		Mat44 rotationMat;
+		Mat44f rotationMat;
 		rotationMat.setRotation(10.0f, 20.0f, 2.0f);
 
 		Quaternion rot;
 		rot.fromMatrix(rotationMat);
-		Mat44 resultRotMat = rot.toMatrix();
+		Mat44f resultRotMat = rot.toMatrix();
 	}
 };
 

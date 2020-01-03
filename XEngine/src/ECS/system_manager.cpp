@@ -7,7 +7,7 @@
 
 void SpriteRendererSystem::RenderSprites(EntityManager* entityManager, Shader* shader, Camera* camera, Mesh* quadMesh)
 {
-	Vector2 tileSize;
+	Vec2f tileSize;
 	shader->enable();
 	for (auto it = entityManager->entities.begin(); it != entityManager->entities.end(); ++it)
 	{
@@ -19,7 +19,7 @@ void SpriteRendererSystem::RenderSprites(EntityManager* entityManager, Shader* s
 		SpriteRenderer* s = (SpriteRenderer*)currentEntity->GetComponent(COMPONENT_ID::SPRITE_RENDERER);
 		shader->SetTexture(s->spriteSheet->texture->tex_id);
 		shader->SetMat44("M", t->transform * camera->viewProjectionMat);
-		tileSize = Vector2((float)s->spriteSheet->width, (float)s->spriteSheet->height);
+		tileSize = Vec2f((float)s->spriteSheet->width, (float)s->spriteSheet->height);
 		shader->SetVector2("tileSize", tileSize);
 		shader->SetInt("tileIndex", s->spriteIndex);
 		shader->SetBool("invertX", (s->flags & SPRITE_RENDERER_FLAGS::INVERT_X) != 0);

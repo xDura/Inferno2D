@@ -240,5 +240,8 @@
     <ClInclude Include="..\..\src\level.h">
       <Filter>Root</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\types.h">
+      <Filter>Root</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include <sstream> 
 #include <algorithm>
 #include <cmath>
+#include "types.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -11,19 +12,19 @@
 #define DEGTORAD(a) (((a) * 180.0) / M_PI)
 #define RADTODEG(a) (((a) * M_PI) / 180.0)
 
-static float map(float value, float fromMin, float fromMax, float toMin, float toMax)
+static f32 map(f32 value, f32 fromMin, f32 fromMax, f32 toMin, f32 toMax)
 {
-	float OldRange = (fromMax - fromMin);
+	f32 OldRange = (fromMax - fromMin);
 	if (OldRange == 0.0f)
 		return toMin;
 	else
 	{
-		float NewRange = (toMax - toMin);
+		f32 NewRange = (toMax - toMin);
 		return (((value - fromMin) * NewRange) / OldRange) + toMin;
 	}
 }
 
-static float clamp(float value, float min, float max)
+static f32 clamp(f32 value, f32 min, f32 max)
 {
 	return ((std::min)(((std::max)(value, min)), max));
 }
@@ -33,221 +34,221 @@ static int clamp(int value, int min, int max)
 	return ((std::min)(((std::max)(value, min)), max));
 }
 
-class Vector2 
+class Vec2f 
 {
 public:
-	const static Vector2 zero;
-	const static Vector2 one;
+	const static Vec2f zero;
+	const static Vec2f one;
 
 	union 
 	{
-		struct{float x, y;};
-		float values[2];
+		struct{f32 x, y;};
+		f32 values[2];
 	};
 
-	Vector2() : x(0), y(0) {};
-	Vector2(float a_x, float a_y) : x(a_x), y(a_y) {};
-	Vector2(float values[2]);
+	Vec2f() : x(0), y(0) {};
+	Vec2f(f32 a_x, f32 a_y) : x(a_x), y(a_y) {};
+	Vec2f(f32 values[2]);
 
-	bool equals(const Vector2& other);
-	bool equals_offset(const Vector2& other, float offset);
+	bool equals(const Vec2f& other);
+	bool equals_offset(const Vec2f& other, f32 offset);
 
-	float mod() const;
+	f32 mod() const;
 	void normalize();
-	Vector2 normalized() const;
-	float dot(const Vector2& other);
-	void set(float a_x, float a_y) { x = a_x; y = a_y; };
-	Vector2 operator + (const Vector2 & op) const;
-	Vector2 operator - (const Vector2 & op) const;
-	float distance(const Vector2 & other) const;
-	static Vector2 random(float range);
-	static float distance(const Vector2& v1, const Vector2& v2)  { return v1.distance(v2); }
-	//@TODO:static float angle(const Vector2& v1, const Vector2& v2);
+	Vec2f normalized() const;
+	f32 dot(const Vec2f& other);
+	void set(f32 a_x, f32 a_y) { x = a_x; y = a_y; };
+	Vec2f operator + (const Vec2f & op) const;
+	Vec2f operator - (const Vec2f & op) const;
+	f32 distance(const Vec2f & other) const;
+	static Vec2f random(f32 range);
+	static f32 distance(const Vec2f& v1, const Vec2f& v2)  { return v1.distance(v2); }
+	//@TODO:static f32 angle(const Vector2& v1, const Vector2& v2);
 
 	std::string toString() const;
-	void operator *= (float op);
-	void operator /= (float op);
-	Vector2 operator * (float op) const;
-	Vector2 operator / (float op) const;
+	void operator *= (f32 op);
+	void operator /= (f32 op);
+	Vec2f operator * (f32 op) const;
+	Vec2f operator / (f32 op) const;
 
-	Vector2 operator-()
+	Vec2f operator-()
 	{
 		return (*this) * -1.0f;
 	}
 };
 
-Vector2 operator * (float f, const Vector2& v);
-Vector2 operator / (float f, const Vector2& v);
+Vec2f operator * (f32 f, const Vec2f& v);
+Vec2f operator / (f32 f, const Vec2f& v);
 
-class Vector3
+class Vec3f
 {
 public: 
-	const static Vector3 zero;
-	const static Vector3 one;
+	const static Vec3f zero;
+	const static Vec3f one;
 
 	union 
 	{
-		struct { float x, y, z; };
-		float values[3];
+		struct { f32 x, y, z; };
+		f32 values[3];
 	};
 
-	Vector3() : x(0), y(0), z(0) {};
-	Vector3(float a_x, float a_y, float a_z) : x(a_x), y(a_y), z(a_z) {};
-	Vector3(float values[3]);
+	Vec3f() : x(0), y(0), z(0) {};
+	Vec3f(f32 a_x, f32 a_y, f32 a_z) : x(a_x), y(a_y), z(a_z) {};
+	Vec3f(f32 values[3]);
 
-	bool equals(const Vector3& other);
-	bool equals_offset(const Vector3& other, float offset);
+	bool equals(const Vec3f& other);
+	bool equals_offset(const Vec3f& other, f32 offset);
 
-	float mod() const;
+	f32 mod() const;
 	void normalize();
-	Vector3 normalized() const;
-	float dot(const Vector3& other) const;
-	Vector3 cross(const Vector3& other) const;
-	void set(float a_x, float a_y, float a_z) { x = a_x; y = a_y; z = a_z; };
-	Vector3 operator + (const Vector3 & op) const;
-	Vector3 operator - (const Vector3 & op) const;
-	float distance(const Vector3 & other) const;
-	static Vector3 random(float range);
-	static Vector3 lerp(const Vector3& b, const Vector3& a, float t) { return a * t + b * (1.f - t); }
-	static Vector3 slerp(const Vector3& start, const Vector3& end, float percent);
+	Vec3f normalized() const;
+	f32 dot(const Vec3f& other) const;
+	Vec3f cross(const Vec3f& other) const;
+	void set(f32 a_x, f32 a_y, f32 a_z) { x = a_x; y = a_y; z = a_z; };
+	Vec3f operator + (const Vec3f & op) const;
+	Vec3f operator - (const Vec3f & op) const;
+	f32 distance(const Vec3f & other) const;
+	static Vec3f random(f32 range);
+	static Vec3f lerp(const Vec3f& b, const Vec3f& a, f32 t) { return a * t + b * (1.f - t); }
+	static Vec3f slerp(const Vec3f& start, const Vec3f& end, f32 percent);
 
 	std::string toString() const;
-	void operator *= (float op);
-	void operator /= (float op);
-	Vector3 operator * (float op) const;
-	Vector3 operator / (float op) const;
+	void operator *= (f32 op);
+	void operator /= (f32 op);
+	Vec3f operator * (f32 op) const;
+	Vec3f operator / (f32 op) const;
 
-	Vector3 operator-()
+	Vec3f operator-()
 	{
 		return (*this) * -1.0f;
 	}
 };
 
-bool operator == (const Vector3& a, Vector3& b);
-Vector3 operator * (float a, Vector3 b);
+bool operator == (const Vec3f& a, Vec3f& b);
+Vec3f operator * (f32 a, Vec3f b);
 
-class Vector4
+class Vec4f
 {
 public:
 	union
 	{
-		struct { float x, y, z, w; };
-		float values[4];
+		struct { f32 x, y, z, w; };
+		f32 values[4];
 	};
 
-	Vector4()
+	Vec4f()
 		:x(0.0f), y(0.0f), z(0.0f), w(0.0f)
 	{}
 
-	Vector4(float a_x, float a_y, float a_z, float a_w)
+	Vec4f(f32 a_x, f32 a_y, f32 a_z, f32 a_w)
 		:x(a_x), y(a_y), z(a_z), w(a_w)
 	{}
 };
 
-class IVector4
+class Vec4s
 {
 public:
 	union
 	{
-		struct { int i, j, k, w; };
-		int32_t values[4];
+		struct { s32 i, j, k, w; };
+		s32 values[4];
 	};
 
-	IVector4()
+	Vec4s()
 		:i(0), j(0), k(0), w(0) 
 	{}
 
-	IVector4(int a_i, int a_j, int a_k, int a_w)
+	Vec4s(s32 a_i, s32 a_j, s32 a_k, s32 a_w)
 		:i(a_i), j(a_j), k(a_k), w(a_w) 
 	{}
 };
 
 //row major 3x3 matrix
-class Mat33
+class Mat33f
 {
 public:
-	const static Mat33 identity;
+	const static Mat33f identity;
 
 	union
 	{
-		float m[3][3];
-		float M[9];
+		f32 m[3][3];
+		f32 M[9];
 	};
 
-	Mat33() { setIdentity(); }
-	//Mat33(float f[9]){ values = f;}
+	Mat33f() { setIdentity(); }
+	//Mat33(f32 f[9]){ values = f;}
 	void setIdentity();
-	void setTranslation(const Vector2& translation);
-	void setRotation(float rotX, float rotY, float rotZ);
-	//void setRotation(const Vector3& axis, float angle);
-	void setScale(const Vector2& scale);
+	void setTranslation(const Vec2f& translation);
+	void setRotation(f32 rotX, f32 rotY, f32 rotZ);
+	//void setRotation(const Vector3& axis, f32 angle);
+	void setScale(const Vec2f& scale);
 	void transpose();
 	void inverse();
 	void orthonormalize();
-	void translate(const Vector2& translation);
-	//void rotate(float rot);
-	void scale(const Vector2& scale);
+	void translate(const Vec2f& translation);
+	//void rotate(f32 rot);
+	void scale(const Vec2f& scale);
 
-	Vector2 up() const;
-	Vector2 right()const;
+	Vec2f up() const;
+	Vec2f right()const;
 	//Vector2 front()const;
 
-	void lookAt(Vector2& v);
+	void lookAt(Vec2f& v);
 
-	Mat33 operator * (float val);
-	Mat33 operator * (const Mat33& other);
+	Mat33f operator * (f32 val);
+	Mat33f operator * (const Mat33f& other);
 };
 
 //row major 4x4 matrix
-class Mat44
+class Mat44f
 {
 public:
-	const static Mat44 identity;
+	const static Mat44f identity;
 
 	union
 	{
-		float m[4][4];
-		float values[16];
+		f32 m[4][4];
+		f32 values[16];
 	};
 
-	Mat44() { setIdentity(); }
-	Mat44(const Mat44& other);
+	Mat44f() { setIdentity(); }
+	Mat44f(const Mat44f& other);
 
 	void setIdentity();
-	void setTranslation(const Vector3& translation);
-	void setTranslation(float tx, float ty, float tz);
-	Vector3 getPosition() const;
-	Vector3 getScale() const;
+	void setTranslation(const Vec3f& translation);
+	void setTranslation(f32 tx, f32 ty, f32 tz);
+	Vec3f getPosition() const;
+	Vec3f getScale() const;
 	std::string toString() const;
-	void setRotation(float angleX, float angleY, float angleZ);
-	void setRotation(float angle, const Vector3& axis);
-	void setScale(const Vector3& scale);
+	void setRotation(f32 angleX, f32 angleY, f32 angleZ);
+	void setRotation(f32 angle, const Vec3f& axis);
+	void setScale(const Vec3f& scale);
 	void transpose();
 	bool inverse();
 	//void orthonormalize();
-	void translate(const Vector3& translation);
-	void translate(float tx, float ty, float tz);
-	void translateLocal(const Vector3& translation);
-	void translateLocal(float tx, float ty, float tz);
-	void rotateLocal(float rotX, float rotY, float rotZ);
-	void rotate(float rotX, float rotY, float rotZ);
-	void scale(const Vector3& scale);
-	void replaceScale(const Vector3& scale);
-	void setLookAt(const Vector3& position, const Vector3& targetPoint, const Vector3& up);
-	void setPerspective(float fov, float aspect, float near, float far);
-	void setOrthographic(float left, float right, float bottom, float top, float near, float far);
+	void translate(const Vec3f& translation);
+	void translate(f32 tx, f32 ty, f32 tz);
+	void translateLocal(const Vec3f& translation);
+	void translateLocal(f32 tx, f32 ty, f32 tz);
+	void rotateLocal(f32 rotX, f32 rotY, f32 rotZ);
+	void rotate(f32 rotX, f32 rotY, f32 rotZ);
+	void scale(const Vec3f& scale);
+	void replaceScale(const Vec3f& scale);
+	void setLookAt(const Vec3f& position, const Vec3f& targetPoint, const Vec3f& up);
+	void setPerspective(f32 fov, f32 aspect, f32 near, f32 far);
+	void setOrthographic(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
 
-	Vector3 front() const { return Vector3(values[8], values[9], values[10]); }
-	Vector3 up() const { return Vector3(values[4], values[5], values[6]); }
-	Vector3 right() const { return Vector3(values[0], values[1], values[2]); }
+	Vec3f front() const { return Vec3f(values[8], values[9], values[10]); }
+	Vec3f up() const { return Vec3f(values[4], values[5], values[6]); }
+	Vec3f right() const { return Vec3f(values[0], values[1], values[2]); }
 
-	Mat44 getRotationOnly();
-	Vector3 rotateVector(const Vector3& v);
+	Mat44f getRotationOnly();
+	Vec3f rotateVector(const Vec3f& v);
 
-	Mat44 operator * (float val);
-	Mat44 operator * (const Mat44& other);
+	Mat44f operator * (f32 val);
+	Mat44f operator * (const Mat44f& other);
 	//@TODO: Check if there should be Vector4 for this is a bit confusing
-	Vector3 operator * (const Vector3& other);
+	Vec3f operator * (const Vec3f& other);
 };
 
 //This quaternions are taken from Javi Agenjo's code
@@ -258,76 +259,76 @@ public:
 
 	union
 	{
-		struct { float x; float y; float z; float w; };
-		float q[4];
+		struct { f32 x; f32 y; f32 z; f32 w; };
+		f32 q[4];
 	};
 
 public:
 	Quaternion();
-	Quaternion(const float* q);
+	Quaternion(const f32* q);
 	Quaternion(const Quaternion& q);
-	Quaternion(const float X, const float Y, const float Z, const float W);
-	Quaternion(const Vector3& axis, float angle);
+	Quaternion(const f32 X, const f32 Y, const f32 Z, const f32 W);
+	Quaternion(const Vec3f& axis, f32 angle);
 
 	void identity();
 	Quaternion invert() const;
 	Quaternion conjugate() const;
 
-	void set(const float X, const float Y, const float Z, const float W);
-	void slerp(const Quaternion& b, float t);
-	void slerp(const Quaternion& q2, float t, Quaternion &q3) const;
+	void set(const f32 X, const f32 Y, const f32 Z, const f32 W);
+	void slerp(const Quaternion& b, f32 t);
+	void slerp(const Quaternion& q2, f32 t, Quaternion &q3) const;
 
-	void lerp(const Quaternion& b, float t);
-	void lerp(const Quaternion& q2, float t, Quaternion &q3) const;
+	void lerp(const Quaternion& b, f32 t);
+	void lerp(const Quaternion& q2, f32 t, Quaternion &q3) const;
 
 public:
-	void setAxisAngle(const Vector3& axis, const float angle);
-	void setAxisAngle(float x, float y, float z, float angle);
-	void getAxisAngle(Vector3 &v, float &angle) const;
+	void setAxisAngle(const Vec3f& axis, const f32 angle);
+	void setAxisAngle(f32 x, f32 y, f32 z, f32 angle);
+	void getAxisAngle(Vec3f &v, f32 &angle) const;
 
-	Vector3 rotate(const Vector3& v) const;
+	Vec3f rotate(const Vec3f& v) const;
 
-	void operator *= (const Vector3& v);
+	void operator *= (const Vec3f& v);
 	void operator *= (const Quaternion &q);
 	void operator += (const Quaternion &q);
 
 	friend Quaternion operator + (const Quaternion &q1, const Quaternion& q2);
 	friend Quaternion operator * (const Quaternion &q1, const Quaternion& q2);
 
-	friend Quaternion operator * (const Quaternion &q, const Vector3& v);
+	friend Quaternion operator * (const Quaternion &q, const Vec3f& v);
 
-	friend Quaternion operator * (float f, const Quaternion &q);
-	friend Quaternion operator * (const Quaternion &q, float f);
+	friend Quaternion operator * (f32 f, const Quaternion &q);
+	friend Quaternion operator * (const Quaternion &q, f32 f);
 
 	Quaternion& operator -();
 
 	friend bool operator==(const Quaternion& q1, const Quaternion& q2);
 	friend bool operator!=(const Quaternion& q1, const Quaternion& q2);
 
-	void operator *= (float f);
+	void operator *= (f32 f);
 
-	void computeMinimumRotation(const Vector3& rotateFrom, const Vector3& rotateTo);
+	void computeMinimumRotation(const Vec3f& rotateFrom, const Vec3f& rotateTo);
 
 	void normalize();
-	float squaredLength() const;
-	float length() const;
-	void toMatrix(Mat44 &) const;
-	Mat44 toMatrix() const;
-	void fromMatrix(const Mat44& mat);
+	f32 squaredLength() const;
+	f32 length() const;
+	void toMatrix(Mat44f &) const;
+	Mat44f toMatrix() const;
+	void fromMatrix(const Mat44f& mat);
 
-	void toEulerAngles(Vector3 &euler) const;
-	static Quaternion Euler(const Vector3& eulerAngles);
-	float& operator[] (unsigned int i) { return q[i]; }
+	void toEulerAngles(Vec3f &euler) const;
+	static Quaternion Euler(const Vec3f& eulerAngles);
+	f32& operator[] (u32 i) { return q[i]; }
 };
 
 
-float DotProduct(const Quaternion &q1, const Quaternion &q2);
-Quaternion Qlerp(const Quaternion &q1, const Quaternion &q2, float t);
-Quaternion Qslerp(const Quaternion &q1, const Quaternion &q2, float t);
-//Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, const Quaternion &b, float t);
-//Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, float t);
+f32 DotProduct(const Quaternion &q1, const Quaternion &q2);
+Quaternion Qlerp(const Quaternion &q1, const Quaternion &q2, f32 t);
+Quaternion Qslerp(const Quaternion &q1, const Quaternion &q2, f32 t);
+//Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, const Quaternion &b, f32 t);
+//Quaternion Qsquad(const Quaternion &q1, const Quaternion &q2, const Quaternion &a, f32 t);
 //Quaternion Qspline(const Quaternion &q1, const Quaternion &q2, const Quaternion &q3);
-//Quaternion QslerpNoInvert(const Quaternion &q1, const Quaternion &q2, float t);
+//Quaternion QslerpNoInvert(const Quaternion &q1, const Quaternion &q2, f32 t);
 Quaternion Qexp(const Quaternion &q);
 Quaternion Qlog(const Quaternion &q);
-Quaternion SimpleRotation(const Vector3 &a, const Vector3 &b);
+Quaternion SimpleRotation(const Vec3f &a, const Vec3f &b);

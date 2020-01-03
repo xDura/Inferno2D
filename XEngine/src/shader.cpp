@@ -108,35 +108,35 @@ void Shader::SetFloat(const std::string & parameterName, const float & value) co
 	glUniform1f(uniformLoc, value);
 }
 
-void Shader::SetVector2(const std::string & parameterName, const Vector2 & value) const
+void Shader::SetVector2(const std::string & parameterName, const Vec2f & value) const
 {
 	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
 	ASSERT(uniformLoc != -1);
 	glUniform2f(uniformLoc, value.x, value.y);
 }
 
-void Shader::SetVector3(const std::string & parameterName, const Vector3 & value) const
+void Shader::SetVector3(const std::string & parameterName, const Vec3f & value) const
 {
 	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
 	ASSERT(uniformLoc != -1);
 	glUniform3f(uniformLoc, value.x, value.y, value.z);
 }
 
-void Shader::SetMat33(const std::string & parameterName, const Mat33 & value) const
+void Shader::SetMat33(const std::string & parameterName, const Mat33f & value) const
 {
 	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
 	ASSERT(uniformLoc != -1);
 	glUniformMatrix3fv(uniformLoc, 1, GL_FALSE, value.M);
 }
 
-void Shader::SetMat44(const std::string & parameterName, const Mat44 & value) const
+void Shader::SetMat44(const std::string & parameterName, const Mat44f & value) const
 {
 	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
 	ASSERT(uniformLoc != -1);
 	glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, value.values);
 }
 
-void Shader::SetMat44Array(const std::string & parameterName, const Mat44 & value, int nummats) const
+void Shader::SetMat44Array(const std::string & parameterName, const Mat44f & value, int nummats) const
 {
 	int uniformLoc = glGetUniformLocation(id, parameterName.c_str());
 	ASSERT(uniformLoc != -1);

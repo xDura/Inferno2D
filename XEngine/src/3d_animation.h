@@ -6,29 +6,30 @@
 struct BoneKeyFrame
 {
 public:
-	double time = 0.0f;
-	Vector3 pos;
+	f64 time = 0.0f;
+	Vec3f pos;
 	Quaternion rot;
-	Vector3 scale;
+	Vec3f scale;
 };
 
 
 class Animation
 {
 public:
-	const char* name = "";
-
 	//this vector stores keyframes for each bone
 	//ex: keyframes[0] is a vector that stores all keyframes for
 	//the bone with index 0
 	std::vector<std::vector<BoneKeyFrame>> keyframes;
 
-	double samplesPerSecond = 0.0f;
+	f64 samplesPerSecond = 0.0f;
 	//number of samples for each bone
-	int numSamples = 0;
+	u32 numSamples = 0;
 
 	//TODO: turn this into flags
+	//flags8 flags;
 	bool loop = true;
+	//TODO: pass this name to an outside structure
+	String30 name = {""};
 
 	~Animation()
 	{

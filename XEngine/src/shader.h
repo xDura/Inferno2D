@@ -22,11 +22,11 @@ public:
 	void SetInt(const std::string& parameterName, const int& value) const;
 	void SetBool(const std::string& parameterName, bool b) const;
 	void SetFloat(const std::string& parameterName, const float& value) const;
-	void SetVector2(const std::string& parameterName, const Vector2& value) const;
-	void SetVector3(const std::string& parameterName, const Vector3& value) const;
-	void SetMat33(const std::string& parameterName, const Mat33& value) const;
-	void SetMat44(const std::string& parameterName, const Mat44& value) const;
-	void SetMat44Array(const std::string& parameterName, const Mat44& value, int nummats) const;
+	void SetVector2(const std::string& parameterName, const Vec2f& value) const;
+	void SetVector3(const std::string& parameterName, const Vec3f& value) const;
+	void SetMat33(const std::string& parameterName, const Mat33f& value) const;
+	void SetMat44(const std::string& parameterName, const Mat44f& value) const;
+	void SetMat44Array(const std::string& parameterName, const Mat44f& value, int nummats) const;
 	void SetTexture(unsigned int id) const;
 	void enable() const;
 	void disable() const;

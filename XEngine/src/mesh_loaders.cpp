@@ -3,27 +3,27 @@
 #include "External/textparser.h"
 
 //TODO: move this to some assimp utilities or something
-Vector3 toVector3(const aiVector3D & v)
+Vec3f toVector3(const aiVector3D & v)
 {
-	Vector3 vector3;
+	Vec3f vector3;
 	vector3.x = v.x;
 	vector3.y = v.y;
 	vector3.z = v.z;
 	return vector3;
 }
 
-Vector3 toVector3(const aiColor4D & v)
+Vec3f toVector3(const aiColor4D & v)
 {
-	Vector3 vector3;
+	Vec3f vector3;
 	vector3.x = v.r;
 	vector3.y = v.g;
 	vector3.z = v.b;
 	return vector3;
 }
 
-Vector3 toVector3(const aiColor3D & v)
+Vec3f toVector3(const aiColor3D & v)
 {
-	Vector3 vector3;
+	Vec3f vector3;
 	vector3.x = v.r;
 	vector3.y = v.g;
 	vector3.z = v.b;
@@ -40,17 +40,17 @@ Quaternion toQuaternion(const aiQuaternion & q)
 	return quaternion;
 }
 
-Vector2 toVector2(const aiVector3D & v)
+Vec2f toVector2(const aiVector3D & v)
 {
-	Vector2 vector2;
+	Vec2f vector2;
 	vector2.x = v.x;
 	vector2.y = v.y;
 	return vector2;
 }
 
-Mat44 toMat44(const aiMatrix4x4 & m)
+Mat44f toMat44(const aiMatrix4x4 & m)
 {
-	Mat44 newMat;
+	Mat44f newMat;
 	newMat.values[0] = m.a1;
 	newMat.values[1] = m.a2;
 	newMat.values[2] = m.a3;
@@ -78,9 +78,9 @@ Mat44 toMat44(const aiMatrix4x4 & m)
 
 aiNodeAnim * GetNodeAnimation(std::string nodeName, aiAnimation * anim)
 {
-	unsigned int numChannels = anim->mNumChannels;
+	u32 numChannels = anim->mNumChannels;
 	std::string currentName = "";
-	for (unsigned int i = 0; i < numChannels; i++)
+	for (u32 i = 0; i < numChannels; i++)
 	{
 		currentName = anim->mChannels[i]->mNodeName.C_Str();
 		if (nodeName != currentName) continue;
@@ -95,31 +95,31 @@ aiNodeAnim * GetNodeAnimation(std::string nodeName, aiAnimation * anim)
 //an assimp scene without repeats
 void FillUniqueBoneNames(SkinnedMesh * mesh, const aiScene * scene)
 {
-	for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+	for (u32 i = 0; i < scene->mNumMeshes; i++)
 	{
-		for (unsigned int j = 0; j < scene->mMeshes[i]->mNumBones; j++)
+		for (u32 j = 0; j < scene->mMeshes[i]->mNumBones; j++)
 		{
 			std::string boneName = scene->mMeshes[i]->mBones[j]->mName.C_Str();
-			if ((mesh->GetBoneIndex(boneName)) != -1) continue;
+			if ((mesh->getBoneIndex(boneName)) != -1) continue;
 
 			mesh->boneNames.push_back(boneName);
 		}
 	}
 }
 
-int GetNumTotalVertices(const aiScene * scene)
+s32 GetNumTotalVertices(const aiScene * scene)
 {
-	int totalVerts = 0;
-	for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+	s32 totalVerts = 0;
+	for (u32 i = 0; i < scene->mNumMeshes; i++)
 		totalVerts += (scene->mMeshes[i]->mNumFaces * 3);
 
 	return totalVerts;
 }
 
-void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vector3>* verts, std::vector<Vector3>* normals, std::vector<Vector2>* uvs, std::vector<Vector4>* weights, std::vector<Vector4>* boneIds)
+void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vec3f>* verts, std::vector<Vec3f>* normals, std::vector<Vec2f>* uvs, std::vector<Vec4f>* weights, std::vector<Vec4f>* boneIds)
 {
 	LOG("Loading all vertex data ");
-	int numVerts = (assimpMesh->mNumFaces * 3);
+	s32 numVerts = (assimpMesh->mNumFaces * 3);
 	LOG("num vertices ", numVerts);
 
 	verts->resize(numVerts);
@@ -130,33 +130,33 @@ void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vec
 	//colors->resize(numVerts);
 
 	//aux weight arrays
-	std::vector<int> numWeightsOnVertex;
+	std::vector<s32> numWeightsOnVertex;
 	numWeightsOnVertex.resize(numVerts);
-	std::vector<Vector4> auxAllBones;
+	std::vector<Vec4f> auxAllBones;
 	auxAllBones.resize(numVerts);
-	std::vector<Vector4> auxAllWeights;
+	std::vector<Vec4f> auxAllWeights;
 	auxAllWeights.resize(numVerts);
 	//***
 
 	LOG("setting auxiliar weight arrays");
-	for (unsigned int i = 0; i < assimpMesh->mNumBones; i++)
+	for (u32 i = 0; i < assimpMesh->mNumBones; i++)
 	{
-		for (unsigned int j = 0; j < assimpMesh->mBones[i]->mNumWeights; j++)
+		for (u32 j = 0; j < assimpMesh->mBones[i]->mNumWeights; j++)
 		{
 			float weight = assimpMesh->mBones[i]->mWeights[j].mWeight;
 			float vertId = (float)assimpMesh->mBones[i]->mWeights[j].mVertexId;
-			int currentNumWeights = numWeightsOnVertex[(int)vertId];
+			s32 currentNumWeights = numWeightsOnVertex[(s32)vertId];
 
 			if (currentNumWeights >= mesh->maxBones)
-				setGreatestWeights(auxAllWeights[(int)vertId], auxAllBones[(int)vertId], weight, i);
+				setGreatestWeights(auxAllWeights[(s32)vertId], auxAllBones[(s32)vertId], weight, i);
 			else
 			{
-				int boneIndex = mesh->GetBoneIndex(assimpMesh->mBones[i]->mName.C_Str());
+				s32 boneIndex = mesh->getBoneIndex(assimpMesh->mBones[i]->mName.C_Str());
 				if (boneIndex != -1)
 				{
-					auxAllWeights[(int)vertId].values[currentNumWeights] = weight;
-					auxAllBones[(int)vertId].values[currentNumWeights] = (float)boneIndex;
-					numWeightsOnVertex[(int)vertId] += 1;
+					auxAllWeights[(s32)vertId].values[currentNumWeights] = weight;
+					auxAllBones[(s32)vertId].values[currentNumWeights] = (float)boneIndex;
+					numWeightsOnVertex[(s32)vertId] += 1;
 				}
 				else
 					LOGERROR("Index not found in hierarchy");
@@ -165,17 +165,17 @@ void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vec
 	}
 
 	LOG("Unindexing vertices");
-	for (unsigned int i = 0; i < assimpMesh->mNumFaces; i++)
+	for (u32 i = 0; i < assimpMesh->mNumFaces; i++)
 	{
-		for (unsigned int j = 0; j < 3; j++)
+		for (u32 j = 0; j < 3; j++)
 		{
-			int index = assimpMesh->mFaces[i].mIndices[j];
+			s32 index = assimpMesh->mFaces[i].mIndices[j];
 
 			aiVector3D vert = (assimpMesh)->mVertices[index];
 			aiVector3D normal = (assimpMesh)->mNormals[index];
 			aiVector3D* uv = &(assimpMesh->mTextureCoords[0][index]);
 
-			int fullIndex = (3 * i) + j;
+			s32 fullIndex = (3 * i) + j;
 
 			(*verts)[fullIndex] = toVector3(vert);
 			(*normals)[fullIndex] = toVector3(normal);
@@ -214,8 +214,8 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 	double animationDurationSecs = assimpAnim->mDuration / assimpAnim->mTicksPerSecond;
 	float samplesToTime = (float)animationDurationSecs / (float)assimpAnim->mDuration;
 
-	Vector3 position = toVector3(nodeAnim->mPositionKeys[0].mValue);
-	for (unsigned int i = 0; i < nodeAnim->mNumPositionKeys; i++)
+	Vec3f position = toVector3(nodeAnim->mPositionKeys[0].mValue);
+	for (u32 i = 0; i < nodeAnim->mNumPositionKeys; i++)
 	{
 		float timeToCompare = (float)nodeAnim->mPositionKeys[i].mTime * samplesToTime;
 		if (timeToCompare < t) continue;
@@ -233,10 +233,10 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 			blendTime = map(blendTime, aTime, bTime, 0, 1);
 			blendTime = clamp(blendTime, 0.0f, 1.0f);
 
-			Vector3 posA = toVector3(a.mValue);
-			Vector3 posB = toVector3(b.mValue);
+			Vec3f posA = toVector3(a.mValue);
+			Vec3f posB = toVector3(b.mValue);
 
-			position = Vector3::lerp(posA, posB, blendTime);
+			position = Vec3f::lerp(posA, posB, blendTime);
 		}
 		else
 			position = toVector3(nodeAnim->mPositionKeys[i].mValue);
@@ -248,7 +248,7 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 	//get the lerp of both of them
 
 	Quaternion rotation = toQuaternion(nodeAnim->mRotationKeys[0].mValue);
-	for (unsigned int i = 0; i < nodeAnim->mNumRotationKeys; i++)
+	for (u32 i = 0; i < nodeAnim->mNumRotationKeys; i++)
 	{
 		float timeToCompare = (float)nodeAnim->mRotationKeys[i].mTime * samplesToTime;
 		if (timeToCompare < t) continue;
@@ -280,8 +280,8 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 
 	//find the two desired keys based on time for scale
 	//get the lerp of both of them
-	Vector3 scale = toVector3(nodeAnim->mScalingKeys[0].mValue);
-	for (unsigned int i = 0; i < nodeAnim->mNumScalingKeys; i++)
+	Vec3f scale = toVector3(nodeAnim->mScalingKeys[0].mValue);
+	for (u32 i = 0; i < nodeAnim->mNumScalingKeys; i++)
 	{
 		float timeToCompare = (float)nodeAnim->mScalingKeys[i].mTime * samplesToTime;
 		if (timeToCompare < t) continue;
@@ -299,10 +299,10 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 			blendTime = map(blendTime, aTime, bTime, 0, 1);
 			blendTime = clamp(blendTime, 0.0f, 1.0f);
 
-			Vector3 scaleA = toVector3(a.mValue);
-			Vector3 scaleB = toVector3(b.mValue);
+			Vec3f scaleA = toVector3(a.mValue);
+			Vec3f scaleB = toVector3(b.mValue);
 
-			scale = Vector3::lerp(scaleA, scaleB, blendTime);
+			scale = Vec3f::lerp(scaleA, scaleB, blendTime);
 		}
 		else
 			scale = toVector3(nodeAnim->mScalingKeys[i].mValue);
@@ -358,7 +358,7 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 	////*************
 
 	//save sample for its child bones
-	for (unsigned int i = 0; i < node->childIndices.size(); i++)
+	for (u32 i = 0; i < node->childIndices.size(); i++)
 		SaveAnimationSample(mesh, &(mesh->nodes[node->childIndices[i]]), assimpAnim, targetAnimation, t, isFbx);
 }
 
@@ -369,7 +369,7 @@ aiNode * GetNodeRecursively(const std::string & boneName, aiNode * from)
 		return from;
 	else
 	{
-		for (unsigned int i = 0; i < from->mNumChildren; i++)
+		for (u32 i = 0; i < from->mNumChildren; i++)
 		{
 			aiNode* result = GetNodeRecursively(boneName, from->mChildren[i]);
 			if (result != NULL)
@@ -409,7 +409,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	}
 
 	FillUniqueBoneNames(mesh, scene);
-	int numBones = (int)mesh->boneNames.size();
+	s32 numBones = (s32)mesh->boneNames.size();
 
 	//check for all our restrictions
 	if (numBones >= mesh->maxBones)
@@ -429,17 +429,17 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	mesh->nodes.resize(numBones);
 
 	//get all bones for meshes
-	for (unsigned int m = 0; m < scene->mNumMeshes; m++)
+	for (u32 m = 0; m < scene->mNumMeshes; m++)
 	{
 		aiMesh* currentMesh = scene->mMeshes[m];
 
-		for (unsigned int i = 0; i < currentMesh->mNumBones; i++)
+		for (u32 i = 0; i < currentMesh->mNumBones; i++)
 		{
 			std::string boneName = (currentMesh)->mBones[i]->mName.C_Str();
-			int index = mesh->GetBoneIndex(boneName);
+			s32 index = mesh->getBoneIndex(boneName);
 
 			LOG(boneName.c_str());
-			Mat44 boneMat = toMat44((currentMesh)->mBones[i]->mOffsetMatrix);
+			Mat44f boneMat = toMat44((currentMesh)->mBones[i]->mOffsetMatrix);
 			boneMat.inverse();
 			mesh->bindMatrices[index] = boneMat;
 			mesh->invBindMatrices[index] = boneMat;
@@ -452,7 +452,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	orderedNodes.resize(numBones);
 
 	//set the aux nodes in order
-	for (unsigned int i = 0; i < mesh->boneNames.size(); i++)
+	for (u32 i = 0; i < mesh->boneNames.size(); i++)
 	{
 		aiNode* node = NULL;
 		node = GetNodeRecursively(mesh->boneNames[i], scene->mRootNode);
@@ -465,26 +465,26 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		LOG(mesh->boneNames[i].c_str());
 		LOG(node->mName.C_Str());
 		LOG("Adding node %d", i);
-		Mat44 boneMat = toMat44(node->mTransformation);
+		Mat44f boneMat = toMat44(node->mTransformation);
 		mesh->boneMatrices[i] = boneMat;
 		orderedNodes[i] = node;
 	}
 
 	//set all nodes data
-	for (unsigned int i = 0; i < orderedNodes.size(); i++)
+	for (u32 i = 0; i < orderedNodes.size(); i++)
 	{
 		aiNode* assimpNode = orderedNodes[i];
 		Node* node = &(mesh->nodes[i]);
 		node->index = i;
 		if (assimpNode->mParent != NULL)
 		{
-			int parentIndex = mesh->GetBoneIndex(assimpNode->mParent->mName.C_Str());
+			s32 parentIndex = mesh->getBoneIndex(assimpNode->mParent->mName.C_Str());
 			node->parentIndex = parentIndex;
 		}
 
-		for (unsigned int j = 0; j < assimpNode->mNumChildren; j++)
+		for (u32 j = 0; j < assimpNode->mNumChildren; j++)
 		{
-			int childIndex = mesh->GetBoneIndex(assimpNode->mChildren[j]->mName.C_Str());
+			s32 childIndex = mesh->getBoneIndex(assimpNode->mChildren[j]->mName.C_Str());
 			//TODO: investigate the hierarchies having bones that are not animated bones
 			if (childIndex != -1)
 				node->childIndices.push_back(childIndex);
@@ -497,7 +497,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	//****
 
 	//vertices data
-	int totalVerts = GetNumTotalVertices(scene);
+	s32 totalVerts = GetNumTotalVertices(scene);
 	mesh->verts.reserve(totalVerts);
 	mesh->normals.reserve(totalVerts);
 	mesh->uvs.reserve(totalVerts);
@@ -509,14 +509,14 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	if (scene->HasMaterials()) mesh->colors.reserve(totalVerts);
 
 	//load vertices data
-	for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+	for (u32 i = 0; i < scene->mNumMeshes; i++)
 	{
 		aiMesh* currentMesh = scene->mMeshes[i];
-		std::vector<Vector3> current_verts;
-		std::vector<Vector3> current_normals;
-		std::vector<Vector2> current_uvs;
-		std::vector<Vector4> current_weights;
-		std::vector<Vector4> current_boneIds;
+		std::vector<Vec3f> current_verts;
+		std::vector<Vec3f> current_normals;
+		std::vector<Vec2f> current_uvs;
+		std::vector<Vec4f> current_weights;
+		std::vector<Vec4f> current_boneIds;
 
 		LoadMeshVertexData(mesh, currentMesh, &current_verts, &current_normals, &current_uvs, &current_weights, &current_boneIds);
 
@@ -532,13 +532,13 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		if (scene->HasMaterials())
 		{
 			aiMaterial* currentMaterial = scene->mMaterials[currentMesh->mMaterialIndex];
-			std::vector<Vector3> aux_colors;
+			std::vector<Vec3f> aux_colors;
 			aux_colors.resize(mesh->verts.size());
-			for (unsigned int i = 0; i < aux_colors.size(); i++)
+			for (u32 i = 0; i < aux_colors.size(); i++)
 			{
 				aiColor3D ai_color;
 				currentMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, ai_color);
-				Vector3 col = toVector3(ai_color);
+				Vec3f col = toVector3(ai_color);
 				aux_colors[i] = (col * 1.5f);
 			}
 			mesh->colors.insert(mesh->colors.end(), aux_colors.begin(), aux_colors.end());
@@ -546,12 +546,12 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 	}
 	//**
 
-	mesh->LogBoneHierarchy(&(mesh->nodes[0]));
+	mesh->logBoneHierarchy(&(mesh->nodes[0]));
 
 	LOG("Sampling Animations");
-	unsigned int numAnims = scene->mNumAnimations;
+	u32 numAnims = scene->mNumAnimations;
 	mesh->animations.resize(numAnims);
-	for (unsigned int i = 0; i < numAnims; i++)
+	for (u32 i = 0; i < numAnims; i++)
 	{
 		aiAnimation* currentAssimpAnim = scene->mAnimations[i];
 		Animation* currentAnim = &mesh->animations[i];
@@ -564,12 +564,12 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		LOG("assimp mTicksPerSecond: %f", currentAssimpAnim->mTicksPerSecond);
 		LOG("assimp mDuration: %f", currentAssimpAnim->mDuration);
 
-		currentAnim->name = currentAssimpAnim->mName.C_Str();
+		//currentAnim->name = currentAssimpAnim->mName.C_Str();
 		currentAnim->keyframes.resize(numBones);
 
 		//TODO: check this as soon as I fix the problem with the fbx/dae assimp differences
 		float totalTimeSecs = (1.0f / (float)currentAssimpAnim->mTicksPerSecond) * (float)currentAssimpAnim->mDuration;
-		int numSamples = (int)std::floor(((float)mesh->samplesPerSecond * totalTimeSecs));
+		s32 numSamples = (s32)std::floor(((float)mesh->samplesPerSecond * totalTimeSecs));
 		currentAnim->numSamples = numSamples;
 		currentAnim->samplesPerSecond = mesh->samplesPerSecond;
 		LOG("currentAnim->ticksPerSecond: %f", currentAnim->samplesPerSecond);
@@ -577,10 +577,10 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		LOG("totalTimeSecs: %f", totalTimeSecs);
 
 		//reserve space for all samples
-		for (int j = 0; j < numBones; j++) currentAnim->keyframes[i].reserve(numSamples);
+		for (s32 j = 0; j < numBones; j++) currentAnim->keyframes[i].reserve(numSamples);
 
 		//make all the samples
-		for (int j = 0; j < numSamples; j++)
+		for (s32 j = 0; j < numSamples; j++)
 		{
 			LOG("--- START SAMPLE --- %d", j);
 			float currentTime = ((1.0f / mesh->samplesPerSecond) * j);
@@ -599,13 +599,13 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		}
 	}
 
-	mesh->SetBindPose();
+	mesh->setBindPose();
 	importer.FreeScene();
 	orderedNodes.clear();
 
-	mesh->InitGL();
+	mesh->initGL();
 	if (scene->HasAnimations())
-		mesh->InitBonesGL();
+		mesh->initBonesGL();
 }
 
 void loadASE(Mesh * mesh, const std::string & path)
@@ -621,20 +621,20 @@ void loadASE(Mesh * mesh, const std::string & path)
 	}
 
 	parser.seek("*MESH_NUMVERTEX");
-	int numverts = parser.getint();
+	s32 numverts = parser.getint();
 	parser.seek("*MESH_NUMFACES");
-	int numfaces = parser.getint();
+	s32 numfaces = parser.getint();
 
 	//parse verts
 	LOG("parsing vertices ");
-	std::vector<Vector3> allverts;
+	std::vector<Vec3f> allverts;
 	allverts.reserve(numverts);
 	parser.seek("*MESH_VERTEX_LIST");
-	for (int i = 0; i < numverts; i++)
+	for (s32 i = 0; i < numverts; i++)
 	{
 		parser.seek("*MESH_VERTEX");
 		parser.getint();
-		Vector3 vert;
+		Vec3f vert;
 		vert.x = (float)parser.getfloat();
 		vert.z = -(float)(parser.getfloat());
 		vert.y = (float)parser.getfloat();
@@ -645,16 +645,16 @@ void loadASE(Mesh * mesh, const std::string & path)
 	LOG("parsing faces");
 	parser.seek("*MESH_FACE_LIST");
 	mesh->verts.reserve(numfaces);
-	for (int i = 0; i < numfaces; i++)
+	for (s32 i = 0; i < numfaces; i++)
 	{
 		parser.seek("*MESH_FACE");
 		parser.getint();
 		parser.seek("A:");
-		int a = parser.getint();
+		s32 a = parser.getint();
 		parser.seek("B:");
-		int b = parser.getint();
+		s32 b = parser.getint();
 		parser.seek("C:");
-		int c = parser.getint();
+		s32 c = parser.getint();
 		mesh->verts.push_back(allverts[a]);
 		mesh->verts.push_back(allverts[b]);
 		mesh->verts.push_back(allverts[c]);
@@ -667,16 +667,16 @@ void loadASE(Mesh * mesh, const std::string & path)
 	parser.seek("*MESH_NUMTVERTEX");
 	if (parser.eof()) return;
 
-	int num_uvs = parser.getint();
+	s32 num_uvs = parser.getint();
 	mesh->uvs.reserve(num_uvs);
-	for (int i = 0; i < num_uvs; i++)
+	for (s32 i = 0; i < num_uvs; i++)
 	{
 		parser.seek("*MESH_TVERT");
 		parser.getint();
 		float u = (float)parser.getfloat();
 		float v = (float)parser.getfloat();
 
-		mesh->uvs.push_back(Vector2(u, v));
+		mesh->uvs.push_back(Vec2f(u, v));
 	}
 
 
@@ -686,11 +686,11 @@ void loadASE(Mesh * mesh, const std::string & path)
 	if (parser.eof()) return;
 
 	mesh->normals.resize(numverts);
-	for (int i = 0; i < (numfaces * 3); i++)
+	for (s32 i = 0; i < (numfaces * 3); i++)
 	{
 		parser.seek("*MESH_VERTEXNORMAL");
-		int index = parser.getint();
-		Vector3 n;
+		s32 index = parser.getint();
+		Vec3f n;
 		n.x = (float)parser.getfloat();
 		n.y = (float)parser.getfloat();
 		n.z = (float)parser.getfloat();
@@ -699,7 +699,7 @@ void loadASE(Mesh * mesh, const std::string & path)
 	LOG("numTotalVerts: %d", numfaces * 3);
 	LOG("done loading: %s", fullpath);
 	//materials etc
-	mesh->InitGL();
+	mesh->initGL();
 }
 
 void SaveBinary(SkinnedMesh * mesh, const char* path)
@@ -716,15 +716,15 @@ void SaveBinary(SkinnedMesh * mesh, const char* path)
 	SerializeVector(mesh->boneIds, fp);
 	SerializeVector(mesh->weights, fp);
 
-	int numBones = mesh->boneNames.size();
-	fwrite(&numBones, sizeof(int), 1, fp);
-	for (int i = 0; i < numBones; i++)
+	s32 numBones = mesh->boneNames.size();
+	fwrite(&numBones, sizeof(s32), 1, fp);
+	for (s32 i = 0; i < numBones; i++)
 		serializeString(mesh->boneNames[i], fp);
 
-	for (int i = 0; i < numBones; i++)
+	for (s32 i = 0; i < numBones; i++)
 	{
-		fwrite(&(mesh->nodes[i].parentIndex), sizeof(int), 1, fp);
-		fwrite(&(mesh->nodes[i].index), sizeof(int), 1, fp);
+		fwrite(&(mesh->nodes[i].parentIndex), sizeof(s32), 1, fp);
+		fwrite(&(mesh->nodes[i].index), sizeof(s32), 1, fp);
 		SerializeVector(mesh->nodes[i].childIndices, fp);
 	}
 
@@ -732,15 +732,15 @@ void SaveBinary(SkinnedMesh * mesh, const char* path)
 	SerializeVector(mesh->bindMatrices, fp);
 	SerializeVector(mesh->invBindMatrices, fp);
 
-	int numAnims = mesh->animations.size();
-	fwrite(&numAnims, sizeof(int), 1, fp);
+	s32 numAnims = mesh->animations.size();
+	fwrite(&numAnims, sizeof(s32), 1, fp);
 
-	for (int i = 0; i < numAnims; i++)
+	for (s32 i = 0; i < numAnims; i++)
 	{
 		Animation animation = mesh->animations[i];
-		serializeCharArray(animation.name, fp);
+		//serializeCharArray(animation.name, fp);
 		fwrite(&(animation.samplesPerSecond), sizeof(double), 1, fp);
-		fwrite(&(animation.numSamples), sizeof(int), 1, fp);
+		fwrite(&(animation.numSamples), sizeof(s32), 1, fp);
 
 		for (size_t i = 0; i < animation.keyframes.size(); i++)
 			SerializeVector(animation.keyframes[i], fp);
@@ -764,18 +764,18 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 	DeserializeVector(mesh->boneIds, fp);
 	DeserializeVector(mesh->weights, fp);
 
-	int numBones = 0;
-	lastRead = fread(&numBones, sizeof(int), 1, fp);
+	s32 numBones = 0;
+	lastRead = fread(&numBones, sizeof(s32), 1, fp);
 	mesh->boneNames.resize(numBones);
-	for (int i = 0; i < numBones; i++)
+	for (s32 i = 0; i < numBones; i++)
 		deserializeString(mesh->boneNames[i], fp);
 
 
 	mesh->nodes.resize(numBones);
-	for (int i = 0; i < numBones; i++)
+	for (s32 i = 0; i < numBones; i++)
 	{
-		fread(&(mesh->nodes[i].parentIndex), sizeof(int), 1, fp);
-		fread(&(mesh->nodes[i].index), sizeof(int), 1, fp);
+		fread(&(mesh->nodes[i].parentIndex), sizeof(s32), 1, fp);
+		fread(&(mesh->nodes[i].index), sizeof(s32), 1, fp);
 		DeserializeVector(mesh->nodes[i].childIndices, fp);
 	}
 
@@ -783,53 +783,53 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 	DeserializeVector(mesh->bindMatrices, fp);
 	DeserializeVector(mesh->invBindMatrices, fp);
 
-	int numAnims = 0;
-	fread(&numAnims, sizeof(int), 1, fp);
+	s32 numAnims = 0;
+	fread(&numAnims, sizeof(s32), 1, fp);
 	mesh->animations.resize(numAnims);
-	for (int i = 0; i < numAnims; i++)
+	for (s32 i = 0; i < numAnims; i++)
 	{
 		//std::string name = "";
 		char* name = NULL;
 		deserializeCharArray(name, fp);
-		mesh->animations[i].name = name;
+		//mesh->animations[i].name = name;
 		double samplesPerSec = 0;
 		fread(&samplesPerSec, sizeof(double), 1, fp);
 		mesh->animations[i].samplesPerSecond = samplesPerSec;
-		int numSamples = 0;
-		fread(&numSamples, sizeof(int), 1, fp);
+		s32 numSamples = 0;
+		fread(&numSamples, sizeof(s32), 1, fp);
 		mesh->animations[i].numSamples = numSamples;
 
 		mesh->animations[i].keyframes.resize(numBones);
-		for (int j = 0; j < numBones; j++)
+		for (s32 j = 0; j < numBones; j++)
 			DeserializeVector(mesh->animations[i].keyframes[j], fp);
 	}
 	fclose(fp);
 
 	mesh->currentPoseModelToBoneMatrices.resize(numBones);
-	mesh->SetBindPose();
-	mesh->InitGL();
-	mesh->InitBonesGL();
+	mesh->setBindPose();
+	mesh->initGL();
+	mesh->initBonesGL();
 }
 
-void generateQuad(Mesh * mesh, Vector3 color)
+void generateQuad(Mesh * mesh, Vec3f color)
 {
 	mesh->verts.resize(6);
-	mesh->verts[0] = Vector3(1.0f, -1.0f, 0.0f);
-	mesh->verts[1] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[2] = Vector3(-1.0f, -1.0f, 0.0f);
+	mesh->verts[0] = Vec3f(1.0f, -1.0f, 0.0f);
+	mesh->verts[1] = Vec3f(-1.0f, 1.0f, 0.0f);
+	mesh->verts[2] = Vec3f(-1.0f, -1.0f, 0.0f);
 
-	mesh->verts[3] = Vector3(1.0f, 1.0f, 0.0f);
-	mesh->verts[4] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[5] = Vector3(1.0f, -1.0f, 0.0f);
+	mesh->verts[3] = Vec3f(1.0f, 1.0f, 0.0f);
+	mesh->verts[4] = Vec3f(-1.0f, 1.0f, 0.0f);
+	mesh->verts[5] = Vec3f(1.0f, -1.0f, 0.0f);
 
 	mesh->uvs.resize(6);
-	mesh->uvs[0] = Vector2(1.0f, 0.0f);
-	mesh->uvs[1] = Vector2(0.0f, 1.0f);
-	mesh->uvs[2] = Vector2(0.0f, 0.0f);
+	mesh->uvs[0] = Vec2f(1.0f, 0.0f);
+	mesh->uvs[1] = Vec2f(0.0f, 1.0f);
+	mesh->uvs[2] = Vec2f(0.0f, 0.0f);
 
-	mesh->uvs[3] = Vector2(1.0f, 1.0f);
-	mesh->uvs[4] = Vector2(0.0f, 1.0f);
-	mesh->uvs[5] = Vector2(1.0f, 0.0f);
+	mesh->uvs[3] = Vec2f(1.0f, 1.0f);
+	mesh->uvs[4] = Vec2f(0.0f, 1.0f);
+	mesh->uvs[5] = Vec2f(1.0f, 0.0f);
 
 	mesh->colors.resize(6);
 	mesh->colors[0] = color;
@@ -840,28 +840,28 @@ void generateQuad(Mesh * mesh, Vector3 color)
 	mesh->colors[4] = color;
 	mesh->colors[5] = color;
 
-	mesh->InitGL();
+	mesh->initGL();
 }
 
 void generateQuad(Mesh * mesh)
 {
 	mesh->verts.resize(6);
-	mesh->verts[0] = Vector3(1.0f, -1.0f, 0.0f);
-	mesh->verts[1] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[2] = Vector3(-1.0f, -1.0f, 0.0f);
+	mesh->verts[0] = Vec3f(1.0f, -1.0f, 0.0f);
+	mesh->verts[1] = Vec3f(-1.0f, 1.0f, 0.0f);
+	mesh->verts[2] = Vec3f(-1.0f, -1.0f, 0.0f);
 
-	mesh->verts[3] = Vector3(1.0f, 1.0f, 0.0f);
-	mesh->verts[4] = Vector3(-1.0f, 1.0f, 0.0f);
-	mesh->verts[5] = Vector3(1.0f, -1.0f, 0.0f);
+	mesh->verts[3] = Vec3f(1.0f, 1.0f, 0.0f);
+	mesh->verts[4] = Vec3f(-1.0f, 1.0f, 0.0f);
+	mesh->verts[5] = Vec3f(1.0f, -1.0f, 0.0f);
 
 	mesh->uvs.resize(6);
-	mesh->uvs[0] = Vector2(1.0f, 0.0f);
-	mesh->uvs[1] = Vector2(0.0f, 1.0f);
-	mesh->uvs[2] = Vector2(0.0f, 0.0f);
+	mesh->uvs[0] = Vec2f(1.0f, 0.0f);
+	mesh->uvs[1] = Vec2f(0.0f, 1.0f);
+	mesh->uvs[2] = Vec2f(0.0f, 0.0f);
 
-	mesh->uvs[3] = Vector2(1.0f, 1.0f);
-	mesh->uvs[4] = Vector2(0.0f, 1.0f);
-	mesh->uvs[5] = Vector2(1.0f, 0.0f);
+	mesh->uvs[3] = Vec2f(1.0f, 1.0f);
+	mesh->uvs[4] = Vec2f(0.0f, 1.0f);
+	mesh->uvs[5] = Vec2f(1.0f, 0.0f);
 
-	mesh->InitGL();
+	mesh->initGL();
 }

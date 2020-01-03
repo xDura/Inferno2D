@@ -38,7 +38,7 @@ public:
 class Transform : public Component 
 {
 public:
-	Mat44 transform;
+	Mat44f transform;
 	virtual COMPONENT_ID GetComponentID() { return COMPONENT_ID::TRANSFORM; }
 };
 
@@ -87,7 +87,7 @@ public:
 class BoxCollider : Collider
 {
 public:
-	Vector2 size;
+	Vec2f size;
 	virtual COLLIDER_TYPE getType() { return COLLIDER_TYPE::BOX; }
 	virtual COMPONENT_ID GetComponentID() { return COMPONENT_ID::BOX_COLLIDER; };
 };
