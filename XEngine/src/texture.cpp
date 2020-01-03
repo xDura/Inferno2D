@@ -23,7 +23,7 @@ bool Texture::Load(const char* a_path, bool flipVertical)
 	if (data)
 	{
 
-		path = Copy(a_path);
+		path = copySTR(a_path);
 		//@TODO: modify the glTexImage2D acording to the numChannels
 		if (numChannels > 3)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);

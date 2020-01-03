@@ -81,7 +81,7 @@ void Tilemap::LoadXML(const char* a_path)
 
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLError err = doc.LoadFile(file);
-	path = Copy(a_path);
+	path = copySTR(a_path);
 	if (err != 0)
 	{
 		LOG("Error reading Tilemap from XML at %s", a_path);
@@ -115,7 +115,7 @@ void Tilemap::ReloadXML()
 		LOGERROR("trying to reload an uninitialized tilemap");
 		return;
 	}
-	const char* pathCopy = Copy(path);
+	const char* pathCopy = copySTR(path);
 	Delete();
 	LoadXML(pathCopy);
 	free((char*)pathCopy);

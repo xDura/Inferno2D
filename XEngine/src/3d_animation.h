@@ -12,6 +12,7 @@ public:
 	Vector3 scale;
 };
 
+
 class Animation
 {
 public:
@@ -25,6 +26,9 @@ public:
 	double samplesPerSecond = 0.0f;
 	//number of samples for each bone
 	int numSamples = 0;
+
+	//TODO: turn this into flags
+	bool loop = true;
 
 	~Animation()
 	{

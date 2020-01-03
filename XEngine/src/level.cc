@@ -51,7 +51,7 @@ void Level::LoadXML(const char * a_path)
 		return;
 	}
 
-	path = Copy(a_path);
+	path = copySTR(a_path);
 
 	tinyxml2::XMLNode* versionNode = doc.FirstChild();
 	tinyxml2::XMLNode* tilemapsNode = versionNode->NextSibling();
@@ -85,7 +85,7 @@ void Level::ReloadXML()
 		LOGERROR("trying to reload an uninitialized level");
 		return;
 	}
-	const char* pathCopy = Copy(path);
+	const char* pathCopy = copySTR(path);
 	Delete();
 	LoadXML(pathCopy);
 	free((char*)pathCopy);

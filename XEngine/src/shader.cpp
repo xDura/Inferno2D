@@ -19,8 +19,8 @@ void Shader::Load(const char* vsPath, const char* psPath)
 		LOGERROR("Error loading shader files at: %s, %s", fullpathVS.c_str(), fullpathPS.c_str());
 		return;
 	}
-	vsFilePath = Copy(vsPath);
-	psFilePath = Copy(psPath);
+	vsFilePath = copySTR(vsPath);
+	psFilePath = copySTR(psPath);
 
 	std::string fullvsContent;
 	std::string fullpsContent;

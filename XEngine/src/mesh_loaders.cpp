@@ -253,9 +253,6 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 		float timeToCompare = (float)nodeAnim->mRotationKeys[i].mTime * samplesToTime;
 		if (timeToCompare < t) continue;
 
-		//LOG("Processing rotKey at: ", t);
-		//LOG("timeToCompare is: ", timeToCompare);
-
 		//desired keyframe found!
 		if (i > 0)
 		{
@@ -288,9 +285,6 @@ void SaveAnimationSample(SkinnedMesh * mesh, Node * node, aiAnimation * assimpAn
 	{
 		float timeToCompare = (float)nodeAnim->mScalingKeys[i].mTime * samplesToTime;
 		if (timeToCompare < t) continue;
-
-		//LOG("Processing scaleKey at: ", t);
-		//LOG("timeToCompare is: ", timeToCompare);
 
 		//desired keyframe found!
 		if (i > 0)
@@ -444,7 +438,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 			std::string boneName = (currentMesh)->mBones[i]->mName.C_Str();
 			int index = mesh->GetBoneIndex(boneName);
 
-			LOG("%s", boneName);
+			LOG(boneName.c_str());
 			Mat44 boneMat = toMat44((currentMesh)->mBones[i]->mOffsetMatrix);
 			boneMat.inverse();
 			mesh->bindMatrices[index] = boneMat;
@@ -580,6 +574,7 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		currentAnim->samplesPerSecond = mesh->samplesPerSecond;
 		LOG("currentAnim->ticksPerSecond: %f", currentAnim->samplesPerSecond);
 		LOG("currentAnim->numSamples: %f", currentAnim->numSamples);
+		LOG("totalTimeSecs: %f", totalTimeSecs);
 
 		//reserve space for all samples
 		for (int j = 0; j < numBones; j++) currentAnim->keyframes[i].reserve(numSamples);
@@ -589,8 +584,17 @@ void loadAssimp(SkinnedMesh * mesh, const std::string & path)
 		{
 			LOG("--- START SAMPLE --- %d", j);
 			float currentTime = ((1.0f / mesh->samplesPerSecond) * j);
-			LOG("CurrentTime: %d", currentTime);
-			SaveAnimationSample(mesh, &(mesh->nodes[0]), currentAssimpAnim, currentAnim, currentTime, fbx);
+			if (j == numSamples - 1)
+			{
+				LOG("LastSample: %f", 1.0f);
+				SaveAnimationSample(mesh, &(mesh->nodes[0]), currentAssimpAnim, currentAnim, totalTimeSecs, fbx);
+			}
+			else
+			{
+				LOG("CurrentTime: %f", currentTime);
+				SaveAnimationSample(mesh, &(mesh->nodes[0]), currentAssimpAnim, currentAnim, currentTime, fbx);
+			}
+
 			LOG("---- END SAMPLE ---- %d", j);
 		}
 	}
@@ -692,8 +696,7 @@ void loadASE(Mesh * mesh, const std::string & path)
 		n.z = (float)parser.getfloat();
 		mesh->normals[index] = n;
 	}
-
-	LOG("numTotalVerts %d", (numfaces * 3));
+	LOG("numTotalVerts: %d", numfaces * 3);
 	LOG("done loading: %s", fullpath);
 	//materials etc
 	mesh->InitGL();
@@ -713,7 +716,7 @@ void SaveBinary(SkinnedMesh * mesh, const char* path)
 	SerializeVector(mesh->boneIds, fp);
 	SerializeVector(mesh->weights, fp);
 
-	int numBones = (int)mesh->boneNames.size();
+	int numBones = mesh->boneNames.size();
 	fwrite(&numBones, sizeof(int), 1, fp);
 	for (int i = 0; i < numBones; i++)
 		SerializeString(mesh->boneNames[i], fp);
@@ -729,7 +732,7 @@ void SaveBinary(SkinnedMesh * mesh, const char* path)
 	SerializeVector(mesh->bindMatrices, fp);
 	SerializeVector(mesh->invBindMatrices, fp);
 
-	int numAnims = (int)mesh->animations.size();
+	int numAnims = mesh->animations.size();
 	fwrite(&numAnims, sizeof(int), 1, fp);
 
 	for (int i = 0; i < numAnims; i++)
@@ -766,6 +769,7 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 	mesh->boneNames.resize(numBones);
 	for (int i = 0; i < numBones; i++)
 		DeserializeString(mesh->boneNames[i], fp);
+
 
 	mesh->nodes.resize(numBones);
 	for (int i = 0; i < numBones; i++)

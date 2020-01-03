@@ -64,10 +64,10 @@ bool SerializeString(std::string & s, FILE * file)
 
 	int size = (int)s.size();
 	fwrite(&size, sizeof(int), 1, file);
-	if (size != 0) 
+	if (size != 0)
 	{
 
-		int totalWrites = (int)fwrite(&s, sizeof(char), size, file);
+		int totalWrites = (int)fwrite(&s[0], sizeof(char), size, file);
 		return totalWrites == size;
 	}
 	return true;
@@ -80,9 +80,9 @@ bool DeserializeString(std::string & s, FILE * file)
 	int size = 0;
 	fread(&size, sizeof(int), 1, file);
 	s.resize(size, 'c');
-	if (size != 0) 
+	if (size != 0)
 	{
-		int totalReads = (int)fread(&s, sizeof(char), size, file);
+		int totalReads = (int)fread(&s[0], sizeof(char), size, file);
 		return totalReads == size;
 	}
 	return true;
@@ -132,7 +132,7 @@ void ReadAllFile(std::string& content, FILE * file)
 	}
 }
 
-char * Copy(const char * source)
+char * copySTR(const char * source)
 {
 	char* new_string = new char[strlen(source) + 1];
 	memcpy(new_string, source, strlen(source) + 1);

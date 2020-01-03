@@ -68,7 +68,7 @@ void SpriteSheet::LoadXML(const char * a_path)
 	tinyxml2::XMLElement* elem = spriteSheetNode->ToElement();
 	elem->QueryUnsignedAttribute("width", &width);
 	elem->QueryUnsignedAttribute("height", &height);
-	path = Copy(a_path);
+	path = copySTR(a_path);
 	const char* texturePath;
 	elem->QueryStringAttribute("texture", &texturePath);
 	texture = AssetManager::GetTexture(texturePath);
