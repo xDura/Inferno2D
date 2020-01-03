@@ -5,7 +5,7 @@
 #include "iostream"
 #include "string"
 
-void SetGreatestWeights(Vector4 & weights, Vector4 & boneIds, float newWeight, int newBoneId)
+void setGreatestWeights(Vector4 & weights, Vector4 & boneIds, float newWeight, int newBoneId)
 {
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -16,7 +16,7 @@ void SetGreatestWeights(Vector4 & weights, Vector4 & boneIds, float newWeight, i
 	}
 }
 
-bool DebugDrawText(float x, float y, std::string text, Vector3 c, float scale, int window_width, int window_height)
+bool debugDrawText(float x, float y, std::string text, Vector3 c, float scale, int window_width, int window_height)
 {
 	static char buffer[99999]; // ~500 chars
 	int num_quads;
@@ -58,7 +58,7 @@ bool DebugDrawText(float x, float y, std::string text, Vector3 c, float scale, i
 	return true;
 }
 
-bool SerializeString(std::string & s, FILE * file)
+bool serializeString(std::string & s, FILE * file)
 {
 	if (file == NULL) return false;
 
@@ -73,7 +73,7 @@ bool SerializeString(std::string & s, FILE * file)
 	return true;
 }
 
-bool DeserializeString(std::string & s, FILE * file)
+bool deserializeString(std::string & s, FILE * file)
 {
 	if (file == NULL) return false;
 
@@ -88,7 +88,7 @@ bool DeserializeString(std::string & s, FILE * file)
 	return true;
 }
 
-bool SerializeCharArray(const char * string, FILE * file)
+bool serializeCharArray(const char * string, FILE * file)
 {
 	if (file == NULL) return false;
 
@@ -103,7 +103,7 @@ bool SerializeCharArray(const char * string, FILE * file)
 	return true;
 }
 
-bool DeserializeCharArray(char * string, FILE * file)
+bool deserializeCharArray(char * string, FILE * file)
 {
 	if (file == NULL) return false;
 
@@ -118,7 +118,7 @@ bool DeserializeCharArray(char * string, FILE * file)
 	return true;
 }
 
-void ReadAllFile(std::string& content, FILE * file)
+void readAllFile(std::string& content, FILE * file)
 {
 	int count;
 	fseek(file, 0, SEEK_END);

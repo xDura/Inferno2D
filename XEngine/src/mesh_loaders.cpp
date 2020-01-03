@@ -148,7 +148,7 @@ void LoadMeshVertexData(SkinnedMesh * mesh, aiMesh * assimpMesh, std::vector<Vec
 			int currentNumWeights = numWeightsOnVertex[(int)vertId];
 
 			if (currentNumWeights >= mesh->maxBones)
-				SetGreatestWeights(auxAllWeights[(int)vertId], auxAllBones[(int)vertId], weight, i);
+				setGreatestWeights(auxAllWeights[(int)vertId], auxAllBones[(int)vertId], weight, i);
 			else
 			{
 				int boneIndex = mesh->GetBoneIndex(assimpMesh->mBones[i]->mName.C_Str());
@@ -719,7 +719,7 @@ void SaveBinary(SkinnedMesh * mesh, const char* path)
 	int numBones = mesh->boneNames.size();
 	fwrite(&numBones, sizeof(int), 1, fp);
 	for (int i = 0; i < numBones; i++)
-		SerializeString(mesh->boneNames[i], fp);
+		serializeString(mesh->boneNames[i], fp);
 
 	for (int i = 0; i < numBones; i++)
 	{
@@ -738,7 +738,7 @@ void SaveBinary(SkinnedMesh * mesh, const char* path)
 	for (int i = 0; i < numAnims; i++)
 	{
 		Animation animation = mesh->animations[i];
-		SerializeCharArray(animation.name, fp);
+		serializeCharArray(animation.name, fp);
 		fwrite(&(animation.samplesPerSecond), sizeof(double), 1, fp);
 		fwrite(&(animation.numSamples), sizeof(int), 1, fp);
 
@@ -768,7 +768,7 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 	lastRead = fread(&numBones, sizeof(int), 1, fp);
 	mesh->boneNames.resize(numBones);
 	for (int i = 0; i < numBones; i++)
-		DeserializeString(mesh->boneNames[i], fp);
+		deserializeString(mesh->boneNames[i], fp);
 
 
 	mesh->nodes.resize(numBones);
@@ -790,7 +790,7 @@ void LoadBinary(SkinnedMesh* mesh, const char* path)
 	{
 		//std::string name = "";
 		char* name = NULL;
-		DeserializeCharArray(name, fp);
+		deserializeCharArray(name, fp);
 		mesh->animations[i].name = name;
 		double samplesPerSec = 0;
 		fread(&samplesPerSec, sizeof(double), 1, fp);

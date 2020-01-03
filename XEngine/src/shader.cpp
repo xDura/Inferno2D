@@ -24,8 +24,8 @@ void Shader::Load(const char* vsPath, const char* psPath)
 
 	std::string fullvsContent;
 	std::string fullpsContent;
-	ReadAllFile(fullvsContent, vsFile);
-	ReadAllFile(fullpsContent, psFile);
+	readAllFile(fullvsContent, vsFile);
+	readAllFile(fullpsContent, psFile);
 	fclose(vsFile);
 	fclose(psFile);
 	Init(fullvsContent.c_str(), fullpsContent.c_str());
