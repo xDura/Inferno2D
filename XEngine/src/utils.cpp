@@ -5,7 +5,7 @@
 #include "iostream"
 #include "string"
 
-void setGreatestWeights(Vec4f & weights, Vec4f & boneIds, float newWeight, s32 newBoneId)
+void setGreatestWeights(Vec4f & weights, Vec4f & boneIds, f32 newWeight, s32 newBoneId)
 {
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -16,7 +16,7 @@ void setGreatestWeights(Vec4f & weights, Vec4f & boneIds, float newWeight, s32 n
 	}
 }
 
-bool debugDrawText(float x, float y, std::string text, Vec3f c, float scale, s32 window_width, s32 window_height)
+bool debugDrawText(f32 x, f32 y, std::string text, Vec3f c, f32 scale, s32 window_width, s32 window_height)
 {
 	static char buffer[99999]; // ~500 chars
 	s32 num_quads;
